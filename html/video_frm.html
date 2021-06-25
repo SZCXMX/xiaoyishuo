@@ -1,0 +1,481 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+	<link rel="stylesheet" type="text/css" href="../css/video.css" />
+	<link rel="stylesheet" href="../css/ads.css">
+	<style>
+		#as {
+			position: fixed;
+			top: 50%;
+			left: 0px;
+			width: 50px;
+			height: 50px;
+			line-height: 50px;
+			background: #000000;
+			color: #fff;
+			font-size: 1rem;
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="aui-content">
+		<ul class="aui-list aui-media-list" id="fx-article-list">
+			<script id="fx-top" type="text/x-dot-template">
+				{{ for(var i=0,len=it.data.length; i < len; i++) { }}
+				{{? it.data[i].mychannel != 99}}
+				<div class="aui-card-list aui-border-t fx-video-list-li" id="id{{= it.data[i].id }}" data-title="{{= it.data[i].title }}">
+					<div class="aui-card-list-content fx-video-content"  >
+						<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" onerror="this.src='../image/load-video.png'" class="fx-video-img">
+						<div class="fx-video-title">
+							<h2>{{= it.data[i].title }}</h2>
+							<span>{{= it.data[i].click }}次播放</span>
+						</div>
+						<div class="load-container loadingdi fx-video-loading" style="display: none"><div class="loader">loadingdi...</div></div>
+						<i class="fx-video-bofang" tapmode onclick="fx_video({{= it.data[i].id }},'{{= it.data[i].video }}', {{= i}}, 0)"></i>
+						<em class="fx-video-em">{{? it.data[i].videodate}}{{= it.data[i].videodate }}{{?}}</em>
+						<div class="fx-video-url" style="width: 100%; display: none">
+							
+						</div>
+					</div>
+					<div class="aui-info aui-padded-l-15 aui-padded-r-15 fx-info">
+						{{? it.data[i].uid}}
+						<div class="aui-info-item aui-font-size-12" tapmode onclick="_url({id:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+							<img onerror="this.src='../image/touxiang.png'" id="ffxiangImgCache" ffxiang-src="{{= it.data[i].user.img }}"  class="aui-img-round" />
+							<span class="aui-margin-l-5">{{= it.data[i].user.username }}</span>
+						</div>
+						{{?}}
+						<div class="aui-info-item fx-info-pingZan" tapmode onclick="_openVideo({{= it.data[i].id }}, '{{= it.data[i].video }}', '{{= it.data[i].title }}')">
+							<span class="fx-info-ping"><i class="aui-iconfont aui-icon-comment"></i>{{= it.data[i].pingNum }}</span>
+							<span class="fx-info-ping"><i class="aui-iconfont aui-icon-laud"></i>{{= it.data[i].zan }}</span>
+						</div>
+					</div>
+				</div>
+				{{??}}
+				<!--广告-->
+					{{? it.data[i].url && it.data[i].type != 6}}
+					<li class="aui-list-item selfAds" tapmode onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}'},'curl')">
+					{{??}}
+					<li class="aui-list-item selfAds">
+					{{?}}
+
+					{{? it.data[i].type == 0}}
+					<!-- 小图 -->
+					<div class="xiaotu ads">
+						<div class="left"><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt=""></div>
+						<div class="right">
+							<div class="top">{{= it.data[i].title}}</div>
+							<div class="bottom">
+								<span>广告</span>
+								{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+									<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+								{{ } }}
+							</div>
+						</div>
+					</div>
+					{{?? it.data[i].type == 1}}
+					<!-- 组图 -->
+					<div class="zutu ads">
+						<div class="top">{{= it.data[i].title}}</div>
+						<ul class="middle">
+							{{ for(var j=0; j<3; j++){ }}
+							<li><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].imagesurl[j] }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt=""></li>
+							{{ } }}
+						</ul>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 2}}
+					<!-- 大图 -->
+					<div class="datu ads">
+						<div class="top">{{= it.data[i].title}}</div>
+						<ul class="middle">
+							<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt="">
+						</ul>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 6}}
+					<!-- 视频广告 -->
+					<div class="videoAds ads" id="id{{= it.data[i].id }}" >
+						<div class="aui-list-item-inner fx-item-inner">
+							<div class="aui-list-item-title fx-title">{{= it.data[i].title}}</div>
+						</div>
+						<div class="aui-card-list-content fx-video-content aui-padded-b-10">
+							<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].videoimg }}" src="../image/load-video.png" onerror="this.src='../image/error-img.png'" class="fx-video-img" style="height:230px;">
+							<i class="fx-video-bofang" tapmode onclick="fx_video({{= it.data[i].id }},'{{= it.data[i].video }}', {{= i}}, 1)"></i>
+							<!-- <em class="fx-video-em aui-margin-b-5">02:15</em> -->
+						</div>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 7}}
+					<!-- 文字链接 -->
+					<div class="wordAds ads">
+						<div class="top">{{= it.data[i].title}}</div>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?}}
+
+					</li>
+					<!-- 广告结束 -->
+				{{?}}
+				{{ } }}
+				</script>
+			<div id="fx-topview"></div>
+			<script id="fx-list" type="text/x-dot-template">
+				{{ for(var i=0,len=it.data.length; i < len; i++) { }}
+				{{? it.data[i].mychannel != 99}}
+				<div class="aui-card-list aui-border-t fx-video-list-li" id="id{{= it.data[i].id }}" data-title="{{= it.data[i].title }}">
+					<div class="aui-card-list-content fx-video-content"  >
+						<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" onerror="this.src='../image/load-video.png'" class="fx-video-img">
+						<div class="fx-video-title">
+							<h2>{{= it.data[i].title }}</h2>
+							<span>{{= it.data[i].click }}次播放</span>
+						</div>
+						<div class="load-container loadingdi fx-video-loading" style="display: none"><div class="loader">loadingdi...</div></div>
+						<i class="fx-video-bofang" tapmode onclick="fx_video({{= it.data[i].id }},'{{= it.data[i].video }}', {{= i}}, 0)"></i>
+						<em class="fx-video-em">{{? it.data[i].videodate}}{{= it.data[i].videodate }}{{?}}</em>
+						<div class="fx-video-url" style="width: 100%; display: none">
+							
+						</div>
+					</div>
+					<div class="aui-info aui-padded-l-15 aui-padded-r-15 fx-info">
+						{{? it.data[i].uid}}
+						<div class="aui-info-item aui-font-size-12" tapmode onclick="_url({id:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+							<img onerror="this.src='../image/touxiang.png'" id="ffxiangImgCache" ffxiang-src="{{= it.data[i].user.img }}"  class="aui-img-round" />
+							<span class="aui-margin-l-5">{{= it.data[i].user.username }}</span>
+						</div>
+						{{?}}
+						<div class="aui-info-item fx-info-pingZan" tapmode onclick="_openVideo({{= it.data[i].id }}, '{{= it.data[i].video }}', '{{= it.data[i].title }}')">
+							<span class="fx-info-ping"><i class="aui-iconfont aui-icon-comment"></i>{{= it.data[i].pingNum }}</span>
+							<span class="fx-info-ping"><i class="aui-iconfont aui-icon-laud"></i>{{= it.data[i].zan }}</span>
+						</div>
+					</div>
+				</div>
+				{{??}}
+				<!--广告-->
+					{{? it.data[i].url && it.data[i].type != 6}}
+					<li class="aui-list-item selfAds" tapmode onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}'},'curl')">
+					{{??}}
+					<li class="aui-list-item selfAds">
+					{{?}}
+
+					{{? it.data[i].type == 0}}
+					<!-- 小图 -->
+					<div class="xiaotu ads">
+						<div class="left"><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt=""></div>
+						<div class="right">
+							<div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+							<div class="bottom">
+								<span>广告</span>
+								{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+									<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+								{{ } }}
+							</div>
+						</div>
+					</div>
+					{{?? it.data[i].type == 1}}
+					<!-- 组图 -->
+					<div class="zutu ads">
+						<div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+						<ul class="middle">
+							{{ for(var j=0; j<3; j++){ }}
+							<li><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].imagesurl[j] }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt=""></li>
+							{{ } }}
+						</ul>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 2}}
+					<!-- 大图 -->
+					<div class="datu ads">
+						<div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+						<ul class="middle">
+							<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt="">
+						</ul>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 6}}
+					<!-- 视频广告 -->
+					<div class="videoAds ads" id="id{{= it.data[i].id }}" >
+						<div class="aui-list-item-inner fx-item-inner">
+							<div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title}}</div>
+						</div>
+						<div class="aui-card-list-content fx-video-content aui-padded-b-10">
+							<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].videoimg }}" src="../image/load-video.png" onerror="this.src='../image/error-img.png'" class="fx-video-img" style="height:230px;">
+							<i class="fx-video-bofang" tapmode onclick="fx_video({{= it.data[i].id }},'{{= it.data[i].video }}', {{= i}}, 1)"></i>
+							<!-- <em class="fx-video-em aui-margin-b-5">02:15</em> -->
+						</div>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+
+						</div>
+					</div>
+					{{?? it.data[i].type == 7}}
+					<!-- 文字链接 -->
+					<div class="wordAds ads">
+						<div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?}}
+
+					</li>
+					<!-- 广告结束 -->
+				{{?}}
+				{{ } }}
+				</script>
+			<div id="fx-view"></div>
+		</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../script/zepto.js"></script>
+<script type="text/javascript" src="../script/dot.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript">
+	var typeid, heigutgao = 1,
+		playModule;
+
+	var video_xlh;
+	var fullResult;
+	var onsgaodu = 0;
+	var onVideoTop = 0;
+	var onsgaoduSave = 0;
+	var onVideoTopSave = 0;
+	apiready = function () {
+		playModule = api.require('playModule');
+		playModule.init({
+			isMultiWindow: false
+		})
+		api.parseTapmode();
+		typeid = api.pageParam['id'];
+		console.log(typeid);
+		// 下拉刷新
+		_shangla(function (ret, err) {
+			_lists('api/article/lists/mychannel/3/typeid/' + typeid + '/', 1, 1);
+			zhiding(typeid)
+		})
+		// 监听滚动
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+				threshold: threshold //设置距离底部多少距离时触发，默认值为0，数字类型
+			}
+		}, function (ret, err) {
+			if (heigutgao == 1) { // heigutgao=1开启执行 0停止执行   防止连续滚动，等加载数据之后在进行滚动。 
+				pagenum += 1
+				_lists('api/article/lists/mychannel/3/typeid/' + typeid + '/',
+					pagenum); // 当数据写入成功  把 heigutgao 设置1
+			}
+		});
+
+		api.addEventListener({
+			name: 'video_frm'
+		}, function (ret, err) {
+			var v = ret.value.k;
+			if (v == 'hidePlayer') {
+				hidePlayer({
+					index: video_xlh
+				})
+			} else if (v == 'keyback') {
+				// 监听返回键
+				// 判断是否全屏
+				playModule.isFullScreen(function (ret, err) {
+					if (ret.status) {
+						playModule.unfull();
+						return;
+					} else {
+						keyback();
+					}
+				});
+			}
+		});
+
+		//测试监听全屏按钮
+		playModule.addEventListener({
+			name: 'full'
+		}, function (ret, err) {
+			fullResult = ret.status;
+			console.log(ret.status)
+		})
+
+		//应用进入后台
+		api.addEventListener({
+			name: 'pause'
+		}, function (ret, err) {
+			playModule.pause({
+				index: video_xlh
+			}); //暂停播放
+		});
+		//应用进入前台
+		api.addEventListener({
+			name: 'resume'
+		}, function (ret, err) {
+			playModule.start({
+				index: video_xlh
+			}); //开始播放
+		});
+
+		playModule.addEventListener({
+			name: 'play'
+		}, function (ret, err) {
+			if (onsgaodu == 0) {
+				onsgaodu = onsgaoduSave;
+			}
+			if (onVideoTop == 0) {
+				onVideoTop = onVideoTopSave;
+			}
+		});
+
+	};
+	//置顶
+	function zhiding(typeid) {
+		_ajax('api/article/zhiding/mychannel/3typeid/' + typeid, function (ret, err) {
+			console.log(JSON.stringify(ret));
+			var evalData = doT.template($api.html($api.byId('fx-top')));
+			$api.html($api.byId('fx-topview'), evalData(ret));
+			_imageCache();
+			api.parseTapmode();
+		})
+	}
+
+
+	window.onscroll = function () {
+		var t = document.documentElement.scrollTop || document.body.scrollTop;
+		var wh = document.documentElement.clientHeight;
+		// console.log(t);
+		// console.log(onsgaodu);
+		if (onsgaodu) {
+			if (t > onsgaodu) {
+				hidePlayer(video_xlh);
+				onsgaodu = 0;
+			}
+		}
+		if (onVideoTop) {
+			if (t < (onVideoTop - wh)) {
+				hidePlayer(video_xlh);
+				onVideoTop = 0;
+			}
+		}
+	}
+
+
+	function hidePlayer(index) {
+		playModule.addEventListener({
+			name: 'full'
+		}, function (ret, err) {
+			fullResult = ret.status;
+			console.log(ret.status)
+		})
+		console.log(fullResult)
+		if (fullResult) {
+			fullResult = false;
+		} else {
+
+			playModule.pause({
+				index: index
+			});
+		}
+	}
+
+	//视频直接播放
+	function fx_video(id, url, index, type) {
+		if (type == 1) {
+			_ajax('api/index/adclick/id/' + id);
+		}
+		playModule.pause({
+			index: video_xlh
+		});
+		_ajax('api/article/clickAjax/id/' + id);
+		var y = $('#id' + id + ' .fx-video-content').offset().top;
+		onVideoTop = y;
+		onVideoTopSave = y;
+		var h = $('#id' + id + ' .fx-video-content').height();
+		var title = $('#id' + id).data('title')
+		onsgaodu = y + 300;
+		onsgaoduSave = y + 300;
+		// onsgaodu = y + h;
+		playModule.play({
+			rect: {
+				x: 0,
+				y: y,
+				w: api.winWidth,
+				h: h
+			},
+			fixedOn: api.frameName,
+			url: url,
+			scalingMode:2,
+			defaultBtn: true, //设置本次播放是否显示默认自带的播放控制按钮
+			enableFull: false, //本次播放视频是否全屏播放，当为true时将直接全屏播放视频，x,y,w,h,fixedOn,fixed值不会生效。
+			fixed: false, //模块是否随所属 Window 或 Frame 滚动
+			title: title,
+			isTopView: true, //是否显示顶部标题栏
+			isBackBtn: true, //小窗口是否显示返回按钮
+			isSmallOpenGesture: false, //窗口播放时是否开启手势控制音量，亮度和进度 （开启：true；不开启：false）
+			isOpenDanmu: false
+		}, function (ret, err) {
+			video_xlh = ret.index;
+		});
+	}
+
+
+	// 返回键监听
+	function k() {
+
+	}
+
+	// 打开视频详情页
+	function _openVideo(id, url, title) {
+		_url({
+			id: id,
+			videoUrl: url,
+			title: title
+		}, 'videoview_win')
+	}
+</script>
+
+</html>

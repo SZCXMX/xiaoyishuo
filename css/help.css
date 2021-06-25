@@ -1,0 +1,100 @@
+.tip {
+    font-size: 12px;
+    color: #e01200;
+    line-height: 20px;
+}
+
+.wrap {
+    padding: 15px;
+}
+
+.content-ul {
+    margin-top: 20px;
+}
+
+.content-ul .list {
+    margin-bottom: 10px;
+    ;
+}
+
+.content-ul .title {
+    color: #222;
+}
+
+.content-ul .text {
+    border-radius: 5px;
+    border: 1px solid #eee;
+    margin-top: 10px;
+
+}
+
+.content-ul .text input {
+    width: 100%;
+    outline: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.content-ul .text textarea {
+    outline: none;
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.btn-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.submit-btn {
+    border-radius: 7px;
+    line-height: 40px;
+    color: #fff;
+    background: #e01200;
+    width: 80%;
+    margin-top: 30px;
+}
+
+/* 处理 */
+.list.deal-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.deal-ul {
+    display: flex;
+    align-items: center;
+}
+
+.deal-ul .list {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-size: 13px;
+
+}
+
+.deal-ul .yuan {
+    width: 15px;
+    height: 15px;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+.deal-ul .list.active .yuan {
+    background-image: url('../image/select2.png');
+    border: #e01200 1px solid;
+    background-size: 100%;
+}

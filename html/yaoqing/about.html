@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>放飞科技</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<style>
+		body{ background:#F8F8F8 !important;}
+		.aui-content{
+			border-radius: 1.5rem;
+			margin: 1rem;
+			box-shadow: 0px 0px 16px 4px #e8e8e8;
+			margin-bottom: 4.5rem;
+			background: #fff;
+		}
+		.aui-content div{
+			line-height: 1.2rem;
+			font-size: 0.75rem;
+			line-height: 1.3rem;
+			color: #212121;
+			padding: 1rem;
+		}
+		h1{
+			text-align: center;
+			font-size: 1.5rem;
+			color: #5D96D0;
+			font-weight: bold;
+			padding-bottom: 0.5rem;
+		}
+		p{
+			padding-top: 0.5rem;
+		}
+		img{
+			width: 100%;
+			height: auto;
+			padding: 0.5rem 0
+			 
+		}
+		.b{
+			background: #fff;
+			position: fixed;
+			bottom: 0px;
+			left: 0px;
+			width: 100%;
+			text-align: center;
+			padding: 0.75rem 0;
+		}
+		.b .btn{
+			width: 88%;
+			margin: 0 auto;
+			border-radius: 1.5rem;
+			text-align: center;
+			font-size: 0.75rem;
+			text-align: center;
+			height: 2.2rem;
+			line-height:2.2rem;
+			background: #FF8000;
+			color: #fff;
+			font-weight: bold;
+			
+		}
+		</style>
+	</head>
+	<body>
+		<section class="aui-content">
+			<div class="div">
+				<h1>邀请码怎么用？</h1>
+				<p>1.通过分享邀请链接非朋友在线注册，或面对面扫描注册时自动绑定您邀请码，不需师徒要再手动输入。</p>
+				<img src="../../image/yaoqing/about_1.png" />
+				<p>1.若您的好友是通过手机应用商店搜索APP安装注册的，需登录后输入您的邀请码后才能成为您的徒弟。</p>
+				<img src="../../image/yaoqing/about_2.png" />
+			</div>
+		</section>
+		<div class="b">
+			<div class="btn" tapmode onclick="fenxiang()">分享</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiang.js"></script>
+	<script src="../../script/newsshare.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			_config = $api.getStorage('config');
+		}
+		function fenxiang() {
+			if(!$api.getStorage('user')){
+				_login();
+				return;
+			}
+			 
+			fx_data={
+				// title:_config.yaoqing.title,
+				// description:_config.yaoqing.content,
+				title:_config.yaoqing.fenxiang_title,
+				description:_config.yaoqing.fenxiang_content,
+				img:'widget://image/logo.png',
+				url:fx_url+'m/yaoqing/uid/'+$api.getStorage('user').id
+			}
+				
+			if($api.getStorage('app') == 1){
+				// 上架显示
+				var sharedModule = api.require('shareAction');
+				sharedModule.share({
+					text : fx_data.title + fx_data.description,
+					type : 'text'
+				});
+				return;
+			}
+			newsShare(fx_data)
+		}
+		
+		
+	</script>
+</html>

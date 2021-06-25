@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>联系客服</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            background: #fff;
+            -webkit-user-select: text;
+        }
+
+        .content li {
+            line-height: 50px;
+            height: 50px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            display: flex;
+            font-size: 16px;
+            padding: 0 10px;
+        }
+
+        .title {
+            width: 25%;
+        }
+
+        .Qhao {
+            display: inline-block;
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <!-- <ul>
+            <li>
+                <span class="title">客服QQ</span>
+                <span class="Qhao">1175895685</span>
+                <span class="btn" onclick="window.location.href='mqqwpa://im/chat?chat_type=wpa&uin=1175895685&version=1&src_type=web&web_src=bjhuli.com'">点击聊天</span>
+            </li>
+            <li>
+                <span class="title">客服群</span>
+                <span class="Qhao">1175895685</span>
+                <span class="btn" onclick="window.location.href='mqqapi://card/show_pslcard?src_type=internal&version=1&uin=185634461&card_type=group&source=external'">点击聊天</span>
+            </li>
+            <li>
+                <span class="title">客服微信</span>
+                <span class="Qhao" id="target">1175895685</span>
+                <span class="btn" id="copy_btn" data-clipboard-target="#target">一键复制</span>
+            </li>
+        </ul> -->
+        <script id="fx-list" type="text/x-dot-template">
+            <ul>
+                <li>
+                    <span class="title">客服QQ</span>
+                    <span class="Qhao">{{=it.qq}}</span>
+                    <!--<span class="btn" onclick="window.location.href='http://wpa.qq.com/msgrd?v=3&uin={{=it.qq}}&site=qq&menu=yes'">点击聊天</span>-->
+                    <span class="btn" onclick="window.location.href='mqqwpa://im/chat?chat_type=wpa&uin={{=it.qq}}&version=1&src_type=web&web_src=bjhuli.com'">点击聊天</span>
+                </li>
+                <li>
+                    <span class="title">客服群</span>
+                    <span class="Qhao">{{=it.qqun}}</span>
+                    <span class="btn" onclick="window.location.href='mqqapi://card/show_pslcard?src_type=internal&version=1&uin={{=it.qqun}}&card_type=group&source=external'">点击聊天</span>
+                    <!--<span class="btn" onclick="window.location.href='https://jq.qq.com/?_wv=1027&k=5y24bqW'">点击加群</span>-->
+                </li>
+                <li>
+                    <span class="title">客服微信</span>
+                    <span class="Qhao" id="target">{{=it.weixin}}</span>
+                    <span class="btn" id="copy_btn" data-clipboard-target="#target" tapmode onclick="copy({{=it.weixin}})">一键复制</span>
+                    <!-- <span class="btn" onclick="window.location.href='https://jq.qq.com/?_wv=1027&k=57rhk2k'">点击聊天</span> -->
+                </li>
+            </ul>
+        </script>
+        <div id="fx-view"></div>
+    </div>
+
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/clipboard.js"></script>
+<script src="../../script/dot.js"></script>
+<script src="../../script/ffxiang.js"></script>
+
+<script>
+    apiready = function () {
+        getData();
+    }
+
+    //获取客服信息
+    function getData() {
+        _ajax('api/index/lianxi', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            var evalData = doT.template($api.html($api.byId('fx-list')));
+            $api.append($api.byId('fx-view'), evalData(ret));
+        })
+    }
+
+    // 复制
+    function copy(text){
+        var clipboard = new ClipboardJS('#copy_btn', {
+            text: function (trigger) {
+                return text; // 返回需要复制的内容
+            }
+        });
+        clipboard.on('success', function (e) {
+            console.log(JSON.stringify(e));
+            api.toast({
+                msg: '复制成功'
+            })
+        });
+        clipboard.on('error', function (e) {
+            console.log(e);
+            api.toast({
+                msg: '复制失败'
+            })
+        });
+    }
+</script>
+
+
+</html>

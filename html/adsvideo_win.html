@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no" />
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+	<link rel="stylesheet" type="text/css" href="../css/view.css" />
+	<style>
+		#fx-header {
+			height: 0;
+			min-height: 0;
+		}
+
+		#video {
+			width: 100%;
+			height: 12rem;
+			background: #000;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav fx-view-header" id="fx-header">
+	</header>
+
+	<!-- 视频播放器 -->
+	<div id="video"></div>
+
+	<footer id="fx-footer">
+	</footer>
+</body>
+<script type="text/javascript" src="../script/zepto.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript">
+	var id, inputField, uid = 0,
+		 playModule, znashiti;
+
+	var video_xlh;
+
+	apiready = function () {
+		_heibai(1)
+		playModule = api.require('playModule');
+
+		playModule.init({
+			isMultiWindow: false
+		})
+
+		id = api.pageParam['id'];
+		if (!id) {
+			_alert("文章不存在或已被删除！", function (ret) {
+				_hone();
+			})
+		}
+		api.addEventListener({
+			name: 'yejian'
+		}, function (ret, err) {
+			if (ret) {
+				_yejians();
+			}
+		});
+
+		var header = $api.byId('fx-header');
+		$api.fixStatusBar(header);
+		var headerh = $api.offset(header).h;
+		headerh = headerh + $api.offset($api.dom('#video')).h
+
+		var body_h = api.winHeight;
+		$api.fixTabBar($api.byId('fx-footer'))
+		var footerh = $api.offset($api.byId('fx-footer')).h;
+        if(api.pageParam['url']){
+            api.openFrame({
+                name: 'adsVideo_frm',
+                url: api.pageParam['url'],
+                bounces: true,
+                reload: true,
+                rect: {
+                    x: 0,
+                    y: headerh,
+                    w: 'auto',
+                    // h: body_h - headerh - footerh
+					h: 'auto',
+					marginBottom:footerh
+                },
+                pageParam: api.pageParam,
+            })
+        }
+
+		video()
+		//Window 离开屏幕的事件
+		api.addEventListener({
+			name: 'viewdisappear'
+		}, function (ret, err) {
+			console.log(JSON.stringify(ret));
+			// 关闭全屏
+			api.setFullScreen({
+				fullScreen: false
+			});
+			playModule.pause({
+				index:video_xlh
+			}); //暂停播放
+		});
+		// 进入屏幕时间
+		api.addEventListener({
+			name: 'viewappear'
+		}, function (ret, err) {
+			playModule.start({
+				index:video_xlh
+			}); //开始播放
+		});
+
+		playModule.addEventListener({
+			name: 'backBtn'
+		}, function (ret, err) {
+			if (ret.status) {
+					_close();
+			}
+            playModule.stop({
+                index:video_xlh
+            })
+		});
+		// 监听返回键
+		api.addEventListener({
+			name: 'keyback'
+		}, function (ret, err) {
+			// 判断是否全屏
+			playModule.isFullScreen({
+				index:video_xlh
+			},function (ret, err) {
+				if (ret.status) {
+					playModule.unfull({
+						index:video_xlh
+					});
+					return;
+				}
+				_close();
+				
+				playModule.stop({
+                    index:video_xlh
+                }, function(ret){
+					console.log(JSON.stringify(ret));
+				});
+				playModule.cleanPlayers();
+			});
+		});
+
+	}
+
+	function video() {
+		console.log(api.pageParam['videoUrl'])
+		var h = $('#video').height();
+		var a = $('#fx-header').height();
+		playModule.play({
+			rect: {
+				x: 0,
+				y: a,
+				w: api.winWidth,
+				h: h
+			},
+			url: api.pageParam['videoUrl'],
+			defaultBtn: true,
+			enableFull: false,
+			title: api.pageParam['title'],
+			isTopView: true,
+			isBackBtn: true,
+			isSmallOpenGesture: true,
+			isLoop: true,
+			isOpenDanmu: false
+		}, function (ret) {
+			video_xlh = ret.index;
+		});
+		return;
+	}
+	
+	// 标题
+	function title(text, uids) {
+		$('.aui-title').text('内容详情')
+	}
+</script>
+
+</html>

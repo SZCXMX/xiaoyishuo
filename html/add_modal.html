@@ -1,0 +1,209 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+    <link rel="stylesheet" type="text/css" href="../css/footer.css" />
+    <style>
+        html {
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 20px;
+        }
+
+        html,
+        body {
+            -webkit-touch-callout: none;
+            -webkit-text-size-adjust: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-user-select: none;
+            width: 100%;
+            margin: 0;
+            border: 0;
+            padding: 0;
+            font-style: normal;
+        }
+
+
+        body {
+            line-height: 1.5;
+            font-size: 0.8rem;
+            color: #212121;
+            background: none;
+            outline: 0;
+        }
+        html, body {
+            background: none !important;
+        }
+
+        #img-id {
+            /* padding-top: 50%; */
+            margin: 0 auto;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+        }
+
+        #yuantu {
+            opacity: 0.5;
+            position: fixed;
+            top: 25px;
+            right: 0px;
+            height: 30px;
+            line-height: 30px;
+            width: 100px;
+            background: #000000;
+            border-radius: 15px;
+            color: #ffffff;
+            font-size: 14px;
+            text-align: center;
+            z-index: 999999;
+        }
+
+        /* #yuantu {
+			opacity: 0.5;
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			height: 40px;
+			line-height: 40px;
+			width: 40px;
+			background: #000000;
+			border-radius: 50%;
+			color: #ffffff;
+			font-size: 14px;
+			z-index: 1000;
+			text-align: center;
+			z-index: 999999;
+		} */
+
+        /* #tiaoguo {
+			opacity: 0.5;
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			height: 40px;
+			line-height: 40px;
+			width: 40px;
+			background: #000000;
+			border-radius: 50%;
+			color: #ffffff;
+			font-size: 14px;
+			z-index: 1000;
+			text-align: center;
+			z-index: 999999;
+		} */
+
+        #img-id img {
+            margin: 0 auto;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+        }
+
+
+        #fx-header {
+            margin-bottom: 0px;
+            padding-bottom: 35px;
+            border-bottom: none;
+            background: transparent;
+        }
+
+        #fx-header .aui-icon-menu {
+            font-weight: bold;
+            color: #fff !important;
+            font-size: 16px;
+        }
+
+        .add-bg {
+            font-size: 14px;
+            line-height: 40px;
+            background: rgba(0, 0, 0, .8);
+            color: #eee;
+            width: 30%;
+            border-radius: 7px;
+            padding: 0 7px;
+            position: absolute;
+            right: 5px;
+            top: 80px;
+            z-index: 100;
+        }
+
+        .add-bg .tri {
+            width: 0;
+            height: 0;
+            border-width: 8px 6px 8px 6px;
+            border-style: solid;
+            border-color: transparent transparent rgba(0, 0, 0, .8) transparent;
+            position: absolute;
+            right: 6px;
+            top: -16px;
+        }
+
+        .add-bg .add li {
+            border-bottom: 1px solid #eee;
+            padding-left: 25px;
+            background-repeat: no-repeat;
+            background-size: 20px;
+            background-position: left;
+            background-origin: border-box;
+            width: 76%;
+        }
+
+        .add-bg .add li:last-child {
+            border: none;
+        }
+
+        .add-bg .add li.search {
+            background-image: url('../image/index1.png');
+        }
+
+        .add-bg .add li.add {
+            background-image: url('../image/index2.png');
+        }
+
+        .add-bg .add li.del {
+            background-image: url('../image/index3.png');
+        }
+    </style>
+</head>
+
+<body onclick="api.closeFrame({name: 'add_modal'})">
+    <header class="aui-bar aui-bar-nav" id="fx-header">
+        <div class="fx-header-logo" style="visibility: hidden;">
+            <div class="aui-title" style="right: 0;left: 0;" tapmode onclick="_url({qian:1, fan:0}, 'search_win')">
+                <div class="aui-searchbar" id="search">
+                    <div class="aui-searchbar-input aui-border-radius" style="border: 1px solid #eee;">
+                        <i class="aui-iconfont aui-icon-search"></i>
+                        <input type="search" placeholder="搜索关键词" id="search-input" readonly>
+                    </div>
+                    <i class="aui-iconfont aui-icon-menu"></i>
+                </div>
+            </div>
+        </div>
+        <div class="add-bg">
+            <ul class="ul add">
+                <li class="list search" tapmode onclick="_url({type:'text'},'member/weitoutiaoadd_win',true)">文字</li>
+                <li class="list add" tapmode onclick="_url({type:'image'},'member/weitoutiaoadd_win',true)">图片</li>
+                <li class="list del" tapmode onclick="_url({type:'video'},'member/weitoutiaoadd_win',true)">视频</li>
+            </ul>
+        </div>
+    </header>
+</body>
+<script src="../script/jquery.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+
+    }
+</script>
+
+</html>

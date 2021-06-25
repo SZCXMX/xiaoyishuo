@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>放飞科技</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <style>
+        html,
+        body {
+            background: #000;
+        }
+
+        .img {
+            width: 100%;
+        }
+
+        .num {
+            color: #fff;
+        }
+
+        .save-btn {
+            color: #fff;
+        }
+
+        footer {
+            position: fixed;
+            width: 100%;
+            z-index: 10;
+            bottom: 0;
+            padding: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        footer .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #img-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            overflow-y: auto;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <div id="img-wrap" onclick="api.closeWin();">
+            <img class="img" id="js-img" alt="">
+        </div>
+        <footer id="fx-footer">
+            <div class="footer">
+                <span class="num" id="js-num"></span>
+                <button class="save-btn" onclick="save()">保存</button>
+            </div>
+        </footer>
+    </div>
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/jquery.js"></script>
+<script src="../script/ffxiang.js"></script>
+<script>
+    var img;
+    apiready = function () {
+        $api.fixTabBar($api.byId('fx-footer'));
+        img = api.pageParam['data'];
+        var index = api.pageParam['index'];
+        var all = api.pageParam['all'];
+        // alert(img);
+        $('#js-img').attr('src', img);
+        $('#js-num').text(index + '/' + all);
+    }
+
+    function save() {
+        api.saveMediaToAlbum({
+            path: img
+        }, function (ret_saveImage, err_saveImage) {
+            if (ret_saveImage && ret_saveImage.status) {
+                _msg('图片保存成功')
+            }
+        });
+    }
+</script>
+
+</html>

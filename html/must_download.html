@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>放飞科技</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        .fx-view-header {
+            margin-bottom: 0px !important;
+            border-bottom: 1px solid #E8E8E8;
+        }
+		.aui-bar-nav {
+            background: #d33d3e;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav fx-view-header " id="fx-header">
+        <a class="aui-pull-left aui-btn" tapmode onclick="closeBack();"> <span
+                class="aui-iconfont aui-icon-left"></span> </a>
+        <div class="aui-title">app下载</div>
+    </header>
+</body>
+<script src="../script/zepto.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        api.addEventListener({
+            name: 'keyback'
+        }, function () {
+            closeBack();
+        })
+//      $api.html($api.dom('.aui-title'), api.pageParam['title'])
+        _openMiddleFrame();
+    }
+
+    function _openMiddleFrame() {
+        // 解析属性	消除点击300S 延时问题 tapmode
+        api.parseTapmode();
+        var headerh;
+        var footerh;
+        var header = $api.byId('fx-header');
+        $api.fixStatusBar(header);
+        var headerPos = $api.offset(header);
+        headerh = headerPos.h
+        var body_h = api.winHeight;
+		console.log(_token)
+        var browser = api.require('webBrowser');
+        browser.openView({
+            url: api.pageParam['url'],
+            rect: {
+                x: 0,
+                y: headerh,
+                w: 'auto',
+                h: body_h - headerh
+            }
+        }, function (ret, err) {});
+    }
+
+    // 返回
+    function closeBack() {
+        var browser = api.require('webBrowser');
+        browser.historyBack(
+            function (ret, err) {
+                console.log(JSON.stringify(ret))
+                console.log(JSON.stringify(err))
+                if (!ret.status) {
+                    if(api.pageParam['must'] == 1){
+                        api.closeWidget({
+                            silent: true
+                        });
+                    }else{
+                        api.closeWin();
+                    }
+                }
+            }
+        );
+    }
+</script>
+
+</html>

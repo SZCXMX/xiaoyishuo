@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>提示</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mall/index.css" />
+	</head>
+	<style>
+		#xuanz {
+			text-align: center;
+			margin-top: 10px;
+		}
+		#xuanz ul li {
+			border: 1px solid #ccc;
+			padding: 5px;
+			margin-left: 10px;
+			margin-right: 10px;
+			float: left;
+			width: 25%;
+			margin-bottom: 20px;
+		}
+		.aui-input {
+			padding: 0px !important;
+			margin-bottom: 0px !important;
+			text-align: center;
+			border: 0 !important;
+		}
+		.vais {
+			border: 1px solid #DB3652 !important;
+		}
+		#aui-footer {
+			height: auto;
+			padding-bottom: 10px;
+		}
+		#cart-sub {
+			font-weight: bold;
+			border-radius: 0px;
+		}
+		.ps2 {
+			padding-left: 15px;
+			margin-top: 10px;
+			border-bottom: 1px solid #F4F1F0;
+			padding-bottom: 10px;
+			background: #fff;
+			overflow: hidden;
+			padding-top: 10px;
+		}
+		.aui-list-view-cell {
+			padding: 5px 15px
+		}
+		.aui-input {
+			color: #999;
+			text-align: center;
+		}
+		.pay_info {
+			padding: 10px 30px;
+			margin: 15px 0;
+			background-color: #fff;
+			text-align: center;
+		}
+		.pay_info span {
+			font-size: 14px;
+		}
+		.pay_info h1 {
+			padding: 10px 0;
+			border-bottom: 1px solid #efeef3;
+			font-size: 42px;
+		}
+		.pay_info p {
+			width: 100%;
+			text-align: left;
+			color: #a3a3a3;
+		}
+		.pay_info p span {
+			float: right;
+		}
+		.pay_list {
+			width: 100%;
+			background-color: #fff;
+		}
+		.pay_list li {
+			list-style: none;
+			height: auto;
+			overflow: hidden;
+			padding: 10px 15px;
+			border-bottom: 1px solid #efeef3;
+		}
+		.pay_list li i {
+			display: inline-block;
+			width: 40px;
+			height: 40px;
+			background: url(../image/pay.jpg) no-repeat;
+			background-size: 100% 100%;
+			float: left;
+			margin-right: 10px;
+		}
+		.pay_list li span {
+			font-size: 14px;
+			display: inline-block;
+			float: left;
+			line-height: 20px;
+			color: #a3a3a3;
+		}
+		.pay_list li span b {
+			color: #000;
+			font-weight: normal;
+			padding-left: 0px;
+		}
+		.aui-input-row .aui-input {
+			text-align: center;
+		}
+		.yuebuzu {
+			text-align: center;
+			font-size: 1.2em;
+			padding: 10px;
+			color: #FF0000;
+			font-weight: bold;
+		}
+		#cart-sub {
+			border-radius: 0px;
+		}
+		#aui-footer {
+			width: 100%;
+		}
+		b {
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+		.hb {
+			background: #fff;
+			overflow: hidden;
+			padding: 20px;
+		}
+		.hb {
+			font-size: 14px;
+			font-weight: 400;
+			line-height: 1;
+			color: #333;
+		}
+		.hb .aui-pull-right {
+			color: #A2A2A2;
+		}
+		#hbselect {
+			margin-bottom: 0px;
+		}
+		.appMoney {
+			display: none;
+		}
+		.aui-list-view:after, .aui-list-view-cell:last-child:after {
+			border-bottom: 0px !important;
+		}
+		.radio {
+		 
+		}
+		.pay_list li i.aui-icon-correct {
+			display: none;
+		}
+		.pay_list li.radio i.aui-icon-correct{
+			background: #DB3652 !important;
+			font-size: 0.8rem;
+			float: right;
+			color: #fff;
+			font-weight: bold;
+			display: block;
+			text-align: center;
+			border-radius: 50%;
+			width: 25px;
+			height: 25px;
+			margin-right: 0px;
+			margin-top: 8px;
+		}
+	</style>
+	<body>
+		<div class="aui-content" style="margin-bottom: 10px; background: #fff;">
+			<ul class="aui-list-view" style="padding: 10px; padding-bottom: 10px; margin-bottom: 10px;">
+				<li class="aui-list-view-cell" id="heji"></li>
+			</ul>
+		</div>
+		<div class="aui-content" style=" overflow: hidden;padding-bottom: 60px; ">
+			<div class="aui-text-left ps2">
+				2、选择支付方式
+			</div>
+			<ul class="pay_list" style="background: #fff;">
+				<li class="radio"><i style="background: url('../../image/mall/pay.png') no-repeat;background-size: 100% 100%;"></i><span><b>在线支付</b><br>使用在线支付更快捷</span><i class="aui-iconfont aui-icon-correct"></i></li>
+			</ul>
+		</div>
+		<footer class="aui-nav" id="aui-footer" style="padding-bottom: 0px">
+			<button id='cart-sub' class="fx-pay aui-btn aui-btn-block" tapmode onclick="pay()">
+				开 始 支 付
+			</button>
+		</footer>
+	</body>
+	<script type="text/javascript" src="../../script/api.js" ></script>
+	<script type="text/javascript" src="../../script/ffxiangmall.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			_heibai(1)
+			$api.html($api.byId('heji'), '商品共<b class="aui-text-danger">1</b>件商品，支付需 <b class="aui-text-danger">' + api.pageParam['money'] + '</b>元');
+		}
+		function pay() {
+			api.openApp({
+				iosUrl : 'http://www.passpay.net/demo/pay',
+			});
+		}
+	</script>
+</html>

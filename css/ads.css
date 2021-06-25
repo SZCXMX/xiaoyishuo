@@ -1,0 +1,80 @@
+/* 广告 */
+
+/* 小图 */
+
+.selfAds .ads {
+    padding: 7px 0;
+}
+
+.selfAds .bottom {
+    margin-top: 5px;
+}
+
+.selfAds .bottom span {
+    padding: 3px;
+    border-radius: 3px;
+    color: #aaa;
+    border: 1px solid #ddd;
+    font-size: 10px;
+}
+
+.selfAds .xiaotu {
+    display: flex;
+}
+
+.selfAds .xiaotu .left {
+    width: 25%;
+}
+
+.selfAds .xiaotu .left img {
+    width: 100%;
+    min-height: 73px;
+    height: 100%;
+}
+
+.selfAds .xiaotu .right {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 7px;
+    position: relative;
+}
+
+.selfAds .xiaotu .right .bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+/* 组图 */
+
+.selfAds .zutu .middle {
+    display: flex;
+    margin-top: 5px;
+}
+
+.selfAds .zutu .middle li {
+    width: 33%;
+    height: 70px;
+}
+
+.selfAds .zutu .middle li:nth-child(2) {
+    margin: 0 5px;
+}
+
+.selfAds .zutu .middle li img {
+    width: 100%;
+    height: 100%;
+}
+
+/* 大图 */
+
+.selfAds .datu .middle {
+    display: flex;
+    margin-top: 5px;
+    height: 150px;
+}
+
+.selfAds .datu .middle img {
+    width: 100%;
+    height: 100%;
+}

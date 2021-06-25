@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改手机</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul,
+        li {
+            list-style: none;
+        }
+
+        li.fs {
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            overflow: hidden;
+            background: #fff;
+            /* padding-left: 10px;  */
+            justify-content: space-between;
+        }
+
+        li.fs span {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .fs-yzm span {
+            font-size: 14px;
+            padding: 0 15px;
+            background: #f65c5a;
+            color: #fff;
+        }
+
+        input {
+            width: 60%;
+            padding: 0 5%;
+            height: 40px;
+            line-height: 40px;
+            border: none;
+            outline: none;
+        }
+
+        html {
+            height: 100%;
+            position: relative;
+        }
+
+        button {
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            border: none;
+            /* background: #f7c032; */
+            background: #f65c5a;
+            color: #fff;
+            /* margin: 0 25%; */
+            position: absolute;
+            bottom: 0px;
+            outline: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        li.fs.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <!-- <li class="fs-num fs xg">
+            <span>手机：</span>
+            <input type="text" placeholder="">
+        </li> -->
+        <li class="fs-num fs">
+            <input type="text" placeholder="手机号码" id="username">
+        </li>
+        <li class="fs-yzm fs">
+            <input type="text" placeholder="验证码">
+            <span onclick="getVerify()" id="sendVerify" status="1">获取验证码</span>
+        </li>
+        <li class="fs-btn">
+            <button onclick="tjsj();">绑定</button>
+        </li>
+    </ul>
+</body>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffxiang.js"></script>
+<script>
+    var _user = $api.getStorage('user');
+    var yanzheng;
+    var bHeight, eHeight;
+    var sys;
+    var yzPhone;
+
+    apiready = function () {
+        if (!_user.mobile) {
+            $('button').text('绑定');
+        } else {
+            $('.fs-num input').val(_user.mobile);
+            $('button').text('修改');
+        }
+        sys = api.systemType;
+        bHeight = window.innerHeight;
+        if (_user.mobile) {
+            $('.fs-num input').val(_user.mobile);
+        }
+    }
+
+
+    //ios底部按钮无法自动弹起，故监听输入框的焦点事件
+    $('input').focus(function () {
+        if (sys == 'ios') {
+            setTimeout(function () {
+                eHeight = window.innerHeight;
+                console.log('122: ' + window.innerHeight);
+                var h = bHeight - eHeight;
+                $('button').css('bottom', h);
+            }, 500)
+        }
+    })
+    $('input').blur(function () {
+        if (sys == 'ios') {
+            $('button').css('bottom', 0);
+        }
+    })
+
+
+    //提交手机号
+    function tjsj() {
+        var num_val = $('.fs-num input').val();
+        var yzm_val = $('.fs-yzm input').val();
+        if (!num_val || !yzm_val) {
+            api.toast({
+                msg: '信息未填写完整'
+            })
+            return false;
+        }
+        if (!_isMobile(num_val)) {
+            api.toast({
+                msg: '请输入正确的手机号码'
+            })
+            return false;
+        }
+
+        if (num_val != yzPhone) {
+            _msg('请输入申请验证码的手机号');
+            return
+        }
+        _ajax('api/user/phonebd', function (ret, err) {
+            if (ret.Code == 200) {
+                _msg('提交成功')
+                setTimeout(function () {
+                    api.closeToWin({
+                        name: 'member_win'
+                    });
+                }, 1500)
+            } else if (ret.Code == 201) {
+                _msg('该手机已被绑定')
+            } else {
+                _msg('提交失败')
+            }
+        }, {
+            uid: _user.id,
+            phone: num_val,
+            code: yzm_val
+        })
+    }
+
+    //获取验证码
+    function getVerify() {
+        var mobileVal = $('#username').val();
+        if (!mobileVal) {
+            _msg('请输入手机号码')
+            return false;
+        }
+        if (!_isMobile(mobileVal)) {
+            _msg('请输入正确手机号码')
+            return;
+        }
+        var status = $('#sendVerify').attr('status');
+        if (status != 1) {
+            return;
+        }
+        _ajaxNT('api/common/sms', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret) {
+                _msg('发送成功');
+                $("#sendVerify").html('<span id="GetVerify">60</span>S');
+                times = 59;
+                isinerval = setInterval("CountDown()", 1000);
+                setTimeout(function () {
+                    // _msg(ret.ret)
+                    $('#sendVerify').attr('status', '0');
+                }, 500)
+                yzPhone = mobileVal;
+            } else {
+                _msg(ret.err)
+            }
+        }, {
+            phone: mobileVal,
+        })
+    }
+
+    //倒计时
+    function CountDown() {
+        if (times < 1) {
+            var sendVerify = $('#sendVerify');
+            $(sendVerify).attr('onclick', 'getVerify()');
+            $(sendVerify).attr('status', '1');
+            $(sendVerify).html('重新获取');
+            clearInterval(isinerval);
+            return;
+        }
+        var getVerify = $('#GetVerify');
+        $(getVerify).html('' + times + '');
+        times--;
+    }
+</script>
+
+</html>

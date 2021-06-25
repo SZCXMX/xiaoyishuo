@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>放飞科技</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mall/index.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/aui_slide.css" />
+	</head>
+	<body>
+		<script id="fx-list" type="text/x-dot-template">
+		<div class="aui-content" style="background: #fff;">
+			<!--<img src="http://mall.ffxiang.cn/statics/uploads/{{= it.thumb}}" class="asdasd" />-->
+			<div id="aui-slide3">
+		        <div class="aui-slide-wrap" >
+		        	{{ for(var i=0,len=it.picarr.length; i < len; i++) { }}
+		            <div class="aui-slide-node bg-dark">
+		                <img src="{{= it.picarr[i]}}" />
+		            </div>
+		            {{ } }}
+		        </div>
+		        <div class="aui-slide-page-wrap"><!--分页容器--></div>
+		    </div>
+			<div class="fx-title aui-padded-l-15 aui-padded-t-15">
+				{{= it.title}}
+			</div>
+			<div class="fx-money">
+				￥<b>{{= it.money}}</b>
+			</div>
+			<div class="m-detail-mall-service">
+				<span class="m-detail-mall-service-item"><img src="https://mimg.127.net/ggimg/all/img19/160831_ic_cart_ship@2x.png">满99元包邮</span><span class="m-detail-mall-service-item"><img src="https://mimg.127.net/ggimg/all/img19/160831_ic_quality@2x.png">正品保证</span>
+			</div>
+		</div>
+		<div class="aui-content aui-margin-t-15">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner aui-list-item-arrow">
+						<div class="aui-list-item-title">
+							图文详细<span style="color: #8f8f8f;font-size: 0.6rem; padding-left: 0.5rem;">( 建议在wifi下查看 )</span>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="fx-pay aui-btn aui-btn-block" tapmode onclick="_url({url:'mall/pay',title:'支付中心',money:'{{= it.money}}'})">
+			购买
+		</div>
+		</script>
+		<div id="fx-view" style="margin-bottom: 2rem;padding-bottom: 2rem;"></div>
+	</body>
+	<script type="text/javascript" src="../../script/zepto.js"></script>
+	<script type="text/javascript" src="../../script/aui_slide.js"></script>
+	<script type="text/javascript" src="../../script/dot.js"></script>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiangmall.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			api.parseTapmode();
+			_heibai(1)
+			view()
+		}
+		function view() {
+			_ajax(fx_url+'/api/app/item/' + api.pageParam['id'], function(ret, err) {
+				if(ret){
+					var evalData = doT.template($api.html($api.byId('fx-list')));
+					$api.append($api.byId('fx-view'), evalData(ret));
+					var slide3 = new auiSlide({
+				        container:document.getElementById("aui-slide3"),
+				        "height":400,
+				        "speed":500,
+				        "autoPlay": 3000, //自动播放
+				        "loop":true,
+				        "pageShow":true,
+				        "pageStyle":'line',
+				        'dotPosition':'center'
+				    })
+				    api.parseTapmode();
+				}else{
+					$api.html($api.byId('fx-view'), JSON.stringify(err));
+				}
+			})
+		}
+		function pay(){
+			_msg('今日已售罄,请关注新一期商品')
+		}
+	</script>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>提现详情</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .money {
+            height: 150px;
+            line-height: 150px;
+            font-size: 50px;
+            text-align: center;
+            background: #f7691d;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        .content {
+            font-size: 14px;
+        }
+        .content li {
+            display: flex;
+            display: -webkit-flex;
+            height: 40px;
+            line-height: 40px;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+        .content li .left {
+            color: #989898;
+        }
+        .content li .right{
+            color: #676767;
+        }
+    </style>
+</head>
+
+<body>
+    <script id="txxq" type="text/x-dot-template">
+    <div class="wrap">
+        <div class="money">￥{{=data.price}}</div>
+        <ul class="content">
+            <li class="time">
+                <span class="left">时间</span>
+                <span class="right">{{=data.addtime}}</span>
+            </li>
+            <li>
+                <span class="left">方式</span>
+                {{? data.paths == 1}}
+                <span class="right">支付宝</span>
+                {{??}}
+                <span class="right">微信</span>
+                {{?}}
+            </li>
+            <li>
+                <span class="left">名称</span>
+                <span class="right">提现</span>
+            </li>
+            <li>
+                <span class="left">结果</span>
+                {{? data.state == 0}}
+                <span class="right">审核中</span>
+                {{?? data.state == 1}}
+                <span class="right">提现成功</span>
+                {{??}}
+                <span class="right">提现失败</span>
+                {{?}}
+            </li>
+            <li>
+                {{? data.yuanyin != null}}
+                <span class="left">原因</span>
+                <span class="right">{{=data.yuanyin}}</span>
+                {{?}}
+            </li>
+        </ul>
+    </div>
+</script>
+<ul class="txlb" id="txxq-view"></ul>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/dot.js"></script>
+<script>
+    apiready = function(){
+//  alert(1);
+        data = api.pageParam.data;
+        console.log(JSON.stringify(api.pageParam));
+//      alert(JSON.stringify(data));
+
+        var evalData = doT.template($api.html($api.byId('txxq')));
+		$api.append($api.byId('txxq-view'), evalData());
+    }
+        
+</script>
+</html>

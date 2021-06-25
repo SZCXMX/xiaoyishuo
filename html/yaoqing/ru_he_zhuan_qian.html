@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>常见问题</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            margin: 0;
+        }
+        ul, ol, li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+       
+        .clear::after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .wrap .tab{
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #fff;
+            padding: 0 1rem 1rem 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .wrap .tab a{
+            border: 1px solid #ddd;
+            width: 26.8%;
+            display: inline-block;
+            border-radius: 15px;
+            font-size: 14px;
+            text-align: center;
+            margin: 1rem 0.5rem 0 0.5rem;
+            color: #000;
+            line-height: 1.8rem;
+        }
+        .wrap .tab a:hover{
+            /* background: #33c9f4; */
+            background:#ff4e40;
+            color: #fff;
+        }
+        .wrap .content{
+            /* margin-top: 7rem; */
+            margin-top: 0rem;
+        }
+        .wrap .content .list{
+            padding-left: 0;
+            margin: 0;
+        }
+        .wrap .content .list li{
+            line-height: 2.5rem;
+            padding: 0 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .wrap .content .list li.title{
+            background: #f0f0f0;
+            /* color: #33c9f4; */
+            color: #ff4e40;
+        }
+        .wrap .content .list .zhedie .neirong{
+            display: none;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: gray;
+            line-height: 2.5rem;
+        }
+        .wrap .content .list .zhedie .show{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script id="fx-list" type="text/x-dot-template">
+    <div class="wrap clear">
+        <div class="content">
+            <ul class="list">
+                {{ for(var i=0,len=it.length; i < len; i++) { }}
+                <li class="zhedie">
+                    <div class="timu" onclick="zhedie(this)">{{= it[i].title}}</div>
+                    <pre class="neirong" style="white-space:pre-wrap; word-wrap:break-word;">{{= it[i].content}}</pre>
+                </li>
+                {{ } }}
+            </ul> 
+        </div>
+    </div>
+</script>
+<section class="aui-chat" id="fx-view">
+    </section>
+</body>
+<script src="../../script/jquery.js"></script>
+<!-- <script type="text/javascript" src="../../script/zepto.js"></script> -->
+	<script type="text/javascript" src="../../script/dot.js"></script>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiang.js"></script>
+<script>
+   
+
+    function zhedie(e){
+        var nr = e.nextElementSibling;
+        $(nr).toggleClass('show');
+    }
+
+    apiready = function() {
+        _ajax('api/user/get_question_info', function(ret, err){
+            // console.log(ret)
+            var evalData = doT.template($api.html($api.byId('fx-list')));
+            $api.append($api.byId('fx-view'), evalData(ret));
+        })
+    }
+
+    
+</script>
+</html>

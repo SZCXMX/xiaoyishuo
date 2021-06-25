@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link type="text/css" rel="stylesheet" href="../css/time_css.css" />
+    <style>
+        html,
+        body {
+            background: none;
+            /* background: skyblue; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-bg">
+        <div class="game">
+            <div class="game_time">
+                <div class="hold">
+                    <div class="pie pie1"></div>
+                </div>
+                <div class="hold">
+                    <div class="pie pie2"></div>
+                </div>
+                <div class="bg"> </div>
+                <div class="time"><img src="../image/red.png" alt=""></div>
+            </div>
+        </div>
+    </div>
+    <!-- <button onclick="pause()">暂停</button>
+    <button onclick="restart()">继续</button>
+    <button onclick="start();">重新开始</button> -->
+</body>
+<script src="../script/jquery.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/ffxiang.js"></script>
+<script>
+    var gameTime;
+    var SS;
+    var totle;
+    var i = 0;
+    var j = 0;
+    var count = 0;
+    var MM = '00';
+    var MS = 0;
+    var flag = 0;
+    var d = 0;
+    var name;
+    var shipin;
+    var articleId;
+    apiready = function () {
+        gameTime = api.pageParam.time;
+        name = api.pageParam.name;
+        shipin = api.pageParam.shipin;
+        articleId = api.pageParam['id'];  // 文章id
+        SS = gameTime;
+        totle = gameTime * 10;
+        countDown();
+    }
+    // 重新开始
+    function start() {
+        document.location.reload();
+        // countDown();
+    }
+    // 暂停
+    function pause() {
+        clearInterval(s);
+        clearInterval(t1);
+        flag = 1;
+    }
+    // 继续
+    function restart() {
+        if (flag == 1 && totle != 0) {
+            flag = 0;
+            countDown();
+        } else {
+            return;
+        }
+    }
+
+    function showTime() {
+        totle = totle - 1;
+        if (totle == 0) {
+            clearInterval(s);
+            clearInterval(t1);
+            $(".pie2").css("-o-transform", "rotate(" + d + "deg)");
+            $(".pie2").css("-moz-transform", "rotate(" + d + "deg)");
+            $(".pie2").css("-webkit-transform", "rotate(" + d + "deg)");
+            console.log(name)
+            _daily({ name: name, id:articleId });
+
+            setTimeout(function(){
+                if(shipin == 1){  // 如果是视频 则奖励一次即关闭
+                    api.closeFrame({
+                        name: 'cutDown_frm'
+                    })
+                }else{
+                    start();
+                }
+            }, 1000)
+            
+        } else {
+            if (totle > 0 && MS > 0) {
+                MS = MS - 1;
+                if (MS < 10) {
+                    MS = "0" + MS
+                };
+            };
+            if (MS == 0 && SS > 0) {
+                MS = 10;
+                SS = SS - 1;
+                if (SS < 10) {
+                    SS = "0" + SS
+                };
+            };
+            if (SS == 0 && MM > 0) {
+                SS = 60;
+                MM = MM - 1;
+                if (MM < 10) {
+                    MM = "0" + MM
+                };
+            };
+        };
+        // $(".time").html(SS + "s");
+    };
+    function start1() {
+        i = i + 360 / ((gameTime) * 10);
+        count = count + 1;
+        if (count <= (gameTime / 2 * 10)) {
+            $(".pie1").css("-o-transform", "rotate(" + i + "deg)");
+            $(".pie1").css("-moz-transform", "rotate(" + i + "deg)");
+            $(".pie1").css("-webkit-transform", "rotate(" + i + "deg)");
+        } else {
+            // $(".pie2").css("backgroundColor", "#d13c36");
+            $(".pie2").css("backgroundColor", "#e45534");
+            $(".pie2").css("-o-transform", "rotate(" + i + "deg)");
+            $(".pie2").css("-moz-transform", "rotate(" + i + "deg)");
+            $(".pie2").css("-webkit-transform", "rotate(" + i + "deg)");
+        }
+    };
+
+    function countDown() {
+        showTime();
+        s = setInterval("showTime()", 100);
+        start1();
+        t1 = setInterval("start1()", 100);
+    }
+    
+</script>
+
+</html>

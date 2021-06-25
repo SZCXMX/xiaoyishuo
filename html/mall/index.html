@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>放飞科技</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mall/index.css" />
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav fx-view-header " style="background: #db3652;" id="fx-header">
+			<a class="aui-pull-left aui-btn" > </a>
+			<div class="aui-title">
+				每日头条	
+			</div>
+			<a class="aui-pull-right" style="padding-top: 0.5rem;" tapmode onclick="asdasd()"><img src="../../image/mall/user.png" style="height: 1.2rem;" /> </a>
+		</header>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiangmall.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			api.addEventListener({
+			    name:'viewappear'
+			}, function(ret, err){        
+			   _heibai()
+			});
+			_heibai()
+			_openFrame('mall/index_frm', '','1')
+			api.addEventListener({
+				name : 'keyback'
+			}, function(ret, err) {
+				// api.closeWidget({
+				// 	silent: true
+				// });
+				keyback();
+			});
+		}
+		function asdasd(){
+			if($api.getStorage('mall')){
+				_url({url:'mall/user',title:'我的会员'})
+			}else{
+				_url({url:'mall/login',title:'登陆'})
+			}
+		}
+	</script>
+</html>

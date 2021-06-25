@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>放飞科技</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mall/index.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/aui_slide.css" />
+	</head>
+	<body>
+		<div class="aui-content" style="background: #fff;">
+			<img src="../../image/mall/1.jpg" style="height: 9rem; width: 100%" />
+		</div>
+		<section class="aui-grid aui-border-t">
+		    <div class="aui-row">
+		        <div class="aui-col-xs-6 aui-border-r wuxians" data-id="1" tapmode onclick="titles(this)">
+		            <div class="aui-grid-label">每日新闻</div>
+		        </div>
+		        <div class="aui-col-xs-6" data-id="2" tapmode onclick="titles(this)">
+		            <div class="aui-grid-label">商品推荐</div>
+		        </div>
+		    </div>
+		</section>
+		<section class="aui-grid fx-list">
+			<script id="fx-list" type="text/x-dot-template">
+				{{? urlId==1}}
+				<ul class="aui-list aui-media-list">
+					{{ for(var i=0,len=it.data.length; i < len; i++) { }}
+					{{? it.data[i].mychannel != 99}}
+		            {{? it.data[i].image}}
+				<li class="aui-list-item" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0,url:'mall/view2',title:'{{= it.data[i].title }}'})">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text">
+								<div class="aui-list-item-title aui-ellipsis-2 fx-title aui-ellipsis-1">{{= it.data[i].title }}</div>
+							</div>
+							<div class="aui-info aui-padded-t-5 aui-padded-b-0" style="padding-top: 5px">
+								<div class="aui-info-item aui-font-size-12 fx-index-infp-span">
+									<span class="">{{= it.data[i].create_time}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="aui-list-item-media">
+							<img src="{{= it.data[i].image }}">
+						</div>
+					</div>
+				</li>
+				{{??}}
+				<li class="aui-list-item" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+	                <div class="aui-media-list-item-inner">
+	                    <div class="aui-list-item-inner">
+	                        <div class="aui-list-item-title aui-ellipsis-2 fx-title aui-ellipsis-1">{{= it.data[i].title }}</div>
+	                        <div class="aui-list-item-text">
+	                            <p class="aui-ellipsis-2 aui-font-size-14">{{= it.data[i].description }}</p>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="aui-info  fx-item-inner">
+	                    <div class="aui-info-item aui-font-size-12">
+							<span class="">{{= it.data[i].create_time}}</span>
+	                    </div>
+	                </div>
+	            </li>
+				{{?}}
+					{{?}}
+		            {{ } }}
+            	</ul>
+				{{??}}
+				{{ for(var i=0,len=it.length; i < len; i++) { }}
+				<div class="aui-col-xs-6 {{? i%2==0}}fx-border-r{{??}}{{?}}" tapmode onclick="_url({id:{{= it[i].id}},url:'mall/view',title:'商品详细'})">
+					<img src="http://mall.ffxiang.cn/statics/uploads/{{= it[i].thumb}}" />
+					<div class="aui-grid-label aui-ellipsis-1">
+						{{= it[i].title}}
+					</div>
+				</div>
+				{{ } }}
+				{{?}}
+			</script>
+			<div class="aui-row" id="fx-view"></div>
+		</section>
+	</body>
+	<script type="text/javascript" src="../../script/zepto.js"></script>
+	<script type="text/javascript" src="../../script/dot.js"></script>
+	<script type="text/javascript" src="../../script/aui_slide.js"></script>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiangmall.js"></script>
+	<script type="text/javascript">
+		var urlId,mallUrl;
+		apiready = function() {
+			urlId=$('.wuxians').data('id');
+			if(urlId=='1'){
+				mallUrl='http://news.ffxiang.cn/index.php/api/article/lists/mychannel/1'
+			}else{
+				mallUrl='http://mall.ffxiang.cn/index.php/api/app/lists/0_0_5.html'
+			}
+			// 下拉刷新
+			_shangla(function(ret,err){
+				_lists(mallUrl, 1, 1);
+			})
+			// 监听滚动
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : threshold //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if (heigutgao == 1) {// heigutgao=1开启执行 0停止执行   防止连续滚动，等加载数据之后在进行滚动。
+					pagenum += 1
+					_lists(mallUrl, pagenum);
+					// 当数据写入成功  把 heigutgao 设置1
+				}
+			});
+		}
+		function titles(job){
+			$('.wuxians').removeClass('wuxians')
+			$(job).addClass('wuxians')
+			pagenum=1
+			urlId=$('.wuxians').data('id');
+			if(urlId=='1'){
+				mallUrl='http://news.ffxiang.cn/index.php/api/article/lists'
+			}else{
+				mallUrl='http://mall.ffxiang.cn/index.php/api/app/lists/0_0_5.html'
+			}
+			_lists(mallUrl, 1,1);
+		}
+		 
+	 
+	</script>
+</html>

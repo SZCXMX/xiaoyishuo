@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>频道</title>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+		<style> 
+			body, .aui-bar-light, .aui-bar-tab {
+				background: #F4F5F6
+			}
+			.fx-jiatypeid {
+				background: #F4F5F6;
+			}
+			.fx-jiatypeid .aui-col-xs-3 {
+				padding: 0px;
+			}
+			.aui-col-xs-3 {
+			}
+			.aui-grid-label {
+				background: #fff;
+				margin: 5px;
+				padding: 5px;
+			 
+				 
+				border: 1px #E8E8E8 solid
+			}
+			.fx-jiatypeid-em{
+				float: right;
+				display: block;
+				border-radius: 20px;
+				background: #e01200;
+				color: #FFFFFF;
+				padding:2px 8px 2px 8px;
+				font-size: 0.6rem;
+			}
+		</style>
+	</head>
+	<body>
+		<section class="aui-grid fx-jiatypeid">
+			<div class="aui-content-padded" style="margin-top: ;">
+				<div class="aui-row ui-list-header">
+					<div class="aui-grid-label" style="background: none;border: 0px; margin-top: 0px; padding-top: 0px;">
+						点击删除以下频道
+						<em class="fx-jiatypeid-em" onclick="yes()">完成</em>
+					</div>
+				</div>
+				<div class="aui-row" id="yes">
+					<div tapmode onclick="data(this,1,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页1
+						</div>
+					</div>
+					<div tapmode onclick="data(this,2,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页2
+						</div>
+					</div>
+					<div tapmode onclick="data(this,3,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页3
+						</div>
+					</div>
+					<div tapmode onclick="data(this,4,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页4
+						</div>
+					</div>
+					<div tapmode onclick="data(this,5,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页5
+						</div>
+					</div>
+					<div tapmode onclick="data(this,6,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页6
+						</div>
+					</div>
+					<div tapmode onclick="data(this,7,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页7
+						</div>
+					</div>
+					<div tapmode onclick="data(this,8,'首页',1)" class="aui-col-xs-3" >
+						<div class="aui-grid-label" >
+							首页8
+						</div>
+					</div>
+				</div>
+				<div class="aui-row ui-list-header" style="margin-top: 20px;">
+					<div class="aui-grid-label" style="background: none;border: 0px;">
+						频道推荐
+					</div>
+				</div>
+				<div class="aui-row" id="no">
+					<div tapmode onclick="data(this,9,'首页',0)" class="aui-col-xs-3" >
+						<div class="aui-grid-label">
+							首页9
+						</div>
+					</div>
+					<div tapmode onclick="data(this,10,'首页',0)" class="aui-col-xs-3" >
+						<div class="aui-grid-label" >
+							首页10
+						</div>
+					</div>
+					<div tapmode onclick="data(this,11,'首页',0)" class="aui-col-xs-3" >
+						<div class="aui-grid-label" >
+							首页11
+						</div>
+					</div>
+					<div tapmode onclick="data(this,12,'首页',0)" class="aui-col-xs-3" >
+						<div class="aui-grid-label" >
+							首页12
+						</div>
+					</div>
+					<div tapmode onclick="data(this,13,'首页',0)" class="aui-col-xs-3" >
+						<div class="aui-grid-label" >
+							首页13
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/zepto.js"></script>
+	<script type="text/javascript" src="../script/ffxiang.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			 
+			api.parseTapmode();
+			// 监听夜间
+			api.addEventListener({
+			    name: 'yejian'
+			}, function(ret, err) {
+				if(ret){
+					_yejians();
+				}
+			});
+		};
+		function data(jos, id, name, yesno) {
+			var html = '<div class="aui-col-xs-3">';
+			if (yesno == 1) {
+				// 先判断当前分类是否低于1个
+				var num = $api.domAll('#yes .aui-grid-label');
+				if(num.length < 2) {
+					api.toast({
+						msg : '至少要保留一个',
+						duration : 2000,
+						location : 'bottom'
+					});
+					return false;
+				}
+				// 移除当前分类
+				$api.remove(jos);
+				// 插入分类
+				html += '<div class="aui-grid-label" tapmode onclick="data(this,' + id + ',\'' + name + '\',0)">' + name + id + '</div></div>';
+				$api.append($api.byId('no'), html)
+			} else if(yesno == 0) {
+				// 移除当前分类
+				$api.remove(jos);
+				html += '<div class="aui-grid-label" tapmode onclick="data(this,' + id + ',\'' + name + '\',1)">' + name + id + '</div></div>';
+				$api.append($api.byId('yes'), html)
+			}
+			api.parseTapmode();
+		}
+		// 完成
+		function yes(){
+			
+		}
+	</script>
+</html>

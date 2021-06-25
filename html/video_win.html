@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+		<link rel="stylesheet" type="text/css" href="../css/video.css" />
+		<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+	</head>
+	<body>
+ 
+		<header class="" id="sx-header"></header>
+		<footer class="aui-bar aui-bar-tab" id="fx-footer">
+			<div class="aui-bar-tab-item" tapmode onclick="_hone()">
+				<img class="aui-img-object" src="../image/w1.png" />
+				<div class="aui-bar-tab-label">
+					首页
+				</div>
+			</div>
+			<div class="aui-bar-tab-item" tapmode onclick="_index_win('weitoutiao_win')">
+				<img class="aui-img-object" src="../image/w3.png" />
+				<div class="aui-bar-tab-label">
+					蚁吧
+				</div>
+			</div>
+			<div class="aui-bar-tab-item aui-active" >
+				<img class="aui-img-object" src="../image/w2s.png" />
+				<div class="aui-bar-tab-label">
+					视频
+				</div>
+			</div>
+			<div class="aui-bar-tab-item" tapmode onclick="_index_win('hd_win')">
+				<img class="aui-img-object" src="../image/w7.png" />
+				<div class="aui-bar-tab-label">
+					活动
+				</div>
+			</div>
+		 	<!-- <div class="aui-bar-tab-item" tapmode onclick="_index_win('xiaoshipin_win')">
+				<img class="aui-img-object" src="../image/w4.png" />
+				<div class="aui-bar-tab-label">
+					小视频
+				</div>
+			</div> -->
+			<div class="aui-bar-tab-item" tapmode onclick="_index_win('member_win')">
+				<img class="aui-img-object" src="../image/w5.png" />
+				<div class="aui-bar-tab-label">
+					我的
+				</div>
+			</div>
+		</footer>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/ffxiang.js"></script>
+	<script type="text/javascript">
+		var body_h;
+		var headerPos;
+		var typeid;
+		var NVNavigationBar;
+		// 分类栏目模块
+		var heiff = 35;
+		//输入35会显示右侧点击
+		apiready = function() {
+			// 判断返回键
+			api.addEventListener({
+				name : 'keyback'
+			}, function(ret, err) {
+				 api.sendEvent({
+				     name: 'video_frm',
+				     extra: {
+				         k: 'keyback',
+				     }
+				 });
+			});
+			NVNavigationBar = api.require('NVNavigationBar');
+			api.addEventListener({
+			    name:'viewappear'
+			}, function(ret, err){        
+			//    _heibai(1)
+			   	api.setFullScreen({
+				    fullScreen: false
+				});
+			});
+			// 监听夜间
+			// api.addEventListener({
+			//     name: 'yejian'
+			// }, function(ret, err) {
+			// 	if(ret){
+			// 		_yejians();
+			// 	}
+			// });
+			header = $api.byId('sx-header');
+			$api.fixStatusBar(header);
+			headerPos = $api.offset(header); 
+			//alert(headerPos.h)
+			body_h = $api.offset($api.dom('body')).h;
+			$api.fixTabBar($api.byId('fx-footer'));
+			footerh = $api.offset($api.byId('fx-footer')).h;
+			_loading();
+			
+			_ajax('api/article/videoTypeid', function(ret, err) {
+				if (ret) {
+					typeid = ret.typeid// 获取分类json
+					// 读取栏目分类模块
+					NVNavigationBar.open({
+						rect : {
+							x : 0,
+							y : headerPos.h,
+							w : api.frameWidth-heiff-10,
+							h : heiff
+						},
+						styles : {
+							orientation : 'horizontal',
+							bg : '#fff',
+							bgAlpha : 1,
+							font : {
+								size : 15,
+								sizeSelected : 18,
+								color : '#555555',
+								colorSelected : '#e01200',
+								alpha : 1
+							},
+							itemSize : {
+								w : 60,
+								h : heiff
+							}
+						},
+						items : ret.data,
+						selectedIndex : 0,
+						fixedOn : api.frameName,
+						id : 'first'
+					}, function(ret, err) {
+						if (ret.eventType == 'click') {
+							randomSwitchBtn(ret.index)
+						}
+						// 打开搜索
+						api.openFrame({
+							name : 'sou',
+							url : '../html/sou.html',
+							rect : {
+								x : api.winWidth-40,
+								y : headerPos.h, // 这里传win的高是为了打开后先不显示Frame，让Frame自己设置自己的高
+								w : '40',
+								h : '35'
+							},
+							bgColor : 'rgba(0,0,0,0.0)',
+						});
+					});
+					
+					// 读取frm文件
+					var frames = [];
+					for (var i = 0; i < typeid.length; i++) {
+						var frame = {};
+						frame.name = 'frame_' + i;
+						frame.url = html_win+'video_frm.html';
+						frame.pageParam = {
+							id : typeid[i],
+						};
+						//				frame.vScrollBarEnabled = false;
+						//				frame.hScrollBarEnabled = false;
+						frames.push(frame);
+						frames.useWKWebView = true;
+						frames.historyGestureEnabled = true;
+					}
+					_loadingClose();
+					openFrameGroup(frames);
+					// 上面全部加载完毕解析 属性 不然点击按钮会有延时300
+					api.parseTapmode();
+				}
+			})
+			// 读取栏目分类
+			//			typeid=[{
+			//			       title: '推荐',
+			//			       bg: '#F6F5F4',
+			//			       bgSelected: '#F6F5F4'
+			//			       },{
+			//			       title: '问答',
+			//			       bg: '#F6F5F4',
+			//			       bgSelected: '#F6F5F4'
+			//			       }]
+	
+			//Window 离开屏幕的事件
+			api.addEventListener({
+			    name:'viewdisappear'
+			}, function(ret, err){    
+				//	关闭播放    
+			  	api.sendEvent({
+				    name: 'video_frm',
+				    extra: {
+				        k: 'hidePlayer',
+				    }
+				});
+			});
+		}
+		function openFrameGroup(frames) {
+			api.openFrameGroup({
+				name : 'video_frm',
+				scrollEnabled : true,
+				rect : {
+					x : 0,
+					y : headerPos.h+heiff,
+					w : 'auto',
+					// h : body_h - headerPos.h -heiff  -footerh,
+					h : 'auto',
+					marginBottom:footerh
+				},
+				index : 0,
+				frames : frames,
+				preload : 0,	// 预加载的 frame 个数，默认加载当前页后面一个
+			}, function(ret, err) {
+				// 当滑动时，设置栏目选中颜色
+				NVNavigationBar.setSelected({
+					id : 'first',
+					index : ret.index,
+					selected : true
+				});
+				// 关闭播放 video视频列表
+				api.sendEvent({
+				    name: 'video_frm',
+				    extra: {
+				        k: 'hidePlayer',
+				    }
+				});
+			});
+		}
+
+		// 点击分类栏目时，设置 frame 组当前可见 frame
+		function randomSwitchBtn(index) {
+			api.setFrameGroupIndex({
+				name : 'video_frm',
+				index : index,
+				scroll : true,	//是否平滑滚动至目标窗口，即是否带有动画
+				//reload:true,	// 刷新
+			});
+		}
+		
+	</script>
+</html>

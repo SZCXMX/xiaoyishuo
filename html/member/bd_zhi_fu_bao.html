@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>收款方式</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <script src="../../script/rem.js"></script>
+    <script type="text/javascript" src="../../script/jquery.js"></script>
+    <style>
+        p{margin: 0;}
+        /*tixian/receipt.html*/
+        .receipt_ul{
+            padding: 0 0.5rem;
+            margin-top: 0.26rem;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            background: #fff;
+        }
+        .receipt_ul > * + *{
+            border-top: 1px solid #ccc;
+        }
+        .receipt_li, .receipt_lt{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.5rem;
+        }
+        .receipt_li{
+            padding: 0.5rem 0;
+        }
+        .receipt_icon{
+            margin-right: 0.6rem;
+        }
+        .re_phone{
+            font-size: 0.4rem;
+            color: #ccc;
+            margin-top: 0.4rem;
+        }
+        .receipt_info{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 1.5rem;
+        }
+        .js-setReceipt{
+            color: #fff;
+            background: #d36b37;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            line-height: 2;
+            width: 2.3rem;
+            text-align: center;
+        }
+        .re_change{
+            color: #d36b37;
+            background: #fff;
+            border: 1px solid #d36b37;
+        }
+        .changeReceipt{
+            display: none;
+            position: fixed;;
+            height: 100%;width: 100%;
+            left: 0;top: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 105;
+        }
+        .re_set{
+            position: absolute;
+            bottom: 0;
+            background: #fff;
+            color: #000;
+            width: 100%;
+        }
+        .re_h3{
+            display: flex;
+            justify-content: space-between;
+            color: #ccc;
+            font-size: 0.4rem;
+            padding: 0.3rem;
+        }
+        .re_form{
+            border-top: 1px solid #ccc;
+            padding: 0 0.25rem;
+            display: none;
+        }
+        .re_form > p{
+            border-bottom: 1px solid #ccc;
+        }
+        .re_form .list{
+            display: flex;
+            align-items: center;
+            font-size: 0.5rem;
+            padding: 0.25rem 0;
+        }
+        .re_form .list span{
+            width: 5em;
+        }
+        .re_form .list input{
+            border: 0;
+        }
+        .re_btn{
+            font-size: 0.28rem;
+            border: 1px solid #232323;
+            border-radius: 6px;
+            padding: 0.18rem 0.4rem;
+            background: #fff;
+            position: relative;
+        }
+        .re_img{
+            width: 50%;
+        }
+        .savePush{
+            background: linear-gradient(177deg, #fe8f16, #feb03e);
+            color: #fff;
+            border-radius: 5px;
+            width: 100%;
+            border: 0;
+            margin: 0.3rem 0;
+            font-size: 0.5rem;
+            line-height: 2.8;
+        }
+        .file{
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+<!--<div class="Withdraw_hd">
+    <div class="left">
+        <a >图</a>
+        <span>收款方式</span>
+    </div>
+    <div class="right">
+        <a href="javascript:;"></a>
+    </div>
+</div>-->
+<header>
+    <div class="h_base"></div>
+    <div class="tabHost  box-s">
+        <a class="iconfont icon-icon4" href="javascript:history.back(-1);"></a>
+        <span>收款方式</span>
+        <i class="iconfont icon-msnui-more"></i>
+        <!-- <p class="bt">知识分享</p> -->
+    </div>
+</header>
+<ul class="receipt_ul">
+    <li class="receipt_li">
+        <div class="receipt_lt">
+            <img class="receipt_icon" src="../../image/tixian/wx.png">
+            <div class="receipt_info">
+                <p>微信支付</p>
+                 <p class="re_phone">1333333333333</p>
+            </div>
+        </div>
+        <if condition="$w eq 1">
+        <a class="js-setReceipt re_change" href="javascript:;">修 改</a>
+        <else/><a class="js-setReceipt" href="javascript:;">未设置</a>
+        </if>
+    </li>
+    <li class="receipt_li">
+        <div class="receipt_lt">
+            <img class="receipt_icon" src="../../image/tixian/zfb.png">
+            <div class="receipt_info">
+                <p>支付宝</p>
+                <p class="re_phone"></p>
+            </div>
+        </div>
+         <if condition="$z eq 1">
+        <a class="js-setReceipt re_change" href="javascript:;">修 改</a>
+        <else/><a class="js-setReceipt" href="javascript:;">未设置</a>
+        </if>
+    </li>
+</ul>
+<!--冒泡-->
+<div class="changeReceipt">
+    <div class="re_set">
+        <h3 class="re_h3"><p style="width: 0.4rem;"></p><span class="js-set">设置收款方式</span>
+            <img src="__PUBLIC__/img/close.png"></h3>
+        <form class="re_form form_wx" action="<{:U('weixin')}>" method="post" enctype="multipart/form-data">
+            <p class="list">
+                <span>姓名</span>
+                <input type="text" placeholder="请输入你的姓名"  name="weiname" value="<{$user.weiname}>">
+            </p>
+            <p class="list">
+                <span>微信号</span>
+                <input type="text" placeholder="请输入你的账号"  name="weihao" value="<{$user.weihao}>">
+            </p>
+            <p class="list" style="justify-content: space-between;">
+                <span>收款二维码</span>
+                <!-- <input type="file" name="weiimg"  />  -->
+                <button class="re_btn">
+                    上传二维码
+                    <input class="file" type="file" name="weiimg"  />
+                </button>
+            </p>
+            <p style="padding: 0.4rem 0; text-align: center;">
+                <img class="re_img" src="__PUBLIC__/<{$user.weiimg}>" alt="">
+            </p>
+             <input class="savePush" type="submit" value="保存" >
+        </form>
+
+            <form  class="re_form form_zfb" action="<{:U('zhifubao')}>" method="post" enctype="multipart/form-data">
+
+            <p class="list">
+                <span>姓名</span>
+                <input type="text" placeholder="请输入你的姓名" name="zhiname" value="<{$user.zhiname}>">
+            </p>
+            <p class="list">
+                <span>支付宝号</span>
+                <input type="text" placeholder="请输入你的账号" name="zhihao" value="<{$user.zhihao}>">
+            </p>
+            <p class="list" style="justify-content: space-between;">
+                <span>收款二维码</span>
+               <!-- <input type="file" name="zhiimg"  /> -->
+               <button class="re_btn">
+                    上传二维码
+                    <input class="file" type="file" name="zhiimg"  />
+                </button>
+            </p>
+            <p style="padding: 0.4rem 0; text-align: center;">
+                <img class="re_img" src="__PUBLIC__/<{$user.zhiimg}>" alt="">
+            </p>
+            <input class="savePush" type="submit" value="保存" >
+        </form>
+    </div>
+</div>
+
+<!-- <script type="text/javascript" src="__PUBLIC__/js/withdraw.js"></script> -->
+<script type="text/javascript">
+ function file(el) {//this
+        for (var i = 0; i < el.files.length; i++) {
+            $('#pic_master_img').attr('src',window.URL.createObjectURL(el.files[i]));
+        }
+    }
+    $(function($) {
+        $('input[name="zhifu"]').change(function() {
+            $('.checked').hide();
+            $(this).nextAll('.checked').show();
+        });
+        $('input[name="lei"]').change(function() {
+            $('.iconfont').removeClass('current');
+            $(this).nextAll('.iconfont').addClass('current');
+        });
+        /*冒泡*/
+        $('.changeReceipt').on('click', function(e) {
+            $('.re_form').hide();
+            $(this).hide();
+        });
+        $('.changeReceipt .re_set').on('click', function(e) {
+            /*阻止冒泡事件*/
+            e.stopPropagation();
+        });
+        $('.re_h3 img').on('click', function(e) {
+            $('.re_form').hide();
+            $('.changeReceipt').hide();
+        });
+
+        $('.re_change').eq(0).on('click', function(e){
+            $('.js-set').text('修改收款方式');
+        });
+        $('.js-setReceipt').eq(0).on('click', function(e) {
+            $('.changeReceipt').show();
+            $('.form_wx').show();
+        });
+        $('.js-setReceipt').eq(1).on('click', function(e) {
+            $('.changeReceipt').show();
+            $('.form_zfb').show();
+        });
+        $('.js-setReceipt').eq(2).on('click', function(e) {
+            $('.changeReceipt').show();
+            $('.form_bank').show();
+        });
+    })
+</script>
+
+</body>
+</html>

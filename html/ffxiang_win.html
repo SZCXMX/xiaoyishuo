@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+	<style>
+		html {
+			font-family: "Helvetica Neue", Helvetica, sans-serif;
+			font-size: 20px;
+		}
+
+		html,
+		body {
+			-webkit-touch-callout: none;
+			-webkit-text-size-adjust: none;
+			-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			-webkit-user-select: none;
+			width: 100%;
+			margin: 0;
+			border: 0;
+			padding: 0;
+			font-style: normal;
+		}
+
+		body {
+			line-height: 1.5;
+			font-size: 0.8rem;
+			color: #212121;
+			background: #fff !important;
+			outline: 0;
+		}
+
+		#img-id {
+			/* padding-top: 50%; */
+			margin: 0 auto;
+			text-align: center;
+			width: 100%;
+			height: 100%;
+			z-index: 999999;
+		}
+
+		#yuantu {
+			opacity: 0.5;
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			height: 30px;
+			line-height: 30px;
+			width: 100px;
+			background: #000000;
+			border-radius: 15px;
+			color: #ffffff;
+			font-size: 14px;
+			text-align: center;
+			z-index: 999999;
+		}
+
+		#img-id img {
+			margin: 0 auto;
+			text-align: center;
+			width: 100%;
+			height: 100%;
+			z-index: 999999;
+		}
+
+
+		#fx-header {
+			margin-bottom: 0px;
+			padding-bottom: 35px;
+			border-bottom: 1px solid #E2E2E2;
+		}
+
+		#fx-header .aui-icon-menu {
+			font-weight: bold;
+			color: #fff !important;
+			font-size: 16px;
+		}
+
+		#fx-header,
+		.aui-searchbar {
+			box-sizing: content-box;
+		}
+
+		.fx-header-logo {
+			background-color: #e01200;
+			box-sizing: content-box;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav aui-invisible" id="fx-header">
+		<!-- <header class="aui-bar aui-bar-nav " id="fx-header"> -->
+		<div class="fx-header-logo aui-invisible">
+			<div class="aui-title" style="right: 0;left: 0;">
+				<div class="aui-searchbar" id="search">
+					<div class="aui-searchbar-input aui-border-radius" style="border: 1px solid #eee;">
+						<i class="aui-iconfont aui-icon-search"></i>
+						<input type="search" placeholder="搜索关键词" id="search-input" readonly tapmode
+							onclick="_url({qian:1, fan:0}, 'search_win')">
+					</div>
+					<i class="aui-iconfont aui-icon-menu" onclick="showDetail('add_modal');"></i>
+					<!-- <i class="aui-iconfont aui-icon-menu" onclick="_url({url:'typeid',title:'选择频道'});"></i> -->
+				</div>
+			</div>
+		</div>
+		<!--暂时后期开发-->
+		<!-- <div class="fx-right-jia" tapmode onclick="_url('jiatypeid_win','','1')">
+			<i class="aui-iconfont aui-icon-plus"></i>
+		</div> -->
+	</header>
+	<footer class="aui-bar aui-bar-tab aui-invisible" id="fx-footer">
+		<div class="aui-bar-tab-item aui-active">
+			<img class="aui-img-object" src="../image/w1s.png" />
+			<div class="aui-bar-tab-label">
+				首页
+			</div>
+		</div>
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('weitoutiao_win')">
+			<img class="aui-img-object" src="../image/w3.png" />
+			<div class="aui-bar-tab-label">
+				蚁吧
+			</div>
+		</div>
+		<div class="aui-bar-tab-item ios" tapmode onclick="_index_win('video_win')">
+			<img class="aui-img-object" src="../image/w2.png" />
+			<div class="aui-bar-tab-label">
+				视频
+			</div>
+		</div>
+		<!-- <div class="aui-bar-tab-item iosShow" tapmode onclick="_index_win('sc_win')">
+			<img class="aui-img-object" src="../image/w2-1.png" />
+			<div class="aui-bar-tab-label">
+				收藏
+			</div>
+		</div> -->
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('hd_win')">
+			<img class="aui-img-object" src="../image/w7.png" />
+			<div class="aui-bar-tab-label">
+				活动
+			</div>
+		</div>
+
+		<!-- <div class="aui-bar-tab-item ios" tapmode onclick="_index_win('xiaoshipin_win')">
+			<img class="aui-img-object" src="../image/w4.png" />
+			<div class="aui-bar-tab-label">
+				小视频
+			</div>
+		</div> -->
+		<!-- <div class="aui-bar-tab-item iosShow" tapmode onclick="_index_win('lishi_win')">
+			<img class="aui-img-object" src="../image/w4-1.png" />
+			<div class="aui-bar-tab-label">
+				历史
+			</div>
+		</div> -->
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('member_win')">
+			<img class="aui-img-object" src="../image/w5.png" />
+			<div class="aui-bar-tab-label">
+				我的
+			</div>
+		</div>
+	</footer>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript" src="../script/group.js"></script>
+<script type="text/javascript" src="../script/update.js"></script>
+<script type="text/javascript" src="../script/typeid.js"></script>
+<script type="text/javascript">
+	var NAVID = 'ffxiang';
+	//输入35会显示右侧点击
+	apiready = function () {
+		$api.fixStatusBar($api.dom('.fx-header-logo'));
+		$api.fixTabBar($api.byId('fx-footer'));
+
+
+		showIOS();
+
+		_listener('keyback', function () {
+			keyback();
+		})
+		// 回到屏幕
+		_listener('viewappear', function () {
+			_heibai();
+			api.setFullScreen({
+				fullScreen: false
+			});
+		})
+		_heibai();
+		_listener('smartupdatefinish', function () {
+			alert('APP自动修复完成，需要重启APP才能生效');
+			api.rebootApp();
+		})
+
+		showView();
+
+
+		setTimeout(function () {
+			getPermission(); // 请求权限
+		}, 1000)
+	}
+
+	// 渲染
+	function showView() {
+		var ret = $api.getStorage('indexAd');
+		if (ret) {
+			setTimeout(function () {
+				_url({
+					data: ret,
+					animationType: 'none'
+				}, 'index_ad');
+			}, 300)
+		} else {
+			openGroup();
+		}
+	}
+
+	// 打开组
+	function openGroup() {
+		_getTypeid(function(ret){
+			var navH = 35;
+			var headerH = $api.offset($api.byId('fx-header')).h;
+			var footerH = $api.offset($api.byId('fx-footer')).h;
+			var fIndex = 1; // 默认打开第几个
+	
+			// var ret = $api.getStorage('typeid');
+			$('.aui-invisible').removeClass('aui-invisible');
+			// 导航
+			__showNavBar(headerH - navH, navH, ret.data, fIndex, NAVID, randomSwitchBtn, function () {
+				if ($api.getStorage('city')) {
+					updateItem();
+				}
+			})
+	
+			// 读取frm文件
+			var frameArr = [];
+			var pageParam = [];
+			for (var i = 0; i < ret.typeid.length; i++) {
+				if (ret.data[i].url) {
+					frameArr.push(ret.data[i].url);
+				} else {
+					frameArr.push('ffxiang_frm');
+				}
+				var obj = {
+					id: ret.typeid[i],
+				};
+				pageParam.push(obj);
+			}
+			// frame 组
+			__groupInit(NAVID, frameArr, headerH, footerH, fIndex, '', pageParam, {
+				pre: 1
+			}, function (index) {
+				console.log(index)
+				NVNavigationBar.setSelected({
+					id: NAVID,
+					index: index,
+					selected: true
+				});
+			});
+			// 上面全部加载完毕解析 属性 不然点击按钮会有延时300
+			api.parseTapmode();
+		})
+	}
+
+	// 点击分类栏目时，设置 frame 组当前可见 frame
+	function randomSwitchBtn(index) {
+		var ret = $api.getStorage('typeid');
+		api.setFrameGroupIndex({
+			name: NAVID,
+			index: index,
+			scroll: true, //是否平滑滚动至目标窗口，即是否带有动画
+			//reload:true,	// 刷新
+		});
+		$api.setStorage('tid', ret.typeid[index]); // 文章详情 推荐文章
+	}
+
+	// 更新栏目城市
+	function updateItem(ret) {
+		var navH = 35;
+		ret = ret ? ret : $api.getStorage('city');
+		if (!ret || ret == "") {
+			return;
+		}
+		if (ret == 'undefined') {
+			ret = '本地'
+		}
+		var w = typeidstrlen(ret);
+		console.log(ret);
+		console.log('=========')
+		NVNavigationBar.updateItem({
+			id: NAVID,
+			index: 2,
+			item: {
+				title: ret,
+				bgSelected: '#fff',
+				bg: '#fff',
+				size: {
+					w: w,
+					h: navH
+				}
+			}
+		});
+	}
+	// 更新选择城市新闻
+	function cityNews() {
+		updateItem()
+		api.execScript({
+			frameName: 'ffxiang_2',
+			script: 'cityNews()'
+		});
+
+		NVNavigationBar.setSelected({
+			id: NAVID,
+			index: 2,
+			selected: true
+		});
+	}
+
+	// 获取栏目id
+	function _getTypeid(callback) {
+		_ajax('api/article/typeid/field/id,title,url', function (ret, err) {
+			console.log(JSON.stringify(ret))
+			console.log(JSON.stringify(err))
+			if (ret) {
+				$api.setStorage('typeid', ret);
+				callback(ret);
+			} else {
+				_alert('未正常获取栏目，将重启app', function () {
+					api.rebootApp();
+				})
+			}
+		})
+	}
+</script>
+
+</html>

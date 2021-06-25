@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改支付宝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul,
+        li {
+            list-style: none;
+        }
+
+        li.fs {
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            overflow: hidden;
+            background: #fff;
+            padding-left: 10px; 
+        }
+
+        li.fs span {
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+        }
+        li.fs input{
+            font-size: 14px;
+        }
+        input {
+            width: 60%;
+            padding: 0 5%;
+            height: 40px;
+            line-height: 40px;
+            border: none;
+            outline: none;
+        }
+        html {
+            height: 100%;
+            position: relative;
+        }
+        button {
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            border: none;
+            /* background: #f7c032; */
+            background: #f65c5a;
+            color: #fff;
+            /* margin: 0 25%; */
+            position:fixed;
+            bottom: 0px;
+            outline: none;
+        }
+
+        /* button {
+            width: 100%;
+            height: 35px;
+            line-height: 35px;
+            border: none;
+            background: #f7c032;
+            color: #fff;
+            margin: 0 25%;
+            position: absolute;
+            bottom: 50px;
+            outline: none;
+        } */
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li class="fs-name fs">
+            <span>支付宝名字：</span>
+            <input type="text" placeholder="支付宝名字">
+        </li>
+        <li class="fs-num fs">
+            <span>支付宝账号：</span>
+            <input type="text" placeholder="支付宝账号">
+        </li>
+        <li class="fs-btn">
+            <button onclick="tjZfb();">绑定</button>
+        </li>
+    </ul>
+</body>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffxiang.js"></script>
+<script>
+    var _user = $api.getStorage('user');
+    console.log(JSON.stringify(_user))
+    apiready = function () {
+        // if (!_user.alizh || !_user.aliname) {
+        //     $('button').text('绑定');
+        // } else {
+        //     $('.fs-name').find('input').val(_user.aliname);
+        //     $('.fs-num').find('input').val(_user.alizh);
+        //     $('button').text('修改');
+        // }
+
+        if(_user.alizh && _user.aliname){
+            $('.fs-name').find('input').val(_user.aliname);
+            $('.fs-num').find('input').val(_user.alizh);
+        }
+    }
+
+    function tjZfb() {
+        var val_name = $('.fs-name').find('input').val();
+        var val_zh = $('.fs-num').find('input').val();
+        if (!val_name || !val_zh) {
+            api.toast({
+                msg: '信息未填写完整，提交失败'
+            })
+
+        } else {
+            $api.post(fx_url+'Api/user/bangdingz?', {
+                values: {
+                    uid: _user.id,
+                    // uid: 1,
+                    name: val_name,
+                    zhanghao: val_zh,
+                }
+            }, function (ret) {
+                if (ret.Code == 200) {
+                    api.toast({
+                        msg: '提交成功'
+                    })
+
+                    setTimeout(function () {
+                        api.closeToWin({
+                            name: 'member_win'
+                        });
+                    }, 1000)
+
+                } else {
+                    api.toast({
+                        msg: '提交失败，请稍后再试'
+                    })
+                }
+
+            })
+        }
+
+        // setTimeout(function () {
+        //     api.closeToWin({
+        //         name: 'member_win'
+        //     });
+        // }, 1000)
+    }
+</script>
+
+</html>

@@ -1,0 +1,784 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+    <link rel="stylesheet" type="text/css" href="../css/fx_weitoutiao.css" />
+    <link rel="stylesheet" href="../css/ads.css">
+    <style>
+        .aui-list-item .aui-info .aui-info-item span.zhhiding {
+            border: 1px solid red !important;
+            border-radius: 8px !important;
+            color: red !important;
+        }
+
+        /* .search-athor {
+				max-width: 80px;
+			} */
+    </style>
+</head>
+
+<body>
+    <div class="sx-bendichengshi" Tapmode onclick="_url({}, 'city')"> <i class="aui-iconfont aui-icon-location"></i>
+        切换城市</div>
+    <div id="sx-shoudongdingwei" Tapmode onclick="_url({}, 'city')">
+        <div class="aui-btn aui-btn-danger">点击选择城市</div>
+    </div>
+    <!-- 置顶 -->
+    <script id="fx-top" type="text/x-dot-template">
+        <!-- 新闻列表 -->
+        {{ for(var i=0,len=it.data.length; i < len; i++) { }}
+        {{? it.data[i].weitoutiao==2 || it.data[i].weitoutiao==1}}
+        <div class="aui-card-list aui-border-b" id="id{{= it.data[i].id }}" data-images="{{= it.data[i].imagesPro }}">
+            <div class="aui-card-list-header aui-card-list-user">
+                <div class="aui-card-list-user-avatar">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].user.img }}" src="../image/error-img.png"
+                        onerror="this.src='../image/touxiang.png'"
+                        onclick="_url({uid:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+                </div>
+                <div class="aui-card-list-user-name">
+                    <div onclick="_url({uid:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+                        {{= it.data[i].user.username }}
+                    </div>
+                    {{? typeid != 999999999 }}
+                    {{? it.data[i].uid}}
+                    {{? it.data[i].guanzhu}}
+                    <span class="fx-weitoutiao-guanzhu fx-weitoutiao-guanzhuHivdeo" data-id="2"
+                        onclick="guanzhu(this,{{= it.data[i].uid}});">已关注</span>
+                    {{??}}
+                    <span class="fx-weitoutiao-guanzhu" data-id="1"
+                        onclick="guanzhu(this,{{= it.data[i].uid}});">关注</span>
+                    {{?}}
+                    {{?}}
+                    {{?}}
+                </div>
+                <div class="aui-card-list-user-info">
+                    {{= it.data[i].create_time }}
+                </div>
+            </div>
+            <ul class="aui-list aui-media-list fx-weitoutiao-images">
+                <li class="aui-list-item">
+                    {{? it.data[i].mychannel == 3}}
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title fx-weitoutiao-content"
+                            onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}'},'videoview_win')">
+                            {{= it.data[i].title }}
+                        </div>
+                        <div class="aui-row aui-row-padded">
+                            <div class="aui-col-xs-12"
+                                onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}'},'videoview_win')">
+                                <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}"
+                                    src="../image/error-img.png" onerror="this.src='../image/error-img.png'"
+                                    style="height:230px;">
+                                <i class="fx-video-bofang"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {{??}}
+                    <div class="aui-list-item-inners">
+                        {{? it.data[i].description }}
+                        <div class="aui-list-item-title fx-weitoutiao-content"
+                            onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+                            {{= it.data[i].description }}
+                        </div>
+                        {{??}}
+                        <div class="aui-list-item-title fx-weitoutiao-content"
+                            onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+                            {{= returnWtt(it.data[i].content) }}
+                        </div>
+                        {{?}}
+                        {{? it.data[i].imagesPro}}
+                        <div class="aui-row">
+                            {{ for(var j=0,imgLen=it.data[i].imagesPro.length; j<imgLen; j++){ }}
+                            <div class="{{? imgLen>=3}}aui-col-xs-4{{??}}aui-col-xs-6{{?}}"
+                                onclick="img({{=it.data[i].id}} , {{=j}})">
+                                <img style="height:130px;border:1px solid #fff;" id="ffxiangImgCache"
+                                    ffxiang-src="{{=it.data[i].imagesPro[j]}}" src="../image/error-img.png"
+                                    onerror="this.src='../image/loadingImage.png'">
+                            </div>
+                            {{ } }}
+                        </div>
+                        {{?}}
+                    </div>
+                    {{?}}
+                </li>
+            </ul>
+            <div class="aui-card-list-footer aui-margin-t-10">
+                <div class="{{? it.data[i].zanUser}} pingZanColor{{?}}" {{? it.data[i].zanUser}} data-id='1' {{?}}
+                    onclick="pingZan_xia(this,{{= it.data[i].id}} ,{{= it.data[i].zan}})">
+                    <i class="aui-iconfont aui-icon-laud aui-margin-r-5"></i> {{= it.data[i].zan }}
+                </div>
+                <div onclick="_url({aid:{{= it.data[i].id }},pingNum:{{= it.data[i].pingNum }}},'view_ping_win')">
+                    <i class="aui-iconfont aui-icon-comment aui-margin-r-5"></i> {{= it.data[i].pingNum }}
+                </div>
+                {{? it.data[i].mychannel == 3}}
+                <div onclick="_url({id:{{= it.data[i].id }},qian:0,fan:1},'videoview_win')">
+                    <i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it.data[i].click }}
+                </div>
+                {{??}}
+                <div onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+                    <i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it.data[i].click }}
+                </div>
+                {{?}}
+            </div>
+        </div>
+        {{??}}
+        {{? it.data[i].mychannel == 1}}
+        {{? it.data[i].imagesArticleList.length >= 3}}
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+            <div class="aui-list-item-inner fx-item-inner">
+                <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+                <div class="aui-row aui-row-padded aui-margin-t-5 fx-article-images">
+                    {{ for(var is=0; is < 3; is++) { }}
+                    <div class="aui-col-xs-4"><img id="ffxiangImgCache"
+                            ffxiang-src="{{= it.data[i].imagesArticleList[is]}}" src="../image/error-img.png"
+                            onerror="this.src='../image/error-img.png'"></div>
+                    {{}}}
+                </div>
+            </div>
+            <div class="aui-info  aui-padded-t-5 aui-padded-r-15  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    <span class="aui-margin-r-10 zhiding"
+                        style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">置顶</span>
+                    {{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+                    <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?? it.data[i].image}}
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-text">
+                        <div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it.data[i].title }}</div>
+                    </div>
+                    <div class="aui-info aui-padded-t-5 aui-padded-b-0" style="padding-top: 5px">
+                        <div class="aui-info-item aui-font-size-12 fx-index-infp-span">
+                            <span class="aui-margin-r-10 zhiding"
+                                style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">置顶</span>
+                            <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                            <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="aui-list-item-media">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" src="../image/error-img.png"
+                        onerror="this.src='../image/error-img.png">
+                </div>
+            </div>
+        </li>
+        {{??}}
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it.data[i].title }}</div>
+                    <div class="aui-list-item-text">
+                        <p class="aui-ellipsis-2 aui-font-size-14">{{= it.data[i].description }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="aui-info  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    <span class="aui-margin-r-10 zhiding"
+                        style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">置顶</span>
+                    {{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+                    <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?}}
+        {{?? it.data[i].mychannel == 2}}
+        <!--  图片集-->
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'photo_browser')">
+            <div class="aui-list-item-inner fx-item-inner">
+                <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+                <div class="aui-row aui-row-padded aui-margin-t-5 fx-article-images">
+                    {{= it.data[i].images }}
+                </div>
+            </div>
+            <div class="aui-info  aui-padded-t-5 aui-padded-r-15  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    <span class="aui-margin-r-10 zhiding"
+                        style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">置顶</span>
+                    {{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+                    <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?? it.data[i].mychannel == 3}}
+        <!--视频-->
+        <li class="aui-list-item"
+            onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}',qian:0,fan:0},'videoview_win')">
+            <div class="aui-list-item-inner fx-item-inner">
+                <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+            </div>
+            <div class="aui-card-list-content fx-video-content aui-padded-b-10">
+                <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" src="../image/load-video.png"
+                    onerror="this.src='../image/load-video.png'" class="fx-video-img" style="height:230px;">
+                <i class="fx-video-bofang"></i>
+                <em class="fx-video-em aui-margin-b-5">{{? it.data[i].videodate}}{{= it.data[i].videodate }}{{?}}</em>
+            </div>
+            <div class="aui-info  aui-padded-t-0 aui-padded-r-15  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    <span class="aui-margin-r-10 zhiding"
+                        style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">置顶</span>
+                    {{? it.data[i].source}}{{? it.ios != 1}}<span
+                        class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}{{?}}
+                    <span {{? it.data[i].source}}class="aui-margin-l-10" {{?}}>{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?? it.data[i].mychannel == 99}}
+        <!--广告-->
+        {{? it.data[i].url && it.data[i].type != 6}}
+        <li class="aui-list-item selfAds"
+            onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}'},'curl')">
+            {{??}}
+        <li class="aui-list-item selfAds">
+            {{?}}
+
+            {{? it.data[i].type == 0}}
+            <!-- 小图 -->
+            <div class="xiaotu ads">
+                <div class="left"><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png"
+                        onerror="this.src='../image/error-img.png'" alt=""></div>
+                <div class="right">
+                    <div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+                    <div class="bottom">
+                        <span>广告</span>
+                        {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                        <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                        {{ } }}
+                    </div>
+                </div>
+            </div>
+            {{?? it.data[i].type == 1}}
+            <!-- 组图 -->
+            <div class="zutu ads">
+                <div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+                <ul class="middle">
+                    {{ for(var j=0; j<3; j++){ }}
+                    <li><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].imagesurl[j] }}" src="../image/logo.png"
+                            onerror="this.src='../image/error-img.png'" alt=""></li>
+                    {{ } }}
+                </ul>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?? it.data[i].type == 2}}
+            <!-- 大图 -->
+            <div class="datu ads">
+                <div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+                <ul class="middle">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png"
+                        onerror="this.src='../image/error-img.png'" alt="">
+                </ul>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?? it.data[i].type == 6}}
+            <!-- 视频广告 -->
+            <div class="videoAds ads"
+                onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}', videoUrl: '{{= it.data[i].video }}'},'adsvideo_win')">
+                <div class="aui-list-item-inner fx-item-inner">
+                    <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title}}</div>
+                </div>
+                <div class="aui-card-list-content fx-video-content aui-padded-b-10">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].videoimg }}" src="../image/load-video.png"
+                        onerror="this.src='../image/error-img.png'" class="fx-video-img" style="height:230px;">
+                    <i class="fx-video-bofang"></i>
+                    <!-- <em class="fx-video-em aui-margin-b-5">02:15</em> -->
+                </div>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?? it.data[i].type == 7}}
+            <!-- 文字链接 -->
+            <div class="wordAds ads">
+                <div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?}}
+
+        </li>
+        <!-- 广告结束 -->
+        {{?}}
+
+        {{?}}
+        {{ } }}
+    </script>
+
+    <!-- 新闻列表 -->
+    <script id="fx-list" type="text/x-dot-template">
+        <!-- 新闻列表 -->
+        {{ for(var i=0,len=it.data.length; i < len; i++) { }}
+        {{? it.data[i].weitoutiao==2 || it.data[i].weitoutiao==1}}
+        <div class="aui-card-list aui-border-b" id="id{{= it.data[i].id }}" data-images="{{= it.data[i].imagesPro }}">
+            <div class="aui-card-list-header aui-card-list-user">
+                <div class="aui-card-list-user-avatar">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].user.img }}"
+                        onerror="this.src='../image/touxiang.png'"
+                        onclick="_url({uid:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+                </div>
+                <div class="aui-card-list-user-name">
+                    <div onclick="_url({uid:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+                        {{= it.data[i].user.username }}
+                    </div>
+                    {{? typeid != 999999999 }}
+                    {{? it.data[i].uid}}
+                    {{? it.data[i].guanzhu}}
+                    <span class="fx-weitoutiao-guanzhu fx-weitoutiao-guanzhuHivdeo" data-id="2"
+                        onclick="guanzhu(this,{{= it.data[i].uid}});">已关注</span>
+                    {{??}}
+                    <span class="fx-weitoutiao-guanzhu" data-id="1"
+                        onclick="guanzhu(this,{{= it.data[i].uid}});">关注</span>
+                    {{?}}
+                    {{?}}
+                    {{?}}
+                </div>
+                <div class="aui-card-list-user-info">
+                    {{= it.data[i].create_time }}
+                </div>
+            </div>
+            <ul class="aui-list aui-media-list fx-weitoutiao-images">
+                <li class="aui-list-item">
+                    {{? it.data[i].mychannel == 3}}
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title fx-weitoutiao-content"
+                            onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}'},'videoview_win')">
+                            {{= it.data[i].title }}
+                        </div>
+                        <div class="aui-row aui-row-padded">
+                            <div class="aui-col-xs-12"
+                                onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}'},'videoview_win')">
+                                <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}"
+                                    src="../image/error-img.png" onerror="this.src='../image/loadingImage.png'"
+                                    style="height:230px;">
+                                <i class="fx-video-bofang"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {{??}}
+                    <div class="aui-list-item-inners">
+                        {{? it.data[i].description }}
+                        <div class="aui-list-item-title fx-weitoutiao-content"
+                            onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+                            {{= it.data[i].description }}
+                        </div>
+                        {{??}}
+                        <div class="aui-list-item-title fx-weitoutiao-content"
+                            onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+                            {{= returnWtt(it.data[i].content) }}
+                        </div>
+                        {{?}}
+                        {{? it.data[i].imagesPro}}
+                        <div class="aui-row">
+                            {{ for(var j=0,imgLen=it.data[i].imagesPro.length; j<imgLen; j++){ }}
+                            <div class="{{? imgLen>=3}}aui-col-xs-4{{??}}aui-col-xs-6{{?}}"
+                                onclick="img({{=it.data[i].id}} , {{=j}})">
+                                <img style="height:130px;border:1px solid #fff;" id="ffxiangImgCache"
+                                    src="../image/error-img.png" ffxiang-src="{{=it.data[i].imagesPro[j]}}"
+                                    onerror="this.src='../image/loadingImage.png'">
+                            </div>
+                            {{ } }}
+                        </div>
+                        {{?}}
+                    </div>
+                    {{?}}
+                </li>
+            </ul>
+            <div class="aui-card-list-footer aui-margin-t-10">
+                <div class="{{? it.data[i].zanUser}} pingZanColor{{?}}" {{? it.data[i].zanUser}} data-id='1' {{?}}
+                    onclick="pingZan_xia(this,{{= it.data[i].id}} ,{{= it.data[i].zan}})">
+                    <i class="aui-iconfont aui-icon-laud aui-margin-r-5"></i> {{= it.data[i].zan }}
+                </div>
+                <div onclick="_url({aid:{{= it.data[i].id }},pingNum:{{= it.data[i].pingNum }}},'view_ping_win')">
+                    <i class="aui-iconfont aui-icon-comment aui-margin-r-5"></i> {{= it.data[i].pingNum }}
+                </div>
+                {{? it.data[i].mychannel == 3}}
+                <div onclick="_url({id:{{= it.data[i].id }},qian:0,fan:1},'videoview_win')">
+                    <i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it.data[i].click }}
+                </div>
+                {{??}}
+                <div onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+                    <i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it.data[i].click }}
+                </div>
+                {{?}}
+            </div>
+        </div>
+        {{??}}
+        {{? it.data[i].mychannel == 1}}
+        {{? it.data[i].imagesArticleList.length >= 3}}
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+            <div class="aui-list-item-inner fx-item-inner">
+                <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+                <div class="aui-row aui-row-padded aui-margin-t-5 fx-article-images">
+                    {{ for(var is=0; is < 3; is++) { }}
+                    <div class="aui-col-xs-4"><img id="ffxiangImgCache" src="../image/error-img.png"
+                            ffxiang-src="{{= it.data[i].imagesArticleList[is]}}"
+                            onerror="this.src='../image/loadingImage.png'"></div>
+                    {{}}}
+                </div>
+            </div>
+            <div class="aui-info  aui-padded-t-5 aui-padded-r-15  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    {{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+                    <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?? it.data[i].image}}
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-text">
+                        <div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it.data[i].title }}</div>
+                    </div>
+                    <div class="aui-info aui-padded-t-5 aui-padded-b-0" style="padding-top: 5px">
+                        <div class="aui-info-item aui-font-size-12 fx-index-infp-span">
+                            <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                            <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="aui-list-item-media">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" src="../image/error-img.png"
+                        onerror="this.src='../image/loadingImage.png'">
+                </div>
+            </div>
+        </li>
+        {{??}}
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it.data[i].title }}</div>
+                    <div class="aui-list-item-text">
+                        <p class="aui-ellipsis-2 aui-font-size-14">{{= it.data[i].description }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="aui-info  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    {{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+                    <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?}}
+        {{?? it.data[i].mychannel == 2}}
+        <!--  图片集-->
+        <li class="aui-list-item" onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'photo_browser')">
+            <div class="aui-list-item-inner fx-item-inner">
+                <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+                <div class="aui-row aui-row-padded aui-margin-t-5 fx-article-images">
+                    {{= it.data[i].images }}
+                </div>
+            </div>
+            <div class="aui-info  aui-padded-t-5 aui-padded-r-15  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    {{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+                    <span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?? it.data[i].mychannel == 3}}
+        <!--视频-->
+        <li class="aui-list-item"
+            onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}',qian:0,fan:0},'videoview_win')">
+            <div class="aui-list-item-inner fx-item-inner">
+                <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+            </div>
+            <div class="aui-card-list-content fx-video-content aui-padded-b-10">
+                <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" src="../image/load-video.png"
+                    onerror="this.src='../image/load-video.png'" class="fx-video-img" style="height:230px;">
+                <i class="fx-video-bofang"></i>
+                <em class="fx-video-em aui-margin-b-5">{{? it.data[i].videodate}}{{= it.data[i].videodate }}{{?}}</em>
+            </div>
+            <div class="aui-info  aui-padded-t-0 aui-padded-r-15  fx-item-inner">
+                <div class="aui-info-item aui-font-size-12">
+                    {{? it.data[i].source}}{{? it.ios != 1}}<span
+                        class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}{{?}}
+                    <span {{? it.data[i].source}}class="aui-margin-l-10" {{?}}>{{= it.data[i].pingNum}}评价</span>
+                    <span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+                </div>
+            </div>
+        </li>
+        {{?? it.data[i].mychannel == 99}}
+        <!--广告-->
+        {{? it.data[i].url && it.data[i].type != 6}}
+        <li class="aui-list-item selfAds"
+            onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}'},'curl')">
+            {{??}}
+        <li class="aui-list-item selfAds">
+            {{?}}
+
+            {{? it.data[i].type == 0}}
+            <!-- 小图 -->
+            <div class="xiaotu ads">
+                <div class="left"><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png"
+                        onerror="this.src='../image/error-img.png'" alt=""></div>
+                <div class="right">
+                    <div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+                    <div class="bottom">
+                        <span>广告</span>
+                        {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                        <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                        {{ } }}
+                    </div>
+                </div>
+            </div>
+            {{?? it.data[i].type == 1}}
+            <!-- 组图 -->
+            <div class="zutu ads">
+                <div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+                <ul class="middle">
+                    {{ for(var j=0; j<3; j++){ }}
+                    <li><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].imagesurl[j] }}" src="../image/logo.png"
+                            onerror="this.src='../image/error-img.png'" alt=""></li>
+                    {{ } }}
+                </ul>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?? it.data[i].type == 2}}
+            <!-- 大图 -->
+            <div class="datu ads">
+                <div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+                <ul class="middle">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png"
+                        onerror="this.src='../image/error-img.png'" alt="">
+                </ul>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?? it.data[i].type == 6}}
+            <!-- 视频广告 -->
+            <div class="videoAds ads"
+                onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}', videoUrl: '{{= it.data[i].video }}'},'adsvideo_win')">
+                <div class="aui-list-item-inner fx-item-inner">
+                    <div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title}}</div>
+                </div>
+                <div class="aui-card-list-content fx-video-content aui-padded-b-10">
+                    <img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].videoimg }}" src="../image/load-video.png"
+                        onerror="this.src='../image/error-img.png'" class="fx-video-img" style="height:230px;">
+                    <i class="fx-video-bofang"></i>
+                    <!-- <em class="fx-video-em aui-margin-b-5">02:15</em> -->
+                </div>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?? it.data[i].type == 7}}
+            <!-- 文字链接 -->
+            <div class="wordAds ads">
+                <div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+                <div class="bottom">
+                    <span>广告</span>
+                    {{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+                    <span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+                    {{ } }}
+                </div>
+            </div>
+            {{?}}
+
+        </li>
+        <!-- 广告结束 -->
+        {{?}}
+        {{?}}
+        {{ } }}
+    </script>
+
+    <div class="aui-content" style="margin-bottom: 45px; background: #fff;">
+        <ul class="aui-list aui-media-list fx-article-list fx-weitoutiao-list" id="fx-topview" style="border-top: 0px">
+        </ul>
+        <ul class="aui-list aui-media-list fx-article-list fx-weitoutiao-list" id="fx-view" style="border-top: 0px">
+        </ul>
+    </div>
+    <div class="loading-bg"></div>
+</body>
+<script type="text/javascript" src="../script/zepto.js"></script>
+<script type="text/javascript" src="../script/dot.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript" src="../script/gz.js"></script>
+<script type="text/javascript">
+    var typeid = 0,
+        timestamp, city = '';
+    apiready = function () {
+        timestamp = Date.parse(new Date());
+        timestamp = timestamp / 1000;
+        // 分类ID
+        if (api.pageParam['id']) {
+            typeid = api.pageParam['id'];
+        }
+        if (typeid == 888888888) {
+            city = $api.getStorage('city');
+            if (city) { //如果本地已经选择过城市
+                citybtn()
+            } else {
+                citybtn(1)
+            }
+        }
+        // 下拉刷新
+        _shangla(function (ret, err) {
+            _UILoading();
+            if ($api.getStorage('token') || typeid != 999999999) { //已经登录或者不是查看关注页
+                if (typeid == 888888888) {
+                    console.log(city)
+                    if (!city) {
+                        _UILoadingClose()
+                        citybtn(1); //显示选择城市
+                        return;
+                    }
+                    citybtn()
+                }
+                _lists('api/article/lists', 1, 1, {
+                    typeid: typeid,
+                    date: timestamp,
+                    city: city
+                });
+                zhiding(typeid);
+                _UILoadingClose();
+            } else { //否则要求请先登录
+                _UILoadingClose()
+                $('#fx-view').html('');
+                api.refreshHeaderLoadDone();
+                var h = api.winHeight / 2 - 100;
+                $('body').append(
+                    '<a tapmode onclick="_url({url:\'login\',title:\'登录\',qian:1,fan:0,exe:\'1\'})" class="aui-btn aui-btn-danger qingdengli" style="position: fixed;margin:auto;left:0; right:0; top:0; bottom:0;width: 120px; height:38px; line-height:38px;text-align: center;margin-top:' +
+                    h + 'px">请先登录</a>');
+                api.parseTapmode();
+            }
+
+        })
+
+
+        // 监听滚动
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: threshold //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function (ret, err) {
+            if (heigutgao == 1) { // heigutgao=1开启执行 0停止执行   防止连续滚动，等加载数据之后在进行滚动。
+                pagenum += 1
+                _lists('api/article/lists', pagenum, '', {
+                    typeid: typeid,
+                    date: timestamp,
+                    city: city
+                });
+                // 当数据写入成功  把 heigutgao 设置1
+            }
+        });
+        // 监听夜间
+        api.addEventListener({
+            name: 'yejian'
+        }, function (ret, err) {
+            if (ret) {
+                _yejians();
+            }
+        });
+        api.parseTapmode();
+        api.addEventListener({
+            name: 'ext'
+        }, function (ret, err) {
+            if (ret) {
+                if ($api.getStorage('token')) {
+                    $('.qingdengli').remove();
+                }
+                api.refreshHeaderLoading();
+            }
+        });
+
+        //打开登录红包窗口
+        api.execScript({
+            name: 'ffxiang_win',
+            script: '_daily({name:"money_login"})'
+        })
+        //打开登录红包窗口
+        api.execScript({
+            name: 'ffxiang_win',
+            script: 'updateVision()'
+        })
+    };
+
+    //置顶
+    function zhiding(typeid) {
+        _ajax('api/article/zhiding/typeid/' + typeid, function (ret, err) {
+            console.log(JSON.stringify(ret));
+            var evalData = doT.template($api.html($api.byId('fx-top')));
+            $api.html($api.byId('fx-topview'), evalData(ret));
+            _imageCache();
+            api.parseTapmode();
+        })
+    }
+
+
+    // 打开图片
+    function img(id, index) {
+        _url({
+            id: id,
+            qian: 1,
+            fan: 1
+        }, 'view_win')
+    }
+    // 更新选择城市新闻
+    function cityNews() {
+        city = $api.getStorage('city');
+        api.refreshHeaderLoading();
+    }
+    //　显示城市按钮选择	type 1显示选择城市按钮  0正常显示
+    function citybtn(type) {
+        if (type == 1) {
+            $('#sx-shoudongdingwei').show();
+            $('.sx-bendichengshi').hide();
+            _loadingClose()
+        } else {
+            $('#sx-shoudongdingwei').hide();
+            $('.sx-bendichengshi').show();
+        }
+    }
+</script>
+
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>设置收款码</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        ul,
+        li {
+            list-style: none;
+        }
+        ul {
+            background: #fff;
+        }
+        li.fs {
+            border-bottom: 1px solid #ddd;
+        }
+        li.fs-name {
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            overflow: hidden;
+            background: #fff;
+            /*padding-left: 10px;*/ 
+        }
+        li.fs-name span {
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+        }
+        input {
+            width: 60%;
+            padding: 0 5%;
+            height: 40px;
+            line-height: 40px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+        input.width{
+            width: 100%;
+        }
+        html {
+            height: 100%;
+            position: relative;
+        }
+        button {
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            border: none;
+            /* background: #f7c032; */
+            background: #f65c5a;
+            color: #fff;
+            /* margin: 0 25%; */
+            position: absolute;
+            bottom: 0px;
+            outline: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+        li.fs-name>input::-webkit-input-placeholder {
+            text-align: center;
+        }
+        .fs input{
+            text-align: center;
+        }
+        .fs input::placeholder{
+            color: #757575;
+        }
+        #ewm-img img {
+            width: 40%;
+            margin: 5px 30%;
+        }
+        #ewm-img input{
+            background: #fff;
+            color: #757575;
+            -webkit-appearance:none;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li class="fs-name fs">
+            <span class="hidden">微信名称：</span>
+            <input type="text" placeholder="请填写微信名称">
+        </li>
+        <li class="fs-num fs" tapmode onclick="sc_ewm()" id="ewm-img">
+            <input type="button" value="上传微信收款码">
+            <img src="" alt="">
+            <!-- <input type="text" placeholder="we账号"> -->
+        </li>
+        <li class="fs-btn">
+            <button onclick="tjWx();">绑定</button>
+        </li>
+    </ul>
+</body>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffxiang.js"></script>
+<script>
+    var _user = $api.getStorage('user');
+    var ewm_img;
+    var bHeight, eHeight;
+    var sys;
+
+    console.log(JSON.stringify(_user));
+    apiready = function () {
+        if (!_user.wxurl || !_user.wxname) {
+            // $('button').text('绑定');
+            $('#ewm-img img').addClass('hidden');
+            $('.fs input').addClass('width');
+        } else {
+            $('.fs-name').find('input').val(_user.wxname);
+            $('.fs-name span').removeClass('hidden');
+            $('#ewm-img input').addClass('hidden');
+            $('#ewm-img img').removeClass('hidden');
+            $('#ewm-img img').attr('src', img_url + '/Public/' + _user.wxurl);
+            // $('button').text('修改');
+        }
+        
+        sys = api.systemType;
+        console.log('131: '+window.innerHeight);
+        bHeight = window.innerHeight;
+
+    }
+
+    //ios底部按钮无法自动弹起，故监听输入框的焦点事件
+    $('input').focus(function(){
+        if(sys == 'ios'){
+            setTimeout(function(){
+                eHeight = window.innerHeight;
+                console.log('122: '+window.innerHeight);
+                var h = bHeight - eHeight;
+                $('button').css('bottom', h);
+            }, 500)
+        }
+    })
+    $('input').blur(function(){
+        if(sys == 'ios'){
+            $('button').css('bottom', 0);
+        }
+    })
+
+    function tjWx() {
+        var val_name = $('.fs-name').find('input').val();
+        if (!val_name) {
+            api.toast({
+                msg: '微信名称未填写，提交失败'
+            })
+
+        }else if(!ewm_img){
+            api.toast({
+                msg: '提交失败，请重新上传收款码'
+            })
+        } else {
+            imgAjax(val_name, ewm_img);
+        }
+
+        // setTimeout(function () {
+        //     api.closeToWin({
+        //         name: 'member_win'
+        //     });
+        // }, 1000)
+    }
+
+    // 上传图片
+    function sc_ewm() {
+        $('input').blur(); //让输入框失去焦点，否则ios虚拟键盘无法隐藏
+        api.actionSheet({
+            title: '上传微信收款码',
+            cancelTitle: '取消',
+            buttons: ['拍照', '相册']
+        }, function (ret, err) {
+            console.log(JSON.stringify(ret))
+            var index = ret.buttonIndex;
+            if (index != 3) {
+                var sourceType = 'album';
+                if (index == 1) {
+                    sourceType = 'camera';
+                }
+                api.getPicture({
+                    sourceType: sourceType,
+                    encodingType: 'jpg',
+                    mediaValue: 'pic',
+                    destinationType: 'url',
+                    allowEdit: true,
+                    quality: 50,
+                    targetWidth: 800,
+                    targetHeight: 800,
+                }, function (ret, err) {
+                    console.log(ret)
+                    if (ret) {
+                        console.log(ret.data)
+                        if (ret.data) {
+                            // alert($api.jsonToStr(ret.data))
+                            ewm_img = ret.data;
+                            $('#ewm-img input').addClass('hidden');
+                            $('#ewm-img img').removeClass('hidden');
+                            $('#ewm-img img').attr({
+                                'src': ret.data
+                            });
+
+                        }
+                    }
+                });
+            }
+        });
+    }
+    // 封装上次图片方法
+    function imgAjax(val_name, ewm_img) {
+        // if (!image) {
+        //     _msg('图片地址出错')
+        //     return;
+        // }
+        _loading()
+        api.ajax({
+            url: fx_url + 'api/User/bangdingwx?',
+            method: 'post',
+            data: {
+                values: {
+                    token: _token,
+                    uid: _user.id,
+                    name: val_name
+                },
+                files: {
+                    image: ewm_img
+                }
+            },
+        }, function (ret, err) {
+            _loadingClose();
+            if (ret) {
+                if (ret.Code == 200) {
+                    _msg('提交成功');
+                    timerWin('', 'member_win')
+                } else {
+                    _msg('提交失败');
+                }
+            } else {
+                api.alert({
+                    msg: JSON.stringify(err)
+                });
+                console.log(JSON.stringify(err))
+            }
+        });
+    }
+</script>
+
+</html>

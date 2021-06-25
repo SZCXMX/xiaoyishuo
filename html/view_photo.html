@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>放飞科技</title>
+	<link rel="stylesheet" href="../css/api.css">
+</head>
+
+<body>
+
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/jquery.js"></script>
+<script src="../script/ffxiang.js"></script>
+<script src="../script/group.js"></script>
+<script>
+	apiready = function () {
+		var frameArr = [];
+		var imgArr = api.pageParam['images'];
+		var pageParam = [];
+		var length = imgArr.length;
+		for (var i = 0; i < length; i++) {
+			frameArr.push('photo_frm');
+			var obj = {
+				data: imgArr[i],
+				index: i + 1,
+				all: length
+			}
+			pageParam.push(obj);
+		}
+		__groupInit('photo', frameArr, 0, 0, api.pageParam['index'], '', pageParam, {
+			pre: 1
+		});
+	}
+</script>
+
+</html>

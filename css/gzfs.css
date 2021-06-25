@@ -1,0 +1,44 @@
+.aui-list {
+    border: 0px;
+    background: none;
+}
+
+.aui-list .aui-list-item {
+    margin: 0 0.7rem;
+    padding: 0.4rem 0px;
+}
+
+
+.aui-list .aui-list-item-inner {
+    padding-right: 0px;
+    margin-right: 5rem;
+}
+
+.aui-ellipsis-2 {
+    -webkit-line-clamp: 1
+}
+
+.guanzhu {
+    position: absolute;
+    right: 0px;
+    top: 1.3rem
+}
+
+.guanzhu i {
+    font-size: 0.6rem !important;
+    font-weight: bold;
+}
+
+.yiguanzhu {
+    background: #d2d2d2 !important;
+}
+
+.aui-list .aui-list-item-media{
+    width: 3rem;
+}
+.aui-list .aui-list-item-media  img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: inline-block;
+}

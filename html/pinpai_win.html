@@ -1,0 +1,399 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+    <link rel="stylesheet" type="text/css" href="../css/footer.css" />
+    <style>
+        html {
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 20px;
+        }
+
+        html,
+        body {
+            -webkit-touch-callout: none;
+            -webkit-text-size-adjust: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-user-select: none;
+            width: 100%;
+            margin: 0;
+            border: 0;
+            padding: 0;
+            font-style: normal;
+        }
+
+        body {
+            line-height: 1.5;
+            font-size: 0.8rem;
+            color: #212121;
+            background: #fff !important;
+            outline: 0;
+        }
+
+        #img-id {
+            /* padding-top: 50%; */
+            margin: 0 auto;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+        }
+
+        #yuantu {
+            opacity: 0.5;
+            position: fixed;
+            top: 25px;
+            right: 0px;
+            height: 30px;
+            line-height: 30px;
+            width: 100px;
+            background: #000000;
+            border-radius: 15px;
+            color: #ffffff;
+            font-size: 14px;
+            text-align: center;
+            z-index: 999999;
+        }
+
+        /* #yuantu {
+			opacity: 0.5;
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			height: 40px;
+			line-height: 40px;
+			width: 40px;
+			background: #000000;
+			border-radius: 50%;
+			color: #ffffff;
+			font-size: 14px;
+			z-index: 1000;
+			text-align: center;
+			z-index: 999999;
+		} */
+
+        /* #tiaoguo {
+			opacity: 0.5;
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			height: 40px;
+			line-height: 40px;
+			width: 40px;
+			background: #000000;
+			border-radius: 50%;
+			color: #ffffff;
+			font-size: 14px;
+			z-index: 1000;
+			text-align: center;
+			z-index: 999999;
+		} */
+
+        #img-id img {
+            margin: 0 auto;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+        }
+
+
+        #fx-header {
+            margin-bottom: 0px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #E2E2E2;
+        }
+
+        #fx-header .aui-icon-menu {
+            font-weight: bold;
+            color: #fff !important;
+            font-size: 16px;
+        }
+
+        .juli {
+            color: #fff;
+            font-size: 10px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="fx-header">
+        <div class="fx-header-logo">
+            <div class="aui-title" style="right: 0;left: 0;">
+                <div class="aui-searchbar" id="search">
+                    <div class="aui-searchbar-input aui-border-radius" style="border: 1px solid #eee;">
+                        <i class="aui-iconfont aui-icon-search"></i>
+                        <input type="search" placeholder="搜索关键词" id="search-input" readonly tapmode
+                            onclick="_url({qian:1, fan:0}, 'search_win')">
+                    </div>
+                    <!-- <i class="aui-iconfont aui-icon-menu" onclick="showDetail('add_modal');"></i> -->
+                    <span class="juli" onclick="changeJuli()">5公里以内</span>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    <footer class="aui-bar aui-bar-tab" id="fx-footer">
+        <div class="aui-bar-tab-item " tapmode onclick="_index_win('ffxiang_win')">
+            <img class="aui-img-object" src="../image/w1.png" />
+            <div class="aui-bar-tab-label">
+                首页
+            </div>
+        </div>
+        <div class="aui-bar-tab-item ios aui-active">
+            <img class="aui-img-object" src="../image/w6s.png" />
+            <div class="aui-bar-tab-label">
+                品牌
+            </div>
+        </div>
+       
+        <div class="aui-bar-tab-item" tapmode onclick="_index_win('weitoutiao_win')">
+            <img class="aui-img-object" src="../image/w3.png" />
+            <div class="aui-bar-tab-label">
+                微头条
+            </div>
+        </div>
+        <div class="aui-bar-tab-item ios" tapmode onclick="_index_win('video_win')">
+            <img class="aui-img-object" src="../image/w2.png" />
+            <div class="aui-bar-tab-label">
+                视频
+            </div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="_index_win('member_win')">
+            <img class="aui-img-object" src="../image/w5.png" />
+            <div class="aui-bar-tab-label">
+                我的
+            </div>
+        </div>
+    </footer>
+</body>
+<script src="../script/jquery.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript" src="../script/update.js"></script>
+<script type="text/javascript">
+    var cTime;
+
+    var body_h;
+    var headerPos;
+    var typeid;
+    var NVNavigationBar;
+    // 分类栏目模块
+    var heiff = 35;
+    var activity
+    var likaitime = 60000; //1000=1秒
+    var time
+    //输入35会显示右侧点击
+    apiready = function () {
+        api.addEventListener({
+            name: 'keyback'
+        }, function () {
+            keyback();
+        })
+
+        NVNavigationBar = api.require('NVNavigationBar');
+
+        view();
+
+        // 回到屏幕
+        api.addEventListener({
+            name: 'viewappear'
+        }, function (ret, err) {
+            api.setFullScreen({
+                fullScreen: false
+            });
+            // 2018年3月10日 22:09:31 增加
+            // 每日登录奖励
+            // _daily({
+            // 	name: 'money_login'
+            // })
+
+            // 每日阅读5篇奖励
+            //_daily({name:'money_news'})
+        });
+        _heibai();
+
+    }
+
+    function view() {
+        header = $api.byId('fx-header');
+        $api.fixStatusBar(header);
+        headerPos = $api.offset(header);
+        body_h = $api.offset($api.dom('body')).h;
+        $api.fixTabBar($api.byId('fx-footer'))
+        footerh = $api.offset($api.byId('fx-footer')).h;
+
+        var ret = $api.getStorage('typeid');
+
+        if (ret) {
+            api.closeFrame({
+                name: 'error'
+            });
+            // 遍历 修改 栏目宽度
+            for (var i = 0, len = ret.data.length; i < len; i++) {
+                var w = typeidstrlen(ret.data[i].title);
+                ret.data[i].size.w = w;
+            }
+
+            console.log(JSON.stringify(ret))
+            typeid = ret.typeid // 获取分类json
+            // 读取栏目分类模块
+            NVNavigationBar.open({
+                rect: {
+                    x: 0,
+                    y: headerPos.h - heiff,
+                    w: api.frameWidth,
+                    h: heiff
+                },
+                styles: {
+                    orientation: 'horizontal',
+                    bg: '#fff',
+                    bgAlpha: 1,
+                    font: {
+                        size: 15,
+                        sizeSelected: 18,
+                        color: '#555555',
+                        colorSelected: '#e01200',
+                        alpha: 1
+                    },
+                    itemSize: {
+                        w: 50,
+                        h: heiff
+                    }
+                },
+                items: ret.data,
+                selectedIndex: 1,
+                fixedOn: api.frameName,
+                id: 'first'
+            }, function (rets, errs) {
+                console.log(JSON.stringify(rets));
+                if (rets.eventType == 'click') {
+                    // if(ret.data[rets.index].url){
+                    // 	_url({url:ret.data[rets.index].url, title:ret.data[rets.index].title}, 'curl')
+                    // 	return;
+                    // }else{
+                    randomSwitchBtn(rets.index);
+                    // }
+                }
+            });
+            // 读取frm文件
+            var frames = [];
+            for (var i = 0; i < typeid.length; i++) {
+                var frame = {};
+                frame.name = 'frame_' + i;
+                if (ret.data[i].url) {
+                    frame.url = ret.data[i].url;
+                } else {
+                    frame.url = html_win + 'ffxiang_frm.html';
+                }
+                frame.pageParam = {
+                    id: typeid[i],
+                };
+                frames.push(frame);
+            }
+            openFrameGroup(frames);
+            // 上面全部加载完毕解析 属性 不然点击按钮会有延时300
+            api.parseTapmode();
+        } else {
+            api.openFrame({
+                name: 'error',
+                url: html_win + 'error.html',
+                bounces: false,
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: 'auto',
+                    h: 'auto'
+                },
+                useWKWebView: true,
+                historyGestureEnabled: true,
+                vScrollBarEnabled: false,
+                hScrollBarEnabled: false,
+            })
+
+            _msg('出错啦，等会再试吧');
+            console.log(JSON.stringify(errs));
+        }
+
+
+    }
+
+    function openFrameGroup(frames) {
+        api.openFrameGroup({
+            name: 'pinpai_frm',
+            scrollEnabled: true,
+            rect: {
+                x: 0,
+                y: headerPos.h + heiff - 35,
+                w: 'auto',
+                // h: body_h - headerPos.h - heiff + 30 - footerh,
+                h: 'auto',
+                marginBottom: footerh,
+            },
+            index: 1,
+            frames: frames,
+            preload: 0, // 预加载的 frame 个数，默认加载当前页后面一个
+        }, function (ret, err) {
+            // 当滑动时，设置栏目选中颜色
+            NVNavigationBar.setSelected({
+                id: 'first',
+                index: ret.index,
+                selected: true
+            });
+        });
+    }
+
+    // 点击分类栏目时，设置 frame 组当前可见 frame
+    function randomSwitchBtn(index) {
+        var ret = $api.getStorage('typeid');
+        api.setFrameGroupIndex({
+            name: 'pinpai_frm',
+            index: index,
+            scroll: true, //是否平滑滚动至目标窗口，即是否带有动画
+            //reload:true,	// 刷新
+        });
+        $api.setStorage('tid', ret.typeid[index]);
+    }
+
+    // 分类取出长度
+    function typeidstrlen(str) {
+        if (str.length < 3) {
+            return 60;
+        }
+        var len = 0;
+        for (var i = 0; i < str.length; i++) {
+            var c = str.charCodeAt(i);
+            //单字节加1   
+            if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
+                len++;
+            } else {
+                len += 3;
+            }
+        }
+        console.log(len)
+        return Math.ceil(len * 8.3333333);
+    }
+
+    // 修改距离
+    function changeJuli() {
+        var buttons = ['1公里', '5公里', '10公里', '100公里'];
+        var title = '范围选择';
+
+        _action(title, buttons, function (bIndex) {
+            if (bIndex != buttons.length + 1) {
+                $('.juli').text(buttons[bIndex - 1] + '以内');
+            }
+        })
+    }
+</script>
+
+</html>

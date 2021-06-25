@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no" />
+	<title>注册</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/reg.css" />
+</head>
+
+<body>
+	<div class="aui-content aui-margin-b-15 fx-reg">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon">
+						<i class="aui-iconfont aui-icon-mobile"></i>
+					</div>
+					<div class="aui-list-item-input">
+						<input type="tel" id="username" value="" placeholder="请输入手机号码">
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon">
+						<i class="aui-iconfont aui-icon-lock"></i>
+					</div>
+					<div class="aui-list-item-input">
+						<input type="password" id="password" placeholder="请输入密码" value="">
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon">
+						<i class="aui-iconfont aui-icon-mobile"></i>
+					</div>
+					<div class="aui-list-item-input">
+						<input type="tel" id="code" placeholder="请输入手机收到验证码" value="">
+					</div>
+					<span class="aui-input-addon" style="margin-right: 1rem;">
+						<div class="aui-btn" id="sendVerify" status="1" onclick="getVerify()">
+							获取验证码
+						</div>
+					</span>
+				</div>
+			</li>
+			<li class="aui-list-item ios" id="yqm">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon">
+						<i class="aui-iconfont aui-icon-like"></i>
+					</div>
+					<div class="aui-list-item-input">
+						<input type="tel" placeholder="邀请码（可选）" value="">
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<label style="margin:0 auto; font-size: 0.7rem;">
+						<input class="aui-checkbox" type="checkbox" id="checkbox" checked /> 我同意
+						<a style=" font-size: 0.7rem;" href="javascript:;" tapmode onclick="_url({url:'about',id:'2',title:'用户协议和隐私条款'})">"用户协议和隐私条款"</a>
+					</label>
+				</div>
+			</li>
+		</ul>
+		<div class="aui-btn-blocks aui-margin-15">
+			<div class="aui-btn aui-btn-block aui-btn-danger " id="tijiao">
+				提交注册
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../script/zepto.js"></script>
+	<script type="text/javascript" src="../script/fastclick.js"></script>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/ffxiang.js"></script>
+	<script type="text/javascript">
+		var yanzheng;
+		var yzPhone;
+		apiready = function () {
+			if ($api.getStorage('app') == 1) {
+				$('.ios').hide();
+				$('.iosShow').show();
+			} else {
+				$('.ios').show();
+				$('.iosShow').hide();
+			}
+			var openid = api.pageParam['openid'];
+			var type = api.pageParam['type'];
+			if (openid && type) {
+				$api.text($api.dom('#tijiao'), '绑  定');
+			} else {
+				openid = '';
+				type = '';
+			}
+			FastClick.attach(document.body)
+			$('#tijiao').click(function () {
+				var username = $('#username').val();
+				var password = $('#password').val();
+				var code = $('#code').val();
+				var yqm = $('#yqm input').val() ? $('#yqm input').val() : 0;
+				if (!username) {
+					_msg('手机号码不能空')
+					return;
+				}
+				// if (yanzheng != code) {
+				// 	_msg('验证码不正确')
+				// 	return;
+				// }
+				if (!_isMobile(username)) {
+					_msg('请输入正确手机号码')
+					return;
+				}
+				if (!password) {
+					_msg('请设置新密码');
+					return
+				}
+				if (!code) {
+					_msg('手机验证码不能为空');
+					return
+				}
+				if (username != yzPhone) {
+					_msg('请输入申请验证码的手机号');
+					return
+				}
+				var checkbox = $('#checkbox').is(':checked');
+				if (checkbox == false) {
+					_msg('请先同意服务条款')
+					return false;
+				}
+				_ajax('api/user/reg', function (ret, err) {
+						_loadingClose();
+						if (ret.ret) {
+							_alert(ret.ret, function (ret) {
+								_close()
+							})
+						} else {
+							_msg(ret.err)
+						}
+					}, {
+						username: username,
+						password: password,
+						code: code,
+						yaoqingma: yqm
+					})
+			})
+		}
+		var smsVerify
+
+		function getVerify() {
+			var mobileVal = $('#username').val();
+			if (!mobileVal) {
+				_msg('请输入手机号码')
+				return false;
+			}
+			if (!_isMobile(mobileVal)) {
+				_msg('请输入正确手机号码')
+				return;
+			}
+			var status = $('#sendVerify').attr('status');
+			if (status != 1) {
+				return;
+			}
+			_ajaxNT('api/common/sms', function (ret, err) {
+				console.log(JSON.stringify(ret))
+				console.log(JSON.stringify(err))
+				if (ret) {
+					_msg('发送成功');
+					$("#sendVerify").html('<span id="GetVerify">60</span>S');
+					times = 59;
+					isinerval = setInterval("CountDown()", 1000);
+					setTimeout(function () {
+						$('#sendVerify').attr('status', '0');
+					}, 500)
+					yzPhone = mobileVal;
+				}else{
+					_msg(ret.err)
+				}
+			}, {
+				phone: mobileVal,
+			})
+
+		}
+
+		function CountDown() {
+			if (times < 1) {
+				var sendVerify = $('#sendVerify');
+				$(sendVerify).attr('onclick', 'getVerify()');
+				$(sendVerify).attr('status', '1');
+				$(sendVerify).html('重新获取');
+				clearInterval(isinerval);
+				return;
+			}
+			var getVerify = $('#GetVerify');
+			$(getVerify).html('' + times + '');
+			times--;
+		}
+
+	</script>

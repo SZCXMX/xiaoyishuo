@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>放飞科技</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/ffxiang.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/view.css" />
+	</head>
+	<body>
+		<script id="fx-list-top" type="text/x-dot-template">
+			<div class="aui-content-padded">
+				<h2>{{= it.title }}</h2>
+				<div class="fx-view-body">
+					{{= it.content }}
+				</div>
+				
+			</div>
+		</script>
+		<section class="aui-content fx-view-content" id="fx-view-top"></section>
+	</body>
+	<script type="text/javascript" src="../../script/zepto.js"></script>
+	<script type="text/javascript" src="../../script/dot.js"></script>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiangmall.js"></script>
+	<script type="text/javascript">
+		var id,inputField,images,MNActionButton,fx_data,pingNum;
+		apiready = function() {
+			id=api.pageParam['id']
+			view();
+		}
+		function view(){
+			_loading()
+			_ajax("http://news.ffxiang.cn/index.php/api/article/view/id/"+id,function(ret,err){
+				_loadingClose()
+				if(ret){ 
+					var evalData = doT.template($api.html($api.byId('fx-list-top')));
+					$api.html($api.byId('fx-view-top'), evalData(ret));
+					_imageCaches()
+				}else{
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			})
+		}
+		function _imageCaches(thumbnail) {
+ 
+			if(!thumbnail){
+				thumbnail=false;
+			}
+			var srcs = $("img#ffxiangImgCache");
+			if (srcs.length > 0) {
+				for (var i = 0; i < srcs.length; i++) {
+					(function(imgObj) {
+						var imgUrl = imgObj.attr("ffxiang-src");
+						api.imageCache({
+							url : imgUrl,
+							thumbnail:thumbnail,
+						}, function(ret, err) {
+							if (ret) {
+								if (!ret.status) {
+									ret.url = imgUrl
+								}
+								imgObj.attr("src", ret.url);
+								imgObj.removeAttr('id') 
+								imgObj.removeAttr('ffxiang-src')
+							}
+						});
+					})($(srcs[i]));
+				}
+			}
+		}
+		
+	</script>
+</html>

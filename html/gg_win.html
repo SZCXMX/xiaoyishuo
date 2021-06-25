@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>放飞科技</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+    <link rel="stylesheet" type="text/css" href="../css/view.css" />
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav fx-view-header " id="fx-header">
+        <a class="aui-pull-left aui-btn" tapmode onclick="_closeToWin()">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div class="aui-title"></div>
+    </header>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        _heibai(1);
+        $api.html($api.dom('.aui-title'), api.pageParam['title'])
+        _openMiddleFrame(api.pageParam['url']);
+
+        _listener('keyback', function(){
+            _closeToWin();
+        })
+    }
+
+    function _openMiddleFrame(url) {
+        // 解析属性	消除点击300S 延时问题 tapmode
+        api.parseTapmode();
+        var header = $api.byId('fx-header');
+        $api.fixStatusBar(header);
+        var headerPos = $api.offset(header);
+        var body_h = api.winHeight;
+        var browser = api.require('webBrowser');
+        browser.openView({
+            url: url,
+            rect: {
+                x: 0,
+                y: headerPos.h,
+                w: 'auto',
+                h: body_h - headerPos.h
+            }
+        }, function (ret, err) {});
+    }
+</script>
+
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>放飞科技</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/fx_weitoutiao.css" />
+	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+	<style>
+		.fx-view-header {
+			background-color: #fff !important;
+			color: #000;
+			margin-bottom: 0px !important;
+			border-bottom: 1px solid #E8E8E8;
+		}
+
+		.aui-bar-nav .aui-title {
+			position: relative;
+			width: 100%;
+			right: 0;
+			left: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav fx-view-header " id="fx-header">
+		<div class="aui-title" style="position: relative;">
+			活动
+		</div>
+	</header>
+	<footer class="aui-bar aui-bar-tab" id="fx-footer">
+		<div class="aui-bar-tab-item" tapmode onclick="_hone()">
+			<img class="aui-img-object" src="../image/w1.png" />
+			<div class="aui-bar-tab-label">
+				首页
+			</div>
+		</div>
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('weitoutiao_win')">
+			<img class="aui-img-object" src="../image/w3.png" />
+			<div class="aui-bar-tab-label">
+				蚁吧
+			</div>
+		</div>
+		<div class="aui-bar-tab-item ios" tapmode onclick="_index_win('video_win')">
+			<img class="aui-img-object" src="../image/w2.png" />
+			<div class="aui-bar-tab-label">
+				视频
+			</div>
+		</div>
+		<!-- <div class="aui-bar-tab-item iosShow" tapmode onclick="_index_win('sc_win')">
+			<img class="aui-img-object" src="../image/w2-1.png" />
+			<div class="aui-bar-tab-label">
+				收藏
+			</div>
+		</div> -->
+		<div class="aui-bar-tab-item  aui-active">
+			<img class="aui-img-object" src="../image/w7s.png" />
+			<div class="aui-bar-tab-label">
+				活动
+			</div>
+		</div>
+		<!-- <div class="aui-bar-tab-item ios" tapmode onclick="_index_win('xiaoshipin_win')">
+			<img class="aui-img-object" src="../image/w4.png" />
+			<div class="aui-bar-tab-label">
+				小视频
+			</div>
+		</div> -->
+		<!-- <div class="aui-bar-tab-item iosShow" tapmode onclick="_index_win('lishi_win')">
+			<img class="aui-img-object" src="../image/w4-1.png" />
+			<div class="aui-bar-tab-label">
+				历史
+			</div>
+		</div> -->
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('member_win')">
+			<img class="aui-img-object" src="../image/w5.png" />
+			<div class="aui-bar-tab-label">
+				我的
+			</div>
+		</div>
+	</footer>
+</body>
+<script type="text/javascript" src="../script/jquery.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript">
+	apiready = function () {
+		// 回到屏幕
+		api.addEventListener({
+			name: 'viewappear'
+		}, function (ret, err) {
+			_heibai(1)
+			// 每日登录奖励
+			// _daily({name:'money_weitoutiao'})
+		});
+		if ($api.getStorage('app') == 1) {
+			$('.ios').hide();
+			$('.iosShow').show();
+		} else {
+			$('.ios').show();
+			$('.iosShow').hide();
+		}
+		_heibai(1)
+		_openFrame('ffxiang_frm', '', '', {
+			id: 0
+		})
+
+	}
+</script>
+
+</html>

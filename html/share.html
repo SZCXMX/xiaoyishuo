@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>放飞科技</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+    <link rel="stylesheet" type="text/css" href="../css/view.css" />
+    <style>
+        .fx-view-body img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* 底部 */
+        #fx-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .share-ul {
+            /* display: -webkit-box;
+            overflow-x: auto; */
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .share-ul .list {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            width: 20%;
+            font-size: 14px;
+        }
+
+        .share-ul .list img {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        #fx-footer {
+            background: #fff;
+        }
+
+        #fx-footer .cancel-btn {
+            width: 100%;
+            text-align: center;
+            line-height: 45px;
+            height: 45px;
+        }
+
+        #fx-view-top {
+            background: #fff;
+        }
+
+        #fx-view-top * {
+            color: #000;
+        }
+
+        /* 底部 */
+        .content-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0.75rem;
+        }
+
+        .content-footer .share-title {
+            color: #999 !important;
+        }
+
+        .content-footer .aui-iconfont {
+            font-weight: bold;
+            color: #999 !important;
+        }
+
+        .aui-content-header {
+            /* line-height: 50px;
+            text-align: center;
+            background: #F51C3E;
+            color: #fff !important; */
+            width: 100%;
+        }
+
+        .footer-tip {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #757575;
+            box-sizing: border-box;
+            padding: 0 10px 20px;
+        }
+
+        .footer-tip img {
+            width: 14px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <script id="fx-list-top" type="text/x-dot-template">
+        <h2>{{= it.title }}</h2>
+        <div class="fx-view-body" style="padding: 5px;">
+            {{= it.content }}
+        </div>
+   
+    </script>
+    <section class="aui-content fx-view-content" id="fx-view-top">
+        <!-- <header class="aui-content-header">小蚁说APP</header> -->
+        <img src="../image/top.png" class="aui-content-header" alt="">
+        <div class="aui-content-padded">
+            <!-- <h2>网易首支AI生成歌曲《醒来》将在“2020网易未来大会”惊艳发布</h2>
+            <div class="fx-view-body" style="padding: 5px;">
+                网易首支AI生成歌曲《醒来》将在“2020网易未来大会”惊艳发布,醒来,网易,歌曲,伏羲,ai
+            </div> -->
+        </div>
+        <div class="content-footer">
+            <p class="share-title"><i class="aui-iconfont aui-icon-forward"></i> 分享自小蚁说APP</p>
+            <div class="ewm" id="qrcode">
+            </div>
+        </div>
+        <div class="footer-tip"><img src="../image/tip.png" alt=""> 投资有风险，入市须谨慎。本资讯不作为投资理财建议</div>
+    </section>
+    <footer id="fx-footer">
+        <div class="footer">
+            <ul class="share-ul">
+                <li class="list" onclick="_weixin('timeline')">
+                    <img src="../image/share/1.png" alt="">
+                    <span>朋友圈</span>
+                </li>
+                <li class="list" onclick="_weixin('session')">
+                    <img src="../image/share/2.png" alt="">
+                    <span>好友</span>
+                </li>
+                <!-- <li class="list" onclick="_qqshare('QFriend')">
+                    <img src="../image/share/3.png" alt="">
+                    <span>QQ</span>
+                </li>
+                <li class="list" onclick="_qqshare('QZone')">
+                    <img src="../image/share/4.png" alt="">
+                    <span>空间</span>
+                </li> -->
+                <li class="list" onclick="savePhotoToAlbum();">
+                    <img src="../image/share/101.png" alt="">
+                    <span>保存</span>
+                </li>
+                <li class="list" onclick="copyTxt()">
+                    <img src="../image/share/104.png" alt="">
+                    <span>复制</span>
+                </li>
+            </ul>
+            <button class="cancel-btn" onclick="api.closeWin();">取消</button>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="../script/zepto.js"></script>
+<script type="text/javascript" src="../script/dot.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript" src="../script/html2canvas.js"></script>
+<script type="text/javascript" src="../script/img.js"></script>
+<script type="text/javascript" src="../script/qrcode.js"></script>
+<script type="text/javascript">
+    var ret;
+    apiready = function () {
+        ret = api.pageParam['data'];
+        ret.content = returnWtt(ret.content);
+        var evalData = doT.template($api.html($api.byId('fx-list-top')));
+        $('#fx-view-top .aui-content-padded').html(evalData(ret))
+        _imageCache();
+        // _loading();
+        // $api.fixStatusBar($api.dom('.aui-content-header'));
+        $api.fixTabBar($api.dom('.cancel-btn'));
+
+        // if ($api.getStorage('user')) {
+        //     // 登录的情况下为自己的二维码
+        //     codeurl = fx_url + 'm/yaoqing/uid/' + $api.getStorage('user').id
+        // } else {
+        //     // 未登录的情况下
+        codeurl = ret.url || fx_url + "m/a/" + ret.id + '.html';
+        // }
+        console.log(codeurl)
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            text: codeurl,
+            width: 100,
+            height: 100,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        getPermission(['storage'], function (code) {
+            if (code != 0) {
+                _alert('缺少存储权限', function () {
+                    api.closeWin();
+                });
+            } else {
+                setTimeout(function () {
+                    canvasToBase('#fx-view-top');
+                }, 1000)
+            }
+        })
+    }
+
+    // 复制
+    function copyTxt() {
+        var clipBoard = api.require('clipBoard');
+        clipBoard.set({
+            value: codeurl
+        }, function (ret, err) {
+            if (ret) {
+                _msg('复制成功，把链接分享给朋友吧！')
+            }
+        });
+    }
+</script>
+
+</html>

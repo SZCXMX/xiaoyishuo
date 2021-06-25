@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+    <!--<link rel="stylesheet" type="text/css" href="../css/fx_weitoutiao.css" />-->
+    <style>
+        .aui-list-item .aui-info .aui-info-item span.zhhiding {
+            border: 1px solid red !important;
+            border-radius: 8px !important;
+            color: red !important;
+        }
+
+        /* .search-athor {
+            max-width: 80px;
+        } */
+        /* 广告 */
+        /* 小图 */
+        .selfAds .ads{
+            padding: 7px 0;
+
+        }
+        .selfAds .bottom {
+            margin-top: 5px;
+        }
+        .selfAds .bottom span {
+            padding: 3px;
+            border-radius: 3px;
+            color: #aaa;
+            border: 1px solid #ddd;
+            font-size: 10px;
+        }
+        .selfAds .xiaotu{
+            display: flex;
+        }
+        .selfAds .xiaotu .left {
+            width: 25%;
+        }
+        .selfAds .xiaotu .left img {
+            width: 100%;
+            height: 100%;
+        }
+        .selfAds .xiaotu .right {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            margin-left: 7px;
+            position: relative;
+        }
+        .selfAds .xiaotu .right .bottom {
+            position: absolute;
+            bottom: 0;
+        }
+        
+        /* 组图 */
+        .selfAds .zutu .middle {
+            display: flex;
+            margin-top: 5px;
+        }
+        .selfAds .zutu .middle li {
+            width: 33%;
+            height: 70px;
+        }
+        .selfAds .zutu .middle li:nth-child(2){
+            margin: 0 5px;
+        }
+        .selfAds .zutu .middle li img {
+            width: 100%;
+            height: 100%;
+        }
+        /* 大图 */
+        .selfAds .datu .middle {
+            display: flex;
+            margin-top: 5px;
+            height: 150px;
+        }
+        .selfAds .datu .middle img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="aui-list aui-media-list fx-article-list fx-weitoutiao-list" id="fx-view" style="border-top: 0px">
+        <!-- 小图 -->
+        <li class="aui-list-item selfAds">
+            <div class="xiaotu ads">
+                <div class="left"><img src="../image/logo.png" alt=""></div>
+                <div class="right">
+                    <div class="top aui-ellipsis-2">广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案</div>
+                    <div class="bottom">
+                        <span>广告</span>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <!-- 组图 -->
+        <li class="aui-list-item selfAds">
+            <div class="zutu ads">
+                <div class="top aui-ellipsis-1">广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案</div>
+                <ul class="middle">
+                    <li><img src="../image/logo.png" alt=""></li>
+                    <li><img src="../image/logo.png" alt=""></li>
+                    <li><img src="../image/logo.png" alt=""></li>
+                </ul>
+                <div class="bottom">
+                    <span>广告</span>
+                </div>
+            </div>
+        </li>
+        <!-- 大图 -->
+        <li class="aui-list-item selfAds">
+            <div class="datu ads">
+                <div class="top aui-ellipsis-1">广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案</div>
+                <ul class="middle">
+                    <img src="../image/logo.png" alt="">
+                </ul>
+                <div class="bottom">
+                    <span>广告</span>
+                </div>
+            </div>
+        </li>
+        <!-- 视频广告 -->
+        <li class="aui-list-item selfAds">
+            <div class="videoAds ads">
+                <div class="aui-list-item-inner fx-item-inner">
+                    <div class="aui-list-item-title fx-title aui-ellipsis-2">广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案</div>
+                </div>
+                <div class="aui-card-list-content fx-video-content aui-padded-b-10">
+                    <img  src="../image/load-video.png" class="fx-video-img" style="height:230px;">
+                    <i class="fx-video-bofang"></i>
+                    <em class="fx-video-em aui-margin-b-5">02:15</em>
+                </div>
+                <div class="bottom">
+                    <span>广告</span>
+                </div>
+            </div>
+        </li>
+        <!-- 文字链接 -->
+        <li class="aui-list-item selfAds">
+            <div class="wordAds ads">
+                <div class="top aui-ellipsis-2">广告文案广告文案广告文案广告文案广告文案广广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案广告文案 </div>
+                <div class="bottom">
+                    <span>广告</span>
+                </div>
+            </div>
+        </li>
+    </ul>
+</body>
+
+</html>

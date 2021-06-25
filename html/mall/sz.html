@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/zs.css" />
+	</head>
+	<body>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item " id="fx-img" >
+					<div class="aui-list-item-inner ">
+						<div class="aui-list-item-title">
+							头像
+						</div>
+						<div class="aui-list-item-right">
+							<img  onerror="this.src='../../image/touxiang.png'">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" >
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							昵称
+						</div>
+						<div class="aui-list-item-right" id="nickname">
+							放飞科技
+						</div>
+					</div>
+				</li>
+				 
+			</ul>
+		</div>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							当前缓存
+						</div>
+						<div class="aui-list-item-right clearCache">
+							正在计算
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" >
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							当前版本
+						</div>
+						<div class="aui-list-item-right">
+							0.0.1
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="aui-content  fx-out aui-text-center" tapmode onclick="out()">
+			退出登录
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/zepto.js"></script>
+	<script type="text/javascript" src="../../script/dot.js"></script>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiangmall.js"></script>
+	<script type="text/javascript">
+		var app='';
+		apiready = function() {
+			 
+			//获取缓存大小
+			api.getCacheSize(function(ret) {
+				var clearCache = ret.size / 1024 / 1024;
+				$api.html($api.dom('.clearCache'), clearCache.toFixed(2) + "MB")
+			});
+			 
+		}
+		function view(){
+			var evalData = doT.template($api.html($api.byId('fx-list')));
+			$api.html($api.byId('fx-view'), evalData());
+		}
+
+		function banben(){
+			_msg('已经是最新版本了')
+		}
+		// 退出登录
+		function out(){
+			api.confirm({
+			    title: '退出确认',
+			    msg: '退出当前账户，将不能同步收藏，发布评论和分享',
+			    buttons: ['取消', '确定退出']
+			}, function(ret, err) {
+			    var index = ret.buttonIndex;
+			    if(index==2){
+			    	$api.rmStorage('mall')
+			    	_msg('退出成功')
+			    	_close()
+			    }
+			});
+		}
+	</script>
+</html>

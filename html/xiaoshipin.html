@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no" />
+	<title>放飞科技</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/xiaoshipin.css" />
+	<style>
+		#sx-img {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			z-index: 999999999;
+			left: 0;
+			top: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<script id="fx-list" type="text/x-dot-template">
+		{{ for(var i=0,len=it.data.length; i < len; i++) { }}
+		{{? it.data[i].mychannel != 99}}
+		<div class="aui-col-xs-6" tapmode data-data='{{= JSON.stringify(it.data[i]) }}' id="id{{= it.data[i].id }}" onclick="videodata({{= it.data[i].id }})">
+			<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" onerror="this.src='../image/load-video.png'" class="sx-imasdasd">
+			<div class="sx-imgtext">
+				<div class="aui-grid-label aui-ellipsis-1">
+					{{= it.data[i].title }}
+				</div>
+				<div class="aui-card-list-footer">
+					<div>
+						<img src="../image/xiaoshipin.png" />
+						{{= it.data[i].click }}次播放
+					</div>
+					<div>
+						{{= it.data[i].zan }}赞
+					</div>
+				</div>
+			</div>
+		</div>
+		{{?}}
+		{{ } }}
+	</script>
+	<section class="aui-grid fx-list">
+		<div class="aui-row" id="fx-view"></div>
+	</section>
+</body>
+<script type="text/javascript" src="../script/zepto.js"></script>
+<script type="text/javascript" src="../script/dot.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script src="../script/newsshare.js"></script>
+<!-- <script type="text/javascript" src="../script/xiaoshipin.js"></script> -->
+<script type="text/javascript">
+	var playModule,data, typeid = 0,
+		timestamp, MNActionButton;
+
+
+	var xiaoshipin_img = 0;
+	var rData = [];
+
+	var sp_arr = [];
+	apiready = function () {
+		playModule = api.require('playModule');
+		timestamp = Date.parse(new Date());
+		timestamp = timestamp / 1000;
+		playModule.init({
+			isMultiWindow: false
+		})
+		// 下拉刷新
+		_shangla(function (ret, err) {
+			_shiPinShuJulists('api/article/lists/mychannel/4/date/' + timestamp, 1, 1);
+		})
+
+		// 监听滚动
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+				threshold: threshold //设置距离底部多少距离时触发，默认值为0，数字类型
+			}
+		}, function (ret, err) {
+			if (heigutgao == 1) { // heigutgao=1开启执行 0停止执行   防止连续滚动，等加载数据之后在进行滚动。 
+				pagenum += 1
+				_shiPinShuJulists('api/article/lists/mychannel/4/date/' + timestamp, pagenum); // 当数据写入成功  把 heigutgao 设置1
+			}
+		});
+		// 监听播放
+		// playEnd(播放结束)，qingxidu(清晰度),xuanji(选集)，download(下载),
+		// collection(收藏),pause(暂停),play(播放),backBtn(小窗口返回按钮),
+		// full(进入全屏按钮),unfull(退出全屏按钮),click(视频区域点击监听)
+		// 播放结束
+		
+		MNActionButton = api.require('MNActionButton');
+		// 监听夜间
+		api.addEventListener({
+			name: 'yejian'
+		}, function (ret, err) {
+			if (ret) {
+				_yejians();
+			}
+		});
+
+
+		api.addEventListener({
+			name:'xspbofang'
+		}, function(ret, err){
+			console.log(JSON.stringify(ret));
+			xiaoshipin_img = ret.value.xiaoshipin_img;
+		})
+	}
+
+	function _shiPinShuJulists(url, page, loading, data, fakeLoading) {
+		heigutgao = 0;
+		var zd_data = [];
+		if(page == 1){
+			_ajax('api/article/zhiding/mychannel/4', function(ret, err){
+				if(ret && ret.data.length !=0){
+					rData = ret.data;
+					zd_data = ret.data;
+				}
+			})
+		}
+		_ajax(url + '?page=' + page, function (ret, err) {
+			console.log(JSON.stringify(ret));
+			if (ret) {
+				var rdata = ret.data;
+				var arr = [];
+				for (r in rdata) {
+					arr.push(rdata[r]);
+				}
+				ret.data = arr;
+
+				ret.imgurl = img_url;
+				
+				if(ret.data){
+					rData = rData.concat(ret.data)
+					$api.setStorage('xsp_sj', rData);
+					$api.setStorage('xsp_sj_time', timestamp);
+					$api.setStorage('xsp_sj_page', pagenum);
+				}
+				// 第一頁 且 置頂數據不為空
+				if(page == 1 && zd_data.length !=0){
+					ret.data = zd_data.concat(ret.data);
+				}
+				
+				if (loading == 1) { // 上拉刷新时  初始化参数
+					// 重置滚动统计
+					pagenum = heigutgao = 1;
+					// 移除底部没有了
+					$api.remove($api.dom('#loadingNo'));
+					// 停止刷新
+					api.refreshHeaderLoadDone();
+				}
+				// 获取得到数据线删除底部加载提示
+				$api.remove($api.dom('.fx-dibu_loading'));
+				page_total = ret.total;
+				//渲染模版
+				var evalData = doT.template($api.html($api.byId('fx-list')));
+
+				if (loading == 1) { // 上拉刷新时 清空列表
+					$api.html($api.byId('fx-view'), '');
+				}
+				// console.log(evalData(ret));
+				$api.append($api.byId('fx-view'), evalData(ret));
+
+				// 插入底部加载提示
+				page_per_page = Math.ceil(page_total / ret.per_page);
+
+				if (page_per_page <= page) {
+					heigutgao = 0 //关闭滚动
+					$api.append($api.byId('fx-view'), '<div id="loadingNo">已经到最底部啦~</div>')
+				} else {
+					$api.append($api.byId('fx-view'), '<div class="fx-dibu_loading load-container loadingdi"><div class="loader">loadingdi...</div></div>');
+					// 数据插入成功 设置 heigutgao=1 滚动才能继续加载
+					heigutgao = 1;
+				}
+				// 图片缓存本地
+				_imageCache();
+				api.parseTapmode();
+				//			api.toast({
+				//	            msg:'page_per_page:'+page_per_page+"\r\npage:"+page
+				//          });
+			} else {
+				$api.html($api.byId('fx-view'), "<div class='aui-text-center aui-margin-15'>" + err.msg + "</div>");
+				api.refreshHeaderLoadDone();
+			}
+			if (fakeLoading == 1) {
+				_loadingClose();
+			}
+		}, data)
+
+	}
+
+	//视频播放
+	function videodata(id) {
+		var a = $('#id' + id);
+		data = a.data('data')
+		console.log(JSON.stringify(data))
+		// video(data);
+
+		_ajax('api/article/clickAjax/id/' + data.id);
+
+		win(data);
+	}
+
+	// 打开新窗口
+	function win(data) {
+		api.openFrame({
+			name: 'xiaoshipin_img',
+			url: html_win + 'xiaoshipin_img.html',
+			bounces: false,
+			rect: {
+				x: 0,
+				y: 0,
+				w: 'auto',
+				h: 'auto',
+			},
+			pageParam: data,
+			bgColor: 'rgba(0,0,0,0)',
+			animation: {
+				type: "push", //动画类型（详见动画类型常量）
+				subType: "from_bottom", //动画子类型（详见动画子类型常量）
+				duration: 300
+			},
+		})
+	}
+
+	// 关闭窗口
+	function winclose() {
+		// alert('关闭窗口winclose()')
+		// alert('关闭xiaoshipin_ping_win')
+		api.closeFrame({
+			name: 'xiaoshipin_ping_win'
+		});
+		api.closeFrame({
+			name: 'xiaoshipin_ping'
+		});
+		api.closeFrame({
+			name: 'xiaoshipin_img'
+		});
+		playModule.stop();
+		api.setFullScreen({
+			fullScreen: false
+		});
+		xiaoshipin_img = 0;
+		// 关闭分享
+		MNActionButton.close();
+	}
+
+	// 判断是否已打开视频
+	function winfrem() {
+		// xiaoshipin_img = $api.getStorage('playSign');
+		
+		// alert('判断是否已打开视频winfrem()')
+		console.log(xiaoshipin_img);
+		if (xiaoshipin_img == 1) {
+		// alert('已打开视频')
+			api.execScript({
+				name: 'xiaoshipin_win',
+				frameName: 'xiaoshipin_img',
+				script: 'guanbi()'
+			});
+			
+			return;
+		}
+		_hone()
+	}
+	// 暂停播放
+	function pause() {
+		playModule.pause();
+	}
+	// 暂停后开始播放
+	function start() {
+		// playModule.start();
+	}
+
+	var fx_data
+	// 分享按钮
+	function fenxiang(data) {
+		console.log(JSON.stringify(data))
+		fx_data = data
+		fx_data = {
+			title: data.title,
+			description: data.description,
+			url: fx_url + "m/a/" + data.id + '.html',
+			img: data.image
+		}
+		newsShare(fx_data)
+	}
+</script>
+
+</html>

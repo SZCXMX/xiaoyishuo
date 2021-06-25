@@ -1,0 +1,904 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>小视频</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+</head>
+<style>
+	html,
+	body {
+		background-color: transparent !important;
+
+		width: 100%;
+		height: 100%;
+	}
+
+	#sx1,
+	#sx2 {
+		position: fixed;
+		width: 100%;
+		left: 0px;
+	}
+
+	#sx1 {
+		top: 0px;
+		z-index: 1;
+		height: 100%;
+	}
+
+	#sx2 {
+		bottom: 0px;
+		z-index: 2;
+		padding-top: 2rem
+	}
+
+	.sx-1 {
+		color: #fff;
+
+	}
+
+	.sx-1 img.aui-img-round {
+		width: 100% !important;
+		height: 100% !important;
+		max-width: 100% !important;
+		max-height: 100% !important;
+	}
+
+	.sx-1 #guanzhu {
+		height: 1.2rem;
+		line-height: 1.2rem;
+		padding: 0.3 0.7rem;
+		font-size: 0.6rem;
+		margin-top: 0.2rem
+	}
+
+	.sx-1 .aui-list,
+	.aui-list li {
+		border: 0px !important;
+		background: none !important;
+	}
+
+	.sx-1 .aui-list-item-media {
+		width: 1.5rem;
+		height: 1.5rem;
+		padding: 0;
+		margin-right: 0.5rem
+	}
+
+	.sx-1 .aui-padded-r-10 {
+		line-height: 1.6rem;
+		font-size: 0.7rem;
+		color: #fff;
+	}
+
+	.sx-2 {
+		padding: 0 0.75rem;
+		color: #fff;
+		font-size: 0.8rem
+	}
+
+	.sx-3 {
+		overflow: hidden;
+	}
+
+	.sx-3 .aui-bar {
+		background: none !important;
+		border: 0 !important;
+		position: relative !important;
+		color: #fff;
+	}
+
+	.sx-3 .aui-bar-tab .sx3-1 {
+		background: url('../image/xiaoshipin_img-sx-3.png') no-repeat center;
+		background-size: 100%;
+	}
+
+	.sx-3 .aui-bar-tab-item {
+		width: 3.5rem;
+	}
+
+	.sx-3 .aui-bar-tab-item span {
+		font-size: 0.6rem;
+	}
+
+	.sx-3 .sx3-1 {
+		width: auto;
+		padding-right: 0.75rem;
+	}
+
+	.sx-3 .search-input {
+		font-size: 0.6rem
+	}
+
+	.pingZanColor {
+		color: #FCACAC !important
+	}
+</style>
+
+<body>
+	<script id="fx-list" type="text/x-dot-template">
+		<div id="sx1"></div>
+		<div id="sx2">
+			<div class="sx-1">
+				<ul class="aui-list aui-media-list">
+					<li class="aui-list-item aui-list-item-middle">
+						<div class="aui-media-list-item-inner">
+							{{? sx.uid}}
+							<div class="aui-list-item-media" Tapmode onclick="grym({{=sx.uid}})">
+								<!-- <img  id="ffxiangImgCache" ffxiang-src="{{= sx.user.img }}" onerror="this.src='../image/touxiang.png'" class="aui-img-round aui-list-img-sm"> -->
+								<img  id="ffxiangImgCache" ffxiang-src="{{= sx.user.img }}" onerror="this.src='../image/touxiang.png'" class="aui-img-round aui-list-img-sm">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-pull-left aui-padded-r-10" style="font-size: 0.8rem;" Tapmode onclick="grym({{=sx.uid}})">
+									{{= sx.user.username }}
+								</div>
+								<div class="aui-pull-left aui-btn aui-btn-danger" id="guanzhu" data-id="1" Tapmode onclick="guanzhu(this, {{= sx.uid}})">
+									关注
+								</div>
+							</div>
+							{{?}}
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="sx-2">{{= sx.title }}</div>
+			<div class="sx-3">
+				<div class="aui-bar aui-bar-tab">
+					<div class="aui-bar-tab-item sx3-1" tapmode onclick="pingAdd()">
+						<div class="search-input">写评论...</div>
+					</div>
+					<div class="aui-bar-tab-item sx3-2" tapmode onclick="ping()">
+						<i class="aui-iconfont aui-icon-comment"></i>
+						<span id="sx-huifuNum">{{= sx.pingNum }}</span>
+					</div>
+					<div class="aui-bar-tab-item sx3-3 pingZan" data-id='0' Tapmode onclick="pingZan()">
+						<i class="aui-iconfont aui-icon-laud"></i>
+						<span>{{= sx.zan }}</span>
+					</div>
+					<div class="aui-bar-tab-item sx3-4" tapmode onclick="fenxiang(sx)">
+						<i class="aui-iconfont aui-icon-share"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	<div id="fx-view"></div>
+</body>
+<script type="text/javascript" src="../script/zepto.js"></script>
+<script type="text/javascript" src="../script/dot.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript" src="../script/gz.js"></script>
+<script src="../script/newsshare.js"></script>
+<script type="text/javascript">
+	var aid, xiaoshipin_ping_win = 0,
+		sx, inputField, pingAddPen = 1,
+		pingIds = 0; // 1已打开  0未打开  ,
+	var MNActionButton;;
+	var playModule, iData;
+	var evalData;
+	var xsp_sj = $api.getStorage('xsp_sj');
+	var xsp_page = $api.getStorage('xsp_sj_page');
+	xsp_page = parseInt(xsp_page);
+	var timestamp;
+	
+	console.log(JSON.stringify(xsp_sj))
+	// var vData = xsp_sj[3];
+	var sp_index;
+	// var xsp_page = -1;
+	var systemType;
+
+	var sp_bf_xlh;
+
+	apiready = function () {
+		timestamp = Date.parse(new Date());
+		timestamp = timestamp / 1000;
+		systemType = api.systemType;
+
+		MNActionButton = api.require('MNActionButton');
+
+		playModule = api.require('playModule');
+		iData = api.pageParam;
+		playModule.init({
+			isMultiWindow: true
+		});
+
+		video(iData);
+
+		// 向右轻扫
+		api.addEventListener({
+			name: 'swiperight'
+		}, function (ret, err) {
+			sp_index = sp_index - 1;
+			console.log(sp_index)
+			if(sp_index >= 0){
+				judge_shi_pin();
+			}else {
+				guan_bi_shi_pin('视频格式错误');
+			}
+		});
+
+		// 向左轻扫
+		api.addEventListener({
+			name: 'swipeleft'
+		}, function (ret, err) {
+			sp_index = sp_index + 1;
+			console.log(sp_index)
+			console.log(xsp_sj.length)
+			if(sp_index < xsp_sj.length){
+				judge_shi_pin();
+			}else if(sp_index >= xsp_sj.length){
+				xsp_page = xsp_page + 1;
+				// shi_pin_shu_ju(timestamp, xsp_page, 0);
+				shi_pin_shu_ju(timestamp, xsp_page);
+			}else{
+				guan_bi_shi_pin('视频格式错误');
+			}
+
+		});
+
+		// 向上轻扫
+		api.addEventListener({
+			name: 'swipeup'
+		}, function (ret, err) {
+			guanbi()
+		});
+		// 向下轻扫
+		api.addEventListener({
+			name: 'swipedown'
+		}, function (ret, err) {
+			guanbi()
+		});
+		sx = api.pageParam;
+		if (!sx) {
+			alert("已被删除")
+			guanbi()
+		}
+		//渲染模版
+		evalData = doT.template($api.html($api.byId('fx-list')));
+		console.log(evalData)
+		$api.html($api.byId('fx-view'), evalData());
+		$api.fixTabBar($api.dom('.sx-3'))
+
+		api.parseTapmode();
+		// 图片缓存本地
+		_imageCache();
+		guanzhuzan()
+		// 屏幕离开
+		api.addEventListener({
+			name: 'viewdisappear'
+		}, function (ret, err) {
+			playModule.pause(); //暂停播放
+			api.setFullScreen({
+				fullScreen: false
+			});
+		});
+		// 回到屏幕
+		api.addEventListener({
+			name: 'viewappear'
+		}, function (ret, err) {
+			api.setFullScreen({
+				fullScreen: true
+			});
+			playModule.start(); //开始播放
+		});
+
+
+		// 输入框模块
+		inputField = api.require('inputField');
+		inputField.setInputFieldListener(function (ret, err) {
+			if (ret) {
+				//_msg(JSON.stringify(ret))
+				if (ret.eventType == 'move') {
+					if (ret.chatViewH == 0 || ret.chatViewH == -1) {
+						pingHide()
+						inputField.resignFirstResponder();
+					}
+				}
+			} else {
+				_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+			}
+		});
+		
+		var tapIndex = 0;
+		api.addEventListener({
+			name:"tap"
+		}, function(){
+			if(tapIndex == 0){
+				tapIndex = 1;
+				playModule.pause(); //暂停播放
+			}else{
+				tapIndex = 0;
+				playModule.start(); //开始播放
+			}
+		})
+	};
+
+	//加载其他视频
+	function shi_pin_shu_ju(xsp_time, xsp_page, sign){
+		console.log(timestamp)
+		console.log(xsp_page)
+		//获取所有视频数据并传入视频播放处
+		// $api.post(fx_url+'api/article/slists/mychannel/4/date/'+xsp_time, {
+		$api.post(fx_url+'api/article/lists/mychannel/4/date/'+timestamp, {
+				values: {
+					page: xsp_page,
+					// id:sx.id
+				}
+			}, function(ret){
+				console.log(JSON.stringify(ret.data))
+				if(ret.data){
+					xsp_sj = xsp_sj.concat(ret.data);
+					console.log(JSON.stringify(xsp_sj));
+					judge_shi_pin();
+				}else{
+					guan_bi_shi_pin('视频格式错误');
+				}
+			})
+	}
+
+	//跳出-关闭视频
+	function guan_bi_shi_pin(m){
+		var n = '没有咯';
+		var msg = m || n;
+		api.toast({
+			msg: msg
+		})
+
+		setTimeout(function(){
+			guanbi();
+		},1000)
+	}
+
+	//判断是否为视频格式
+	function judge_shi_pin(){
+		if(!xsp_sj[sp_index].mychannel){
+			guan_bi_shi_pin('视频格式错误');
+		}else{
+
+			if(xsp_sj[sp_index].mychannel == 4){ 
+				var sp = xsp_sj[sp_index];
+				sx = sp;  //对模板数据重新赋值
+				// video(sp); 
+				changeUrl(sp)
+				$api.html($api.byId('fx-view'), evalData());  //对模板数据重新渲染
+				$('img#ffxiangImgCache').attr('src', sp.user.img);
+				console.log($('img#ffxiangImgCache').attr('src'))
+				console.log(JSON.stringify(sx))
+			}else{
+				guan_bi_shi_pin('视频格式错误');
+			}
+		}
+	}
+	//切换播放url
+	function changeUrl(data){
+		_ajax('api/article/clickAjax/id/' + data.id);
+		xiaoshipin_img = 1;
+		api.sendEvent({
+			name:'xspbofang',
+			extra: {
+				xiaoshipin_img: xiaoshipin_img
+			}
+		})
+		judgeXspNum(data.id);
+
+		playModule.playUrl({
+			title: '',
+			url: data.video,
+			defaultBtn: false,
+			isLoop: true,
+			isAutoPlay: true,
+			isOpenDanmu: false
+
+		}, function(ret, err) {
+			console.log(JSON.stringify(ret));
+			console.log(JSON.stringify(err));
+			if (ret.status) {
+				win();
+				// 打开新窗口
+				function win() {
+					api.openFrame({
+						name: 'xiaoshipin_img',
+						url: html_win + 'xiaoshipin_img.html',
+						bounces: false,
+						rect: {
+							x: 0,
+							y: 0,
+							w: 'auto',
+							h: 'auto',
+						},
+						// pageParam: data,
+						bgColor: 'rgba(0,0,0,0)',
+						animation: {
+							type: "push", //动画类型（详见动画类型常量）
+							subType: "from_bottom", //动画子类型（详见动画子类型常量）
+							duration: 300
+						},
+					})
+				}
+			}
+		});
+	}
+	
+
+	//判断当前播放视频是数组中的第几个
+	function judgeXspNum(id){
+		console.log(id)
+		// var first_url = api.pageParam.video;
+		var xsp = xsp_sj;
+		console.log(JSON.stringify(xsp))
+		for(var i=0;i<xsp.length;i++){
+			var sp_id = xsp[i].id;
+			console.log(sp_id)
+			if(id == sp_id){
+				sp_index = i;
+				console.log(i);  //得知当前播放视频是数组中的第几个
+			}
+		}
+		// if(isNaN(sp_index)){
+		// 	shi_pin_shu_ju(xsp_sj_time, xsp_sj_page-1);
+		// 	sp_index = xsp_sj.length-1;
+			
+		// }
+	}
+
+	var xiaoshipin_img = 0;
+	//播放视频
+	function video(data) {
+		playModule.stop(function(ret, err){
+			console.log(JSON.stringify(ret));
+			console.log(JSON.stringify(err));
+		})
+		_ajax('api/article/clickAjax/id/' + data.id);
+		console.log(JSON.stringify(data))
+
+		xiaoshipin_img = 1
+
+		api.sendEvent({
+			name:'xspbofang',
+			extra: {
+				xiaoshipin_img: xiaoshipin_img
+			}
+		})
+		judgeXspNum(data.id);
+
+		if(systemType == 'android'){
+			playModule.play({
+				// rect: {
+				// 	x: 0,
+				// 	y: 0,
+				// 	w: api.winWidth,
+				// 	// h: api.winHeight
+				// },
+				url: data.video,
+				defaultBtn: false, //	设置本次播放是否显示默认自带的播放控制按钮
+				isTopView: false, //	是否显示顶部标题栏
+				title: '', //	不填时标题默认显示url地址
+				enableFull: true, //	本次播放视频是否全屏播放，当为true时将直接全屏播放视频，x,y,w,h,fixedOn,fixed值不会生效。
+				isFullBtn: false, // 	小窗口是否显示进入全屏按钮
+				isBackBtn: false, // 	小窗口是否显示返回按钮
+				scalingMode: 1, // 	1:无缩放, 2:适应大小模式, 3:充满可视范围，可能会被裁剪, 4:缩放到充满视图
+				fullscreenMode: 'PORTRAIT', //	设置全屏按钮控制全屏显示模式是横屏还是竖屏 竖屏:PORTRAIT ; 横屏:LANDSCAPE
+				isShowProcessView: false, //	是否显示进度条 (显示:true ; 不显示:false)【备注:直播流自动默认为false】
+				isShowTimeLable: false, //	是否显示播放时间 (显示:true ; 不显示:false)
+				isOpenGesture: false, //	全屏时是否开启手势控制音量，亮度和进度 （开启：true；不开启：false）
+				isSmallOpenGesture: false, //	窗口播放时是否开启手势控制音量，亮度和进度 （开启：true；不开启：false）
+				isLoop: true,
+				isOpenDanmu: false
+			}, function (ret, err) {
+
+				console.log(JSON.stringify(ret));
+				if (ret.status) {
+					
+					win();
+					// 打开新窗口
+					function win() {
+						api.openFrame({
+							name: 'xiaoshipin_img',
+							url: html_win + 'xiaoshipin_img.html',
+							bounces: false,
+							rect: {
+								x: 0,
+								y: 0,
+								w: 'auto',
+								h: 'auto',
+							},
+							// pageParam: data,
+							bgColor: 'rgba(0,0,0,0)',
+							animation: {
+								type: "push", //动画类型（详见动画类型常量）
+								subType: "from_bottom", //动画子类型（详见动画子类型常量）
+								duration: 300
+							},
+						})
+					}
+				}
+			});
+		}else{
+			playModule.play({
+				rect: {
+					x: 0,
+					y: 0,
+					w: api.winWidth,
+					h: api.winHeight
+				},
+				url: data.video,
+				defaultBtn: false, //	设置本次播放是否显示默认自带的播放控制按钮
+				isTopView: false, //	是否显示顶部标题栏
+				title: '', //	不填时标题默认显示url地址
+				enableFull: true, //	本次播放视频是否全屏播放，当为true时将直接全屏播放视频，x,y,w,h,fixedOn,fixed值不会生效。
+				isFullBtn: false, // 	小窗口是否显示进入全屏按钮
+				isBackBtn: false, // 	小窗口是否显示返回按钮
+				scalingMode: 1, // 	1:无缩放, 2:适应大小模式, 3:充满可视范围，可能会被裁剪, 4:缩放到充满视图
+				fullscreenMode: 'PORTRAIT', //	设置全屏按钮控制全屏显示模式是横屏还是竖屏 竖屏:PORTRAIT ; 横屏:LANDSCAPE
+				isShowProcessView: false, //	是否显示进度条 (显示:true ; 不显示:false)【备注:直播流自动默认为false】
+				isShowTimeLable: false, //	是否显示播放时间 (显示:true ; 不显示:false)
+				isOpenGesture: false, //	全屏时是否开启手势控制音量，亮度和进度 （开启：true；不开启：false）
+				isSmallOpenGesture: false, //	窗口播放时是否开启手势控制音量，亮度和进度 （开启：true；不开启：false）
+				isLoop: true,
+				isOpenDanmu: false
+			}, function (ret, err) {
+
+				// console.log(JSON.stringify(ret));
+				if (ret.status) {
+
+					win();
+					// 打开新窗口
+					function win() {
+						api.openFrame({
+							name: 'xiaoshipin_img',
+							url: html_win + 'xiaoshipin_img.html',
+							bounces: false,
+							rect: {
+								x: 0,
+								y: 0,
+								w: 'auto',
+								h: 'auto',
+							},
+							// pageParam: data,
+							bgColor: 'rgba(0,0,0,0)',
+							animation: {
+								type: "push", //动画类型（详见动画类型常量）
+								subType: "from_bottom", //动画子类型（详见动画子类型常量）
+								duration: 300
+							},
+						})
+					}
+				}
+			});
+		}
+		
+		api.setFullScreen({
+			fullScreen: true
+		});
+	}
+
+	//跳转到个人页面
+	function grym(uid) {
+		//暂停播放当前视频
+		playModule.pause({
+			index: sp_bf_xlh
+		});
+		_url({
+			id: uid
+		}, 'member_u_win');
+	}
+
+
+	// 获取用户是否赞和关注
+	function guanzhuzan() {
+		if (!$api.getStorage('user')) {
+			return;
+		}
+		//	console.log("sx.uid:"+sx.uid)
+		_ajax('api/member/guanzhuzan', function (ret, err) {
+			if (ret) {
+				if (ret.zan) {
+					var a = $('.pingZan')
+					a.addClass('pingZanColor');
+					a.data('id', '1');
+				}
+				if (ret.guanzhu) {
+					var guanzhuId = $('#guanzhu');
+					guanzhuId.removeClass("aui-btn-danger");
+					guanzhuId.html("已关注");
+					guanzhuId.data('id', "2");
+				}
+			}
+			console.log(JSON.stringify(ret) + JSON.stringify(err))
+		}, {
+			aid: sx.id,
+			gz_uid: sx.uid
+		})
+	}
+
+	function guanbi() {
+		if (xiaoshipin_ping_win == 1) {
+			// 关闭评论
+			api.execScript({
+				name: 'xiaoshipin_win',
+				frameName: 'xiaoshipin_ping_win',
+				script: 'g()'
+			});
+			return;
+		}
+		console.log(pingAddPen)
+		// 关闭输入框
+		if (pingAddPen == 2) {
+			pingAddPen = 1;
+			inputField.close();
+			return;
+		}
+		xiaoshipin_img = 0;
+		api.sendEvent({
+			name: 'xspbofang',
+			extra: {
+				xiaoshipin_img: xiaoshipin_img
+			}
+		})
+		api.closeFrame({
+			name: 'xiaoshipin_img'
+		})
+		api.setFullScreen({
+				fullScreen: false
+			});
+		playModule.cleanPlayers();
+		
+	}
+
+	function ping() {
+		xiaoshipin_ping_win = 1
+		var h = api.winHeight;
+		api.openFrame({
+			name: 'xiaoshipin_ping_win',
+			url: html_win + 'xiaoshipin_ping.html',
+			bounces: false,
+			rect: {
+				x: 0,
+				y: h - (h / 2),
+				w: 'auto',
+				h: h / 2,
+			},
+			bgColor: 'rgba(0,0,0,0)',
+			animation: {
+				type: "push", //动画类型（详见动画类型常量）
+				subType: "from_bottom", //动画子类型（详见动画子类型常量）
+				duration: 300
+			},
+			pageParam: sx
+		})
+	}
+	// 设置已打开 
+	function xiaoshipin_ping_win_url() {
+		xiaoshipin_ping_win = 0;
+	}
+	// 赞
+	function pingZan() {
+		if (!$api.getStorage('user')) {
+			_msg('请先登录')
+			return;
+		}
+		var a = $('.pingZan');
+		var type = a.data('id');
+		if (!type) {
+			a.addClass('pingZanColor');
+			a.data('id', '1');
+			a.html("<i class=\"aui-iconfont aui-icon-laud\"></i>\r\n<span> " + (sx.zan + 1) + "</span>");
+			_ajax('api/member/zancai', function (ret, err) {
+				if (ret) {
+					if (ret.err) {
+						_msg(ret.err)
+					}
+				}
+			}, {
+				aid: sx.id,
+				type: 1
+			})
+		} else {
+			_msg('您已经赞过')
+		}
+	}
+	
+	// 分享
+	// function fenxiang(data) {
+	// 	console.log(JSON.stringify(data))
+	// 	api.execScript({
+	// 		name: 'xiaoshipin_win',
+	// 		frameName: 'xiaoshipin',
+	// 		script: 'fenxiang(data)'
+	// 	});
+	// }
+	var fx_data;
+	function fenxiang(data) {
+		console.log(JSON.stringify(data))
+		fx_data = data
+		fx_data = {
+			title: data.title,
+			description: data.description,
+			url: fx_url + "m/a/" + data.id + '.html',
+			img: data.image,
+			img_dl: data.image
+		}
+
+		//微信分享图片
+		api.download({
+			url: fx_data.img_dl,
+		}, function(ret){
+			console.log(JSON.stringify(ret));
+			if(ret.state == 1){
+				var size = (ret.fileSize / 1024) > 32; 
+				console.log(size)
+				if(!size){
+					fx_data.img_dl = ret.savePath;
+					console.log(fx_data.img_dl)
+				}else{
+					fx_data.img_dl = 'widget://image/logo.png';
+					
+				}
+			}else{
+				fx_data.img_dl = 'widget://image/logo.png';
+			}
+		})
+		newsShare(fx_data);
+	}
+	
+
+	//用来判断打开输入框   1 使用open打开  2 使用显示
+	function pingAdd(username, pingId) {
+		if (!pingId) {
+			pingId = 0
+		}
+		pingIds = pingId;
+		if (!_user) {
+			_login();
+			return;
+		}
+		if (username) {
+			username = '回复   ' + username + '：'
+		} else {
+			username = '优质评论将会被优先展示';
+		}
+		if (pingAddPen == 1) {
+			pingAddPen = 2;
+			inputField.open({
+				bgColor: '#fff',
+				lineColor: '#D8D8D8',
+				fileBgColor: '#f5f5f5',
+				borderColor: '#F4F5F6',
+				//					sendImg : 'widget://res/img/sendImg.png',
+				autoFocus: true,
+				placeholder: username,
+				placeholderStyles: {
+					color: '#bbb', //字符串类型；占位文字颜色，支持rgb、rgba、#；默认：#696969
+					size: 14, //数字类型；占位文字大小；默认：13
+					marginL: 5 //数字类型；占位文字距离左边的大小；默认：5
+				},
+				maxLines: 3,
+				sendBtn: {
+					bg: '#03a9f4', //字符串类型；发送按钮常态背景色
+					bgHighlight: '#0287BF', //字符串类型；发送按钮点击时的高亮背景色
+					title: '发送', //字符串类型；发送按钮的标题
+					titleSize: '14', //数字类型；发送按钮的标题字体大小
+					titleColor: '#fff', //字符串类型；发送按钮标题文字颜色
+					corner: 5 //数字类型；发送按钮圆角大小
+				},
+			}, function (ret, err) {
+				if (ret) {
+					if (ret.msg == '') {
+						_msg('请输入评价');
+					} else {
+						pingAddTent(ret.msg);
+						pingHide()
+						inputField.resignFirstResponder();
+					}
+				} else {
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			});
+		} else {
+			inputField.setPlaceholder({
+				placeholder: username
+			});
+			inputField.becomeFirstResponder(function (ret, err) {
+				if (ret.status) {
+
+					setTimeout(function () {
+						pingHide(1)
+					}, 500)
+				} else {
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			});
+		}
+	}
+	// 评论开关   0关 1开
+	function pingHide(a) {
+		if (a == 1) {
+			inputField.show();
+			inputField.becomeFirstResponder()
+		} else {
+			inputField.hide();
+			inputField.resignFirstResponder();
+		}
+
+	}
+
+	// 插入评论
+	function pingAddTent(text) {
+		if (text) {
+			var html = ''
+			//				if(pingIds){
+			//				 
+			//				    html += '<li class="aui-ellipsis-2">';
+			//				    html += '<a>'+_user.username+' ：</a>'+text+'</li>';
+			//				    $('#fx-huifuList'+pingIds).show();
+			//				    $('#fx-huifuLists'+pingIds).prepend(html);
+			//				}else{
+			//					_msg('发布成功')
+			//					return;
+			//				    html += '<li class="aui-list-item aui-padded-b-10">';
+			//				    html += '<div class="aui-media-list-item-inner">';
+			//				    html += '<div class="aui-list-item-media">';
+			//				    html += '<img src="'+_user.img+'" Tapmode onclick="_url({id:'+_user.id+',qian:0,fan:1},\'u_win\');" />';
+			//				    html += '</div>';
+			//				    html += '<div class="aui-list-item-inner">';
+			//				    html += '<div class="aui-list-item-text">';
+			//				    html += '<div class="aui-list-item-title">';
+			//				    html += _user.username;
+			//				    html += '</div>';
+			//				    html += '<div class="aui-list-item-right">';
+			//				    html += '<i class="aui-iconfont aui-icon-laud"></i>0'
+			//				    html += '</div>';
+			//				    html += '</div>';
+			//				    html += '<div class="aui-list-item-text" style="color:#333;">';
+			//				    html += text;
+			//				    html += '</div>';
+			//				    html += '<div class="aui-info aui-font-size-12 aui-padded-t-0 aui-padded-b-0">';
+			//				    html += '<div class="aui-info-item">';
+			//				    html += '几秒前';
+			//				    html += '</div>';
+			//				    html += '<div class="aui-info-item">';
+			//				    html += '<i class="aui-iconfont aui-icon-comment"  style="color:#4c5276"></i>';
+			//				    html += '</div>';
+			//				    html += '</div>';
+			//				    html += '</div>';
+			//				    html += '</div>';
+			//				    html += '</li>';
+			//				    $('.pingList #fx-view').prepend(html);
+			//				//   	document.getElementById('here').scrollIntoView() 
+			//				}
+			//				$('.qiangshafa').remove();
+			//				api.execScript({
+			//				    script : 'pingNum()'
+			//				});
+			console.log('aid:' + sx.id + 'pingId:' + pingIds)
+			_ajax('api/member/ping', function (ret, err) {
+				console.log(JSON.stringify(ret) + JSON.stringify(err))
+				api.pageParam['pingNum']++;
+				// 更新评论数量
+				api.execScript({
+					name: 'xiaoshipin_win',
+					frameName: 'xiaoshipin_ping',
+					script: 'pingnum(' + api.pageParam['pingNum'] + ')'
+				});
+				$('#sx-huifuNum').text(api.pageParam['pingNum'])
+			}, {
+				aid: sx.id,
+				content: text,
+				pingId: pingIds
+			})
+			_msg('发布成功')
+		}
+
+	}
+</script>
+
+</html>

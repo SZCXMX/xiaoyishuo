@@ -1,0 +1,549 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>放飞科技</title>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+		<link rel="stylesheet" type="text/css" href="../css/search.css" />
+		<link rel="stylesheet" href="../css/ads.css">
+		<style>
+			/* .search-athor {
+				max-width: 100px;
+			} */
+		</style>
+	</head>
+	<body>
+ 
+		<section class="aui-grid aui-margin-b-15" id="lishi">
+			<h5 class="fx-h5">历史记录<em class="aui-iconfont aui-icon-trash" tapmode onclick="del()"></em></h5>
+			<div class="aui-row" id="textHtml"></div>
+		</section>
+
+		<script id="fx-tj" type="text/x-dot-template">
+			<!-- 新闻列表 -->
+			{{ for(var i=0,len=it.data.length; i < len; i++) { }}
+			{{? it.data[i].weitoutiao==2 || it.data[i].weitoutiao==1}}
+			<div class="aui-card-list aui-border-b" id="id{{= it.data[i].id }}" data-images="{{= it.data[i].imagesPro }}">
+				<div class="aui-card-list-header aui-card-list-user">
+					<div class="aui-card-list-user-avatar">
+						<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].user.img }}" onerror="this.src='../image/touxiang.png'" tapmode onclick="_url({uid:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+					</div>
+					<div class="aui-card-list-user-name">
+						<div tapmode onclick="_url({uid:{{= it.data[i].uid }},qian:0,fan:1},'u_win')">
+							{{= it.data[i].user.username }}
+						</div>
+						{{? typeid != 999999999 }}
+						{{? it.data[i].uid}}
+						{{? it.data[i].guanzhu}}
+						<span class="fx-weitoutiao-guanzhu fx-weitoutiao-guanzhuHivdeo" data-id="2" Tapmode onclick="guanzhu(this,{{= it.data[i].uid}});">已关注</span>
+						{{??}}
+						<span class="fx-weitoutiao-guanzhu" data-id="1" Tapmode onclick="guanzhu(this,{{= it.data[i].uid}});">关注</span>
+						{{?}}
+						{{?}}
+						{{?}}
+					</div>
+					<div class="aui-card-list-user-info">
+						{{= it.data[i].create_time }}
+					</div>
+				</div>
+				<ul class="aui-list aui-media-list fx-weitoutiao-images">
+					<li class="aui-list-item">
+						{{? it.data[i].mychannel == 3}}
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-title fx-weitoutiao-content" tapmode onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}'},'videoview_win')">
+								{{= it.data[i].title }}
+							</div>
+							<div class="aui-row aui-row-padded">
+								<div class="aui-col-xs-12" tapmode onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}'},'videoview_win')">
+									<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" onerror="this.src='../image/loadingImage.png'" style="height:230px;">
+									<!-- <img id="ffxiangImgCache" ffxiang-src="" src="../image/video_bg.jpg" class="fx-video-img"> -->
+	 								<i class="fx-video-bofang"></i>
+									<!-- <em class="fx-video-em aui-margin-b-5">01:35</em> -->
+								</div>
+							</div>
+						</div>
+						{{??}}
+						<div class="aui-list-item-inners">
+							{{? it.data[i].description }}
+							<div class="aui-list-item-title fx-weitoutiao-content" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+								{{= it.data[i].description }}
+							</div>
+							{{??}}
+							<div class="aui-list-item-title fx-weitoutiao-content" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+								{{= returnWtt(it.data[i].content) }}
+							</div>
+							{{?}}
+							{{? it.data[i].imagesPro}}
+							<div class="aui-row">
+								{{ for(var j=0,imgLen=it.data[i].imagesPro.length; j<imgLen; j++){ }}
+								<div class="{{? imgLen>=3}}aui-col-xs-4{{??}}aui-col-xs-6{{?}}" tapmode onclick="img({{=it.data[i].id}} , {{=j}})">
+									<img style="height:130px;border:1px solid #fff;" id="ffxiangImgCache" ffxiang-src="{{=it.data[i].imagesPro[j]}}" onerror="this.src='../image/loadingImage.png'">
+								</div>
+								{{ } }}
+							</div>
+							{{?}}
+						</div>
+						{{?}}
+					</li>
+				</ul>
+				<div class="aui-card-list-footer aui-margin-t-10">
+					<div class="{{? it.data[i].zanUser}} pingZanColor{{?}}" {{? it.data[i].zanUser}} data-id='1'{{?}} Tapmode onclick="pingZan_xia(this,{{= it.data[i].id}} ,{{= it.data[i].zan}})">
+						<i class="aui-iconfont aui-icon-laud aui-margin-r-5"></i> {{= it.data[i].zan }}
+					</div>
+					<div tapmode onclick="_url({aid:{{= it.data[i].id }},pingNum:{{= it.data[i].pingNum }}},'view_ping_win')">
+						<i class="aui-iconfont aui-icon-comment aui-margin-r-5"></i> {{= it.data[i].pingNum }}
+					</div>
+					{{? it.data[i].mychannel == 3}}
+					<div tapmode onclick="_url({id:{{= it.data[i].id }},qian:0,fan:1},'videoview_win')">
+						<i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it.data[i].click }}
+					</div>
+					{{??}}
+					<div tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:1},'wttview_win')">
+						<i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it.data[i].click }}
+					</div>
+					{{?}}
+				</div> 
+			</div>
+			{{??}}
+				{{? it.data[i].mychannel == 1}}
+				{{? it.data[i].imagesArticleList.length >= 3}}
+				<li class="aui-list-item" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+					<div class="aui-list-item-inner fx-item-inner">
+						<div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+							<div class="aui-row aui-row-padded aui-margin-t-5 fx-article-images">
+								{{ for(var is=0; is < 3; is++) { }}
+								<div class="aui-col-xs-4"><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].imagesArticleList[is]}}" onerror="this.src='../image/loadingImage.png'"></div>
+								{{}}}
+							</div>
+						</div>
+						<div class="aui-info  aui-padded-t-5 aui-padded-r-15  fx-item-inner">
+							<div class="aui-info-item aui-font-size-12">
+									<span class="aui-margin-r-10 zhiding" style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+							{{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+							<span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+							<span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+						</div>
+					</div>
+				</li>
+				{{?? it.data[i].image}}
+				<li class="aui-list-item" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text">
+								<div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it.data[i].title }}</div>
+							</div>
+							<div class="aui-info aui-padded-t-5 aui-padded-b-0" style="padding-top: 5px">
+								<div class="aui-info-item aui-font-size-12 fx-index-infp-span">
+										<span class="aui-margin-r-10 zhiding" style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+									<span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+									<span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="aui-list-item-media">
+							<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" onerror="this.src='../image/loadingImage.png'">
+						</div>
+					</div>
+				</li>
+				{{??}}
+				<li class="aui-list-item" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'view_win')">
+	                <div class="aui-media-list-item-inner">
+	                    <div class="aui-list-item-inner">
+	                        <div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it.data[i].title }}</div>
+	                        <div class="aui-list-item-text">
+	                            <p class="aui-ellipsis-2 aui-font-size-14">{{= it.data[i].description }}</p>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="aui-info  fx-item-inner">
+	                    <div class="aui-info-item aui-font-size-12">
+								<span class="aui-margin-r-10 zhiding" style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+	                        {{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+							<span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+							<span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+	                    </div>
+	                </div>
+	            </li>
+				{{?}}
+				{{?? it.data[i].mychannel == 2}}
+				<!--  图片集-->
+				<li class="aui-list-item" tapmode onclick="_url({id:{{= it.data[i].id }},qian:1,fan:0},'photo_browser')">
+					<div class="aui-list-item-inner fx-item-inner">
+						<div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+							<div class="aui-row aui-row-padded aui-margin-t-5 fx-article-images">
+								{{= it.data[i].images }}
+							</div>
+						</div>
+						<div class="aui-info  aui-padded-t-5 aui-padded-r-15  fx-item-inner">
+							<div class="aui-info-item aui-font-size-12">
+									<span class="aui-margin-r-10 zhiding" style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+							{{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}
+							<span class="aui-margin-l-10">{{= it.data[i].pingNum}}评价</span>
+							<span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+						</div>
+					</div>
+				</li>
+				{{?? it.data[i].mychannel == 3}}
+				<!--视频-->
+				<li class="aui-list-item" tapmode onclick="_url({id:{{= it.data[i].id }},videoUrl:'{{= it.data[i].video }}',title:'{{= it.data[i].title }}',qian:0,fan:0},'videoview_win')">
+					<div class="aui-list-item-inner fx-item-inner">
+						<div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title }}</div>
+					</div>
+					<div class="aui-card-list-content fx-video-content aui-padded-b-10">
+						<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].image }}" onerror="this.src='../image/load-video.png'" class="fx-video-img" style="height:230px;">
+						<i class="fx-video-bofang"></i>
+						<em class="fx-video-em aui-margin-b-5">{{? it.data[i].videodate}}{{= it.data[i].videodate }}{{?}}</em>
+					</div>
+					<div class="aui-info  aui-padded-t-0 aui-padded-r-15  fx-item-inner">
+						<div class="aui-info-item aui-font-size-12">
+								<span class="aui-margin-r-10 zhiding" style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+							{{? it.data[i].source}}{{? it.ios != 1}}<span class="search-athor aui-ellipsis-1">{{= it.data[i].source}}</span>{{?}}{{?}}
+							<span {{? it.data[i].source}}class="aui-margin-l-10"{{?}}>{{= it.data[i].pingNum}}评价</span>
+							<span class="aui-margin-l-10">{{= it.data[i].create_time}}</span>
+						</div>
+					</div>
+				</li>
+				{{?? it.data[i].mychannel == 99}}
+				<!--广告-->
+					{{? it.data[i].url && it.data[i].type != 6}}
+					<li class="aui-list-item selfAds" tapmode onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}'},'curl')">
+					{{??}}
+					<li class="aui-list-item selfAds">
+					{{?}}
+
+					{{? it.data[i].type == 0}}
+					<!-- 小图 -->
+					<div class="xiaotu ads">
+						<div class="left"><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt=""></div>
+						<div class="right">
+							<div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+							<div class="bottom">
+								<span>广告</span>
+								{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+									<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+								{{ } }}
+							</div>
+						</div>
+					</div>
+					{{?? it.data[i].type == 1}}
+					<!-- 组图 -->
+					<div class="zutu ads">
+						<div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+						<ul class="middle">
+							{{ for(var j=0; j<3; j++){ }}
+							<li><img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].imagesurl[j] }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt=""></li>
+							{{ } }}
+						</ul>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 2}}
+					<!-- 大图 -->
+					<div class="datu ads">
+						<div class="top aui-ellipsis-1">{{= it.data[i].title}}</div>
+						<ul class="middle">
+							<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].img }}" src="../image/logo.png" onerror="this.src='../image/error-img.png'" alt="">
+						</ul>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 6}}
+					<!-- 视频广告 -->
+					<div class="videoAds ads" tapmode onclick="openMoneyAds({url:'{{= it.data[i].url}}',title:'{{= it.data[i].title}}',type: '{{= it.data[i].type}}', id: '{{= it.data[i].id}}', dyid: '{{= it.data[i].dyid}}', videoUrl: '{{= it.data[i].video }}'},'adsvideo_win')">
+						<div class="aui-list-item-inner fx-item-inner">
+							<div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it.data[i].title}}</div>
+						</div>
+						<div class="aui-card-list-content fx-video-content aui-padded-b-10">
+							<img id="ffxiangImgCache" ffxiang-src="{{= it.data[i].videoimg }}" src="../image/load-video.png" onerror="this.src='../image/error-img.png'" class="fx-video-img" style="height:230px;">
+							<i class="fx-video-bofang"></i>
+							<!-- <em class="fx-video-em aui-margin-b-5">02:15</em> -->
+						</div>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?? it.data[i].type == 7}}
+					<!-- 文字链接 -->
+					<div class="wordAds ads">
+						<div class="top aui-ellipsis-2">{{= it.data[i].title}}</div>
+						<div class="bottom">
+							<span>广告</span>
+							{{ for(var a=0,alen=splitArr(it.data[i].label).length;a<alen;a++ ){ }}
+								<span style="margin-left:5px;">{{= splitArr(it.data[i].label)[a]}}</span>
+							{{ } }}
+						</div>
+					</div>
+					{{?}}
+
+					</li>
+					<!-- 广告结束 -->
+				{{?}}
+			{{?}}
+			{{ } }}
+		</script>
+		<section class="aui-grid aui-margin-b-15" id="tuijian">
+			<h5 class="fx-h5">热文推荐</h5>
+		</section>
+		<div class="aui-content" style="margin-bottom: 45px; background: #fff;" id="fx-tj-c">
+			<ul class="aui-list aui-media-list fx-article-list fx-weitoutiao-list" id="fx-tjview" style="border-top: 0px"></ul>
+		</div>
+
+		<!-- <section class="aui-grid" id="tuijian">
+			<div class="fx-chakan" style="display:none" tapmode onclick="show()">
+				<i class="aui-iconfont aui-icon-display"></i>查看全部推荐词
+			</div>
+			<h5 class="fx-h5 remen">热门推荐词<em class="aui-iconfont aui-icon-hide" tapmode onclick="hide()"></em></h5>
+			<div class="aui-row" id="html">
+				<img src="../image/loading.gif" id="loading" />
+			</div>
+		</section> -->
+		<!--<section class="aui-grid" id="searchList" >
+		<script id="fx-list" type="text/x-dot-template">
+		{{? it.length}}
+		<ul class="aui-list aui-list-in">
+		{{ for(var i=0,len=it.length; i < len; i++) { }}
+		<li class="aui-list-item">
+		<div class="aui-list-item-label-icon">
+		<i class="aui-iconfont aui-icon-search"></i>
+		</div>
+		<div class="aui-ellipsis-1 aui-list-item-inner">
+		{{= it[i].title}}
+		</div>
+		</li>
+		{{ } }}
+		</ul>
+		{{?}}
+		<img src="../image/loading.gif" id="loading" />
+		{{?}}
+		</script>
+		<div id="fx-view"></div>
+		</section>-->
+		<section class="fx-list" id="searchList" style="display: none">
+			<div class="aui-grid aui-border-b">
+				<div class="aui-row fx-tab">
+					<div class="aui-col-xs-3 hover" id="tab0" tapmode onclick="randomSwitchBtn(0)">
+						<div class="aui-grid-label">
+							综合
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="tab1" tapmode onclick="randomSwitchBtn(1)">
+						<div class="aui-grid-label">
+							文章
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="tab2" tapmode onclick="randomSwitchBtn(2)">
+						<div class="aui-grid-label">
+							图片
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="tab3" tapmode onclick="randomSwitchBtn(3)">
+						<div class="aui-grid-label">
+							视频
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+	<script type="text/javascript" src="../script/zepto.js"></script>
+	<script type="text/javascript" src="../script/dot.js"></script>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/ffxiang.js"></script>
+	<script type="text/javascript" src="../script/gz.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			console.log(api.pageParam['w'])
+			view()
+			// 监听夜间
+			api.addEventListener({
+			    name: 'yejian'
+			}, function(ret, err) {
+				if(ret){
+					_yejians();
+				}
+			});
+			tj();
+
+			api.addEventListener({
+			    name: 'shifdakai'
+			}, function(ret, err) {
+				var text=ret.value.text;
+				resultLists(text)
+			    // api.refreshHeaderLoading();
+			});
+		}
+
+		//推荐文章
+		function tj(){
+			_ajaxNT('api/article/tuijian', function(ret, err){
+				var evalData = doT.template($api.html($api.byId('fx-tj')));
+				$api.append($api.byId('fx-tjview'), evalData(ret));
+				_imageCache();
+				api.parseTapmode();
+			})
+		}
+
+		function view() {
+			if(api.pageParam['text']){
+				resultLists(api.pageParam['text'])
+				api.execScript({
+					script : 'title("'+api.pageParam['text']+'")'
+				});
+			}else{
+				// 搜索记录
+				var searchText = $api.getStorage('searchText');
+				if (searchText) {
+					var textHtml = "";
+					if (searchText.indexOf(",") > 0) {
+						var strs = new Array();
+						strs = searchText.split(",");
+						for (var i = 0; i < strs.length; i++) {
+							textHtml += '<div class="aui-col-xs-6 aui-border-r" tapmode onclick=\'key("'+strs[i]+'")\'>';
+							textHtml += '<div class="aui-grid-label aui-ellipsis-1 asdasd123">' + strs[i] + '</div>';
+							textHtml += '</div>';
+						}
+					} else {
+						textHtml += '<div class="aui-col-xs-6 aui-border-r" tapmode onclick=\'key("'+searchText+'")\'>';
+						textHtml += '<div class="aui-grid-label aui-ellipsis-1">' + searchText+ '</div>';
+						textHtml += '</div>';
+					}
+					$('#textHtml').html(textHtml);
+				}
+				// 推荐词
+				_ajax('api/article/hot_words', function(ret, err) {
+					var html = "";
+					if (ret) {
+						for (var i = 0; i < ret.length; i++) {
+							html += '<div class="aui-col-xs-6 aui-border-r" tapmode onclick="key(\''+ret[i].title+'\')">';
+							html += '<div class="aui-grid-label aui-ellipsis-1">' + ret[i].title + '</div>';
+							html += '</div>';
+						}
+					} else {
+						html += '<h6 class="aui-text-center aui-padded-15 aui-font-size-14">暂无推荐词</h6>'
+					}
+					$('#html').html(html);
+				})
+			}
+		}
+		function hide() {
+			$('.fx-chakan').show();
+			$('.remen').hide();
+			$('#html').hide();
+		}
+
+		function show() {
+			$('.fx-chakan').hide();
+			$('.remen').show();
+			$('#html').show();
+		}
+
+		function del() {
+			$('#textHtml').html();
+			$('#lishi').hide();
+			api.execScript({
+				script : 'del()'
+			});
+		}
+
+		function searchList(data) {
+			$('#lishi').hide();
+			$('#tuijian').hide();
+			$('#fx-tj-c').hide();
+			// $('#fx-tjview').hide();
+//			var evalData = doT.template($('#fx-list').html());
+			//$('#fx-view').html(evalData(data))
+			$('#searchList').show();
+		}
+
+		function lishi() {
+			$('#lishi').show();
+			$('#tuijian').show();
+			$('#searchList').hide();
+		}
+		// 搜索结果列表
+		var shifdakai=0;
+		function resultLists(text){
+			searchList()
+			var frames = [];
+			for (var i = 0; i < 4; i++) {
+				var frame = {};
+				frame.name = i;
+				frame.url =  '../html/search_frame.html';
+				frame.pageParam = {
+					mychannel : i,
+					text:text,
+				};
+				frame.bgColor = '#fff';
+				frames.push(frame);
+			}
+			openFrameGroup(frames)
+		}
+		function openFrameGroup(frames) {
+			var header = $api.byId('searchList');
+			var header = $api.offset(header);
+			console.log(api.pageParam['w']);
+			console.log(api.winHeight);
+			api.openFrameGroup({
+				name : 'search',
+				scrollEnabled : true,
+			 
+				rect : {
+					x : 0,
+					y : header.h+api.pageParam['w'],
+					w : 'auto',
+					// h : api.winHeight-header.h-api.pageParam['w']
+					h: 'auto',
+					marginBottom:0
+				},
+				index : 0,
+				frames : frames,
+				preload : 0, // 预加载的 frame 个数，默认加载当前页后面一个
+				bgColor : '#fff'
+			}, function(ret, err) {
+				var index = ret.index;
+				active(index)
+			});
+			shifdakai=1;
+		}
+		// 点击分类栏目时，设置 frame 组当前可见 frame
+		function randomSwitchBtn(index) {
+			active(index)
+			api.setFrameGroupIndex({
+				name : 'search',
+				index : index,
+				scroll : true, //是否平滑滚动至目标窗口，即是否带有动画
+			});
+		}
+
+		// 点击样式
+		function active(index) {
+			$api.removeCls($api.dom(".fx-tab .hover"), 'hover');
+			$api.addCls($api.byId('tab' + index), 'hover');
+		}
+		// 关键关键词搜索
+		function key(text){
+			if(!text){
+				_msg("请输入关键词搜索")
+				return;
+			}
+			var key='key("'+text+'")';
+			api.execScript({
+				script : key
+			});
+		}
+	</script>
+</html>

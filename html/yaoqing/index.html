@@ -1,0 +1,336 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no" />
+	<title>放飞科技</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/yaoqing.css" />
+	<style>
+		html,
+		body {
+			background: #fff;
+			-webkit-user-select: text;
+		}
+
+		.sx-view .sx-yq-list-2:nth-child(1) div:nth-child(1) {
+			background: url('../../image/yaoqing/top_icon1_2.png') no-repeat center;
+			background-size: 25% 100%;
+			text-indent: -9999px;
+		}
+
+		.sx-view .sx-yq-list-2:nth-child(2) div:nth-child(1) {
+			background: url('../../image/yaoqing/top_icon2_2.png') no-repeat center;
+			background-size: 25% 100%;
+			text-indent: -9999px;
+		}
+
+		.sx-view .sx-yq-list-2:nth-child(3) div:nth-child(1) {
+			background: url('../../image/yaoqing/top_icon3_2.png') no-repeat center;
+			background-size: 25% 100%;
+			text-indent: -9999px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="aui-content sx-yq-1">
+		<div class="sx-yq-2">
+			<div class="sx-yq-btn" tapmode onclick="fenxiang()">立即收徒</div>
+			<p id="target" tapmode onclick="_url({url:'yaoqing/about',title:'收徒奖励'})">我的邀请码： <b id="target"></b> </p>
+			<span id="copy_btn" data-clipboard-target="#target">复制</span>
+		</div>
+
+		<div class="sx-yq-3" tapmode onclick="_url({url:'about',id:'3',title:'如何收徒'})">
+			如何收徒
+		</div>
+		<div class="sx-yq-4" tapmode onclick="_url({url:'about',id:'4',title:'奖励规则'})">
+			奖励规则
+		</div>
+	</div>
+	<div class="aui-content sx-yq-5">
+		<div class="aui-tab">
+			<div class="aui-tab-item aui-active" data-id='1' data-list='1'>收益总榜</div>
+			<div class="aui-tab-item" data-id='2' data-list='0'>我的收徒</div>
+			<div class="aui-tab-item" data-id='3' data-list='0'>奖励明细</div>
+		</div>
+		<div class="sx-tab-list sx-yq-list1">
+			<div class="aui-card-list-footer sx-yq-list-1">
+				<div>排名</div>
+				<div>用户昵称</div>
+				<div>收徒数</div>
+				<div>收入(元)</div>
+			</div>
+			<div class="sx-view">
+				<div id="jiazai">
+					<img src="../../image/loading_more.gif" />
+				</div>
+			</div>
+
+		</div>
+		<div class="sx-tab-list sx-yq-list2" style=" display: none;">
+			<div class="aui-card-list-footer sx-yq-list2-1">
+				<div>昵称</div>
+				<div>加入时间</div>
+			</div>
+			<div class="sx-view">
+				<div id="jiazai">
+					<img src="../../image/loading_more.gif" />
+				</div>
+			</div>
+		</div>
+		<div class="sx-tab-list sx-yq-list3" style=" display: none;">
+			<ul class="sx-view aui-list aui-media-list">
+				<div id="jiazai">
+					<img src="../../image/loading_more.gif" />
+				</div>
+			</ul>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/fastclick.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/ffxiang.js"></script>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/clipboard.js"></script>
+<script src="../../script/newsshare.js"></script>
+<script type="text/javascript">
+	var name = 'zongbang',
+		type = tabList1 = tabList2 = tabList3 = 1,
+		heigutgao = 0,
+		Gao1 = Gao2 = Gao3 = 0,
+		fx_data;
+
+
+
+
+	apiready = function () {
+		_config = $api.getStorage('config');
+		//console.log(api.winName+api.frameName)
+		$('.sx-yq-1 b').html(_user.id);
+
+		list();
+		_shangla(function (ret, err) {
+			// 递增页面
+			switch (type) {
+				case 2:
+					tabList2 = 1
+					break;
+				case 3:
+					tabList3 = 1
+					break;
+				default:
+					tabList1 = 1
+			}
+			list()
+		}, 1)
+
+		FastClick.attach(document.body);
+		// tab点击
+		$(function () {
+			$('.aui-tab .aui-tab-item').click(function () {
+				heigutgao = 0;
+				var _this = $(this);
+				$('.aui-active').removeClass('aui-active');
+				_this.addClass('aui-active');
+				type = _this.data('id');
+				$('.sx-tab-list').hide();
+				$('.sx-yq-list' + type).show();
+				// data-list= 0 未打开 1已打开
+				var dada_list = _this.data('list');
+				if (!dada_list) {
+					_this.data('list', 1)
+					list();
+				}
+			})
+
+
+
+		})
+
+		// 监听滚动
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+				threshold: threshold //设置距离底部多少距离时触发，默认值为0，数字类型
+			}
+		}, function (ret, err) {
+
+			if (Gao1 == 1 && type == 1) {
+				Gao1 = 0
+				tabList1 = tabList1 + 1
+				list(tabList1)
+			} else if (Gao2 == 1 && type == 2) {
+				Gao2 = 0
+				tabList2 = tabList2 + 1
+				list(tabList2)
+			} else if (Gao3 == 1 && type == 3) {
+				Gao3 = 0
+				tabList3 = tabList3 + 1
+				list(tabList3)
+			}
+
+		});
+	}
+
+
+	function list(pages) {
+		pages = pages ? pages : 1;
+		_ajax('api/yaoqing/' + _name() + '?page=' + pages, function (ret, err) {
+			if (ret) {
+				console.log(JSON.stringify(ret))
+				_loadingClose()
+				var _this = $('.sx-yq-list' + type + ' .sx-view');
+				page_total = ret.total
+				if (!page_total) {
+					_this.html('<div id="tishi">暂无数据</div>');
+					return;
+				}
+				// 获取得到数据线删除底部加载提示
+				if (pages != 1) {
+					$('.sx-yq-list' + type + ' .sx-view .fx-dibu_loading').remove();
+				}
+
+				console.log(pages)
+				var html = ''
+				for (var i = 0; i < ret.data.length; i++) {
+					if (type == 2) {
+						html += '<div class="aui-card-list-footer sx-yq-list2-2">';
+						html += '<div>' + ret.data[i].username + '</div>';
+						html += '<div>' + ret.data[i].time + '</div>';
+						html += '</div>';
+					} else if (type == 3) {
+						html += '<li class="aui-list-item">';
+						html += '<div class="aui-media-list-item-inner">';
+						html += '<div class="aui-list-item-inner">';
+						html += '<div class="aui-list-item-text">';
+						html += '<div class="aui-list-item-title">' + ret.data[i].username + '</div>';
+						html += '<div class="aui-list-item-right">' + ret.data[i].time + '</div>'
+						html += '</div>';
+						html += '<div class="aui-list-item-text aui-ellipsis-1">' + ret.data[i].content + '</div>';
+						html += '</div>';
+						html += '</div>';
+						html += '</li>';
+					} else {
+						html += '<div class="aui-card-list-footer sx-yq-list-2">';
+						html += '<div>' + (((pages - 1) * 10) + i + 1) + '</div>';
+						html += '<div>' + ret.data[i].username + '</div>';
+						html += '<div>' + ret.data[i].tudi_num + '</div>';
+						html += '<div>' + ret.data[i].money_num + '</div>';
+						html += '</div>';
+					}
+				}
+
+				// 插入底部加载提示
+				page_per_page = Math.ceil(page_total / ret.per_page);
+				if (page_per_page <= pages) {
+					// 递增页面
+					switch (type) {
+						case 2:
+							Gao2 = 0
+							break;
+						case 3:
+							Gao3 = 0
+							break;
+						default:
+							Gao1 = 0
+					}
+					html += '<div id="loadingNo">底部没有数据了...</div>';
+				} else {
+					// 递增页面
+					switch (type) {
+						case 2:
+							Gao2 = 1
+							break;
+						case 3:
+							Gao3 = 1
+							break;
+						default:
+							Gao1 = 1
+					}
+					html += '<div class="fx-dibu_loading load-container loadingdi"><div class="loader">loadingdi...</div></div>';
+				}
+
+				if (pages == 1 || !pages) {
+					_this.html(html);
+				} else {
+					_this.append(html);
+				}
+
+
+			} else {
+				_msg('出错啦，等会再试吧');
+				console.log(JSON.stringify(err));
+			}
+		})
+	}
+	// 链接
+	function _name() {
+		switch (type) {
+			case 2:
+				name = 'zongbang/type/2'
+				break;
+			case 3:
+				name = 'mingxi'
+				break;
+			default:
+				name = 'zongbang'
+		}
+		//	console.log(name)
+		return name;
+	}
+	// 2018年3月1日 12:49:24
+	function fenxiang() {
+		if (!$api.getStorage('user')) {
+			_login();
+			return;
+		}
+
+		//			 alert($api.jsonToStr(_config));
+		fx_data = {
+			title: _config.yaoqing.fenxiang_title,
+			description: _config.yaoqing.fenxiang_content,
+			img: 'widget://image/logo.png',
+			url: fx_url + 'm/yaoqing/uid/' + $api.getStorage('user').id
+		}
+
+		if ($api.getStorage('app') == 1) {
+			// 上架显示
+			var sharedModule = api.require('shareAction');
+			sharedModule.share({
+				text: fx_data.title + fx_data.description,
+				type: 'text'
+			});
+			return;
+		}
+		newsShare(fx_data);
+	}
+	
+	$(function () {
+		$('#copy_btn').on('click', function (e) {
+			var clipboard = new ClipboardJS('#copy_btn', {
+				text: function (trigger) {
+					return _user.id; // 返回需要复制的内容
+				}
+			});
+			clipboard.on('success', function (e) {
+				console.log(JSON.stringify(e));
+				api.toast({
+					msg: '复制成功'
+				})
+			});
+			clipboard.on('error', function (e) {
+				console.log(e);
+				api.toast({
+					msg: '复制失败'
+				})
+			});
+		})
+	})
+</script>
+
+</html>

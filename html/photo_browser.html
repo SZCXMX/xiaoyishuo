@@ -1,0 +1,322 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<title>APP</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<style type="text/css">
+		body {
+			background-color: rgba(0, 0, 0, 0) !important;
+		}
+	</style>
+</head>
+
+<body></body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script src="../script/newsshare.js"></script>
+<script type="text/javascript">
+	var photoBrowser, tool_show = true,
+		images_list, images_text, photoBrowser, MNActionButton, inputField;
+	apiready = function () {
+		_config = $api.getStorage('config');
+		api.addEventListener({
+			name: 'viewappear'
+		}, function (ret, err) {
+			_heibai()
+			api.setFullScreen({
+				fullScreen: false
+			});
+			// 每天阅读次数奖励
+			setTimeout(function () {
+				_daily({ name: 'money_news',id:  api.pageParam['id']})
+			}, _config.yaoqing.money_news_time)
+		});
+		// 图片模块
+		photoBrowser = api.require('photoBrowser');
+		// 分享模块
+		MNActionButton = api.require('MNActionButton');
+		// 输入框模块
+		inputField = api.require('inputField');
+		inputField.setInputFieldListener(function (ret, err) {
+			if (ret) {
+				//_msg(JSON.stringify(ret))
+				if (ret.eventType == 'move') {
+					if (ret.chatViewH == 0 || ret.chatViewH == -1) {
+						inputField.hide();
+						inputField.resignFirstResponder();
+					}
+				}
+			} else {
+				_msg(JSON.stringify(err));
+			}
+		});
+		api.parseTapmode();
+		photo_browser(0)
+	}
+	// 图片
+	function photo_browser(index) {
+		_loading();
+		_ajax('api/article/view', function (ret, err) {
+			_loadingClose();
+			console.log(JSON.stringify(ret))
+			if (ret) {
+				var view = ret
+				fx_data = dealShareContent(ret);
+				api.imageCache({
+					url: fx_data.img,
+					thumbnail: false,
+				}, function (ret, err) {
+					if (ret) {
+						if (ret.status) {
+							fx_data.img = ret.url
+						}
+						//console.log(JSON.stringify(ret)+JSON.stringify(err))
+					}
+				});
+				images_list = ret.images_list
+				images_text = ret.images_text
+				var images = images_list;
+				// 文字数可以少于图片数
+				var texts = images_text;
+				var comment_num = ret.pingNum;
+				// 评论数量
+				photoBrowser.open({
+					images: images,
+					bgColor: '#000',
+					activeIndex: index,
+					mode:2,
+				}, function (ret, err) {
+					if (ret) {
+						//console.log(JSON.stringify(ret));
+						if (ret.eventType == 'show') { // 打开图片浏览器上的底部工具栏
+							api.openFrame({
+								name: 'photo_browser_foot',
+								url: '../html/photo_browser_foot.html',
+								rect: {
+									x: 0,
+									y: api.winHeight, // 这里传win的高是为了打开后先不显示Frame，让Frame自己设置自己的高
+									w: 'auto',
+									h: 'auto'
+								},
+								bgColor: 'rgba(0,0,0,0.0)',
+								pageParam: {
+									winHeight: api.winHeight,
+									index: index, // 这里不用 ret.index 原因是 show 事件时，模块没有回调 ret.index
+									total: images.length,
+									texts: texts,
+									comment_num: comment_num,
+									view: view
+								}
+							});
+							api.openFrame({
+								name: 'photo_browser_header',
+								url: '../html/photo_browser_header.html',
+								rect: {
+									x: 0,
+									y: 0, // 这里传win的高是为了打开后先不显示Frame，让Frame自己设置自己的高
+									w: 'auto',
+									h: 0
+								},
+								bgColor: 'rgba(0,0,0,0.0)',
+								pageParam: {
+									winHeight: api.winHeight,
+									view: view
+								}
+							});
+						}
+						if (ret.eventType == 'click') { // 点击时显示或隐藏
+							inputField.hide();
+							inputField.resignFirstResponder();
+							if (tool_show) { // 隐藏
+								api.setFrameAttr({
+									name: 'photo_browser_foot',
+									hidden: true
+								});
+								api.setFrameAttr({
+									name: 'photo_browser_header',
+									hidden: true
+								});
+								api.setFullScreen({
+									fullScreen: true
+								});
+								tool_show = false;
+							} else { // 显示
+								api.setFrameAttr({
+									name: 'photo_browser_foot',
+									hidden: false
+								});
+								api.setFrameAttr({
+									name: 'photo_browser_header',
+									hidden: false
+								});
+								api.setFullScreen({
+									fullScreen: false
+								});
+								tool_show = true;
+							}
+						}
+						if (ret.eventType == 'change') { // 首次加载或换图片时改变 photo_browser_foot 中的简介
+							api.execScript({
+								frameName: 'photo_browser_foot',
+								script: 'set_frame_attr(' + ret.index + ', ' + tool_show + ');'
+							});
+						}
+						if (ret.eventType == 'longPress') { // 长按保存图片
+							photoBrowser.getImage({
+								index: ret.index
+							}, function (ret_getImage, err_getImage) {
+								if (ret_getImage) {
+									console.log(JSON.stringify(ret_getImage));
+									api.actionSheet({
+										cancelTitle: '取消',
+										buttons: ['分享这张图片', '保存图片']
+									}, function (ret_actionSheet, err_actionSheet) {
+										if (ret_actionSheet.buttonIndex == 1) { // 分享此图片
+											api.toast({
+												msg: '自己写分享图片的代码',
+												duration: 2000,
+												location: 'middle'
+											});
+										} else if (ret_actionSheet.buttonIndex == 2) { // 保存图片
+											api.saveMediaToAlbum({
+												path: ret_getImage.path
+											}, function (ret_saveImage, err_saveImage) {
+												if (ret_saveImage && ret_saveImage.status) {
+													api.toast({
+														msg: '图片保存成功',
+														duration: 2000,
+														location: 'middle'
+													});
+												} else {
+													console.log(JSON.stringify(err_saveImage));
+												}
+											});
+										}
+									});
+								} else {
+									console.log(JSON.stringify(err_getImage));
+								}
+							});
+						}
+					} else {
+						console.log(JSON.stringify(err));
+					}
+				});
+				// 安卓手机按返回键的时候关闭图片浏览器（由于）api.addEventListener 和 api.removeEventListener 需要在win上执行才有效，所以代码才写成这样
+				api.execScript({
+					script: 'api.addEventListener({name:"keyback"}, function(ret, err) {api.execScript({frameName: "photo_browser",script: "close_photo_browser();"});});'
+				});
+			}
+		}, {
+			id: api.pageParam['id']
+		})
+	}
+
+	function close_photo_browser() {
+		photoBrowser.close();
+		api.closeFrame({
+			name: 'photo_browser_header'
+		});
+		api.closeFrame({
+			name: 'photo_browser_foot'
+		});
+		api.execScript({
+			script: 'api.removeEventListener({name: "keyback"});'
+		});
+		api.setFullScreen({ // 这里要关闭全屏的目的是防止安卓在全屏浏览图片时按返回键
+			fullScreen: false
+		});
+	}
+	var pingAddPen = 1;
+	//用来判断打开输入框   1 使用open打开  2 使用显示
+	function pingAdd() {
+		if (!_user) {
+			_login();
+			return;
+		}
+		if (pingAddPen == 1) {
+			pingAddPen = 2;
+			inputField.open({
+				bgColor: '#fff',
+				lineColor: '#D8D8D8',
+				fileBgColor: '#f5f5f5',
+				borderColor: '#F4F5F6',
+				//					sendImg : 'widget://res/img/sendImg.png',
+				autoFocus: true,
+				placeholder: '优质评论将会被优先展示',
+				placeholderStyles: {
+					color: '#bbb', //字符串类型；占位文字颜色，支持rgb、rgba、#；默认：#696969
+					size: 14, //数字类型；占位文字大小；默认：13
+					marginL: 5 //数字类型；占位文字距离左边的大小；默认：5
+				},
+				maxLines: 3,
+				sendBtn: {
+					bg: '#03a9f4', //字符串类型；发送按钮常态背景色
+					bgHighlight: '#0287BF', //字符串类型；发送按钮点击时的高亮背景色
+					title: '发送', //字符串类型；发送按钮的标题
+					titleSize: '14', //数字类型；发送按钮的标题字体大小
+					titleColor: '#fff', //字符串类型；发送按钮标题文字颜色
+					corner: 5 //数字类型；发送按钮圆角大小
+				},
+			}, function (ret, err) {
+				if (ret) {
+					if (ret.msg == '') {
+						_msg('请输入评价');
+					} else {
+						pingAddTent(ret.msg);
+						inputField.hide();
+						inputField.resignFirstResponder();
+					}
+				} else {
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			});
+		} else {
+			inputField.becomeFirstResponder(function (ret, err) {
+				if (ret.status) {
+					setTimeout(function () {
+						inputField.show();
+					}, 500)
+				} else {
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			});
+		}
+	}
+	// 插入评论
+	function pingAddTent(text) {
+		if (!_user) {
+			_login();
+			return;
+		}
+		if (text) {
+			_ajax('api/member/ping', function (ret, err) {
+				if (ret) {
+					if (ret.ret) {
+						_msg('评价成功')
+					} else {
+						_msg('评价失败')
+					}
+				}
+			}, {
+				aid: api.pageParam['id'],
+				content: text
+			})
+		}
+	}
+	// 分享按钮
+	function fenxiang() {
+
+		newsShare(fx_data);
+	}
+	
+	
+</script>
+
+</html>

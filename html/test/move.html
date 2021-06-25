@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>放飞科技</title>
+    <style type="text/css">
+        .gridly {
+            position: relative;
+            width: 960px;
+        }
+
+        .brick.small {
+            width: 140px;
+            height: 140px;
+            background: red;
+        }
+
+        .brick.large {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="gridly">
+        <div class="brick small"></div>
+        <div class="brick small"></div>
+        <div class="brick large"></div>
+        <div class="brick small"></div>
+        <div class="brick small"></div>
+        <div class="brick large"></div>
+        <div class="brick small"></div>
+        <div class="brick small"></div>
+        <div class="brick large"></div>
+        <div class="brick small"></div>
+        <div class="brick small"></div>
+        <div class="brick large"></div>
+    </div>
+
+</body>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/gridly.js"></script>
+<script>
+    $('.gridly').gridly({
+        base: 60, // px 
+        gutter: 20, // px
+        columns: 12
+    });
+</script>
+
+</html>

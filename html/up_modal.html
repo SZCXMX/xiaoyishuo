@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>说明</title>
+    <!-- <link rel="stylesheet" href="../css/api.css"> -->
+    <style>
+        .hhr-modal-bg {
+            width: 100%;
+            height: 100%;
+            background: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .hhr-modal-bg.hidden {
+            display: none;
+        }
+
+        .hhr-modal {
+            /* padding-top: 15px; */
+            border-radius: 8px;
+            position: absolute;
+            width: 80%;
+            /* margin: 0 15%; */
+            left: 50%;
+            margin-left: -40%;
+            background: #fff;
+            min-height: 100px;
+            margin-top: -75px;
+            top: 40vh;
+        }
+
+        .content span {
+            background: none !important;
+        }
+
+        .hhr-modal .title {
+            text-align: center;
+            /* line-height: 40px; */
+            font-size: 16px;
+            /* display: none; */
+        }
+        .hhr-modal .title img {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+        }
+        .hhr-modal .content {
+            /* max-height: 290px; */
+            /* overflow-y: auto; */
+            font-size: 14px;
+            padding: 10px;
+            line-height: 40px;
+            text-align: center;
+        }
+
+        .wrap {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .btn {
+            width: 50%;
+            color: #d0b183;
+            font-size: 14px;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            border: 0;
+            outline: none;
+            background: #fff;
+            border-radius: 0px 0px 5px 5px;
+            border-top: 1px solid #eee;
+        }
+
+        button {
+            margin: 0px;
+            padding: 0px;
+            line-height: 40px;
+        }
+
+        ul,
+        li {
+            list-style: none;
+        }
+
+        ul {
+            margin: 0px;
+            padding: 0px;
+            display: flex;
+            border-top: #eee 1px solid;
+        }
+
+        ul.btn {
+            display: none;
+        }
+
+        ul li {
+            width: 50%;
+            line-height: 40px;
+            text-align: center;
+            color: #db0003;
+        }
+
+        ul li.line {
+            color: #717171;
+            border-right: 1px solid #eee;
+        }
+
+        /* .hhr-modal .content textarea {border: none;outline: none;} */
+    </style>
+</head>
+
+<body>
+    <div class="hhr-modal-bg"></div>
+    <div class="hhr-modal">
+        <div class="wrap">
+            <p class="title"><img src="../image/logo.png" alt=""></p>
+            <div class="content">检测到有新的版本,是否下载并安装？</div>
+            <ul>
+
+                <li class="line" tapmode onclick="closeModal();">取消</li>
+                <li tapmode onclick="submit();">确认</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/ffxiang.js"></script>
+<script>
+    var appurl = '';
+    var must = 0;
+    apiready = function () {
+        appurl = api.pageParam['appurl'];
+        must = api.pageParam['must'];
+    }
+
+    // 关闭
+    function closeModal() {
+        console.log(must)
+        if(must == 1){
+            api.closeWidget({
+                silent: true
+            });
+        }else{
+            api.closeFrame()
+        }
+    }
+
+    // 下载新版本
+    function submit() {
+        api.execScript({
+            name: 'ffxiang_win',
+            script: 'downNewVersion(\'' + appurl + '\', '+must+')'
+        })
+    }
+</script>
+
+</html>

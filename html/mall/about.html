@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>常见问题</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	</head>
+	<style>
+		.aui-content {
+			background: #fff;
+		}
+		.ps {
+			background: #f4f4f4;
+			line-height: 22px;
+			font-size: 1.0em;
+			display: none
+		}
+		.aui-arrow-rights, .ps {
+			padding: 10px;
+		}
+		.aui-list-view-cell {
+			padding: 0px;
+		}
+		.active .ps {
+			display: block
+		}
+	</style>
+	<body>
+		<div class="aui-content">
+			<ul class="aui-list-view"></ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js" ></script>
+	<script type="text/javascript" src="../../script/ffxiangmall.js" ></script>
+	<script type="text/javascript">
+		var htmlg = '';
+		apiready = function() {
+			_heibai(1)
+	 		_loading()
+			api.ajax({
+cache:true,
+				url : fx_url + '/api/app/about',
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+			}, function(ret, err) {
+				_loadingClose()
+				if (ret) {
+					for (var i = 0; i < ret.length; i++) {
+						var asd = i + 1;
+						var html = '<li class="aui-list-view-cell" id="cla' + i + '" tapmode onclick="ckasodj(this)">'
+						html += '<div class="aui-arrow-rights aui-ellipsis-1">' + asd + '、' + ret[i].title + '</div>';
+						html += '<div class="ps">' + ret[i].content + '</div></li>';
+						htmlg = htmlg + html;
+					}
+					$api.html($api.dom('.aui-list-view'), htmlg);
+					api.parseTapmode();
+				} else {
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			 
+			});
+			
+		}
+		function ckasodj(jos) {
+			if($api.hasCls(jos, 'active')){
+				$api.removeCls(jos, 'active');
+				return false;
+			}
+			$api.removeCls($api.dom(".active"), 'active');
+			$api.addCls(jos, 'active');
+		}
+	</script>
+</html>

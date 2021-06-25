@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>我要提现</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul,
+        li {
+            list-style: none;
+        }
+
+        .content-c {
+            padding: 0 15px;
+        }
+
+        .yue {
+            display: flex;
+            display: -webkit-flex;
+            padding: 15px 10px;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .yue .left {
+            display: flex;
+            flex-direction: column;
+            width: 70%;
+        }
+
+        .yue .left span {
+            font-size: 10px;
+        }
+
+        .yue .left b:nth-child(1) {
+            font-size: 25px;
+            color: #000;
+        }
+
+        .yue .right {
+            align-self: center;
+            width: 30%;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+        }
+
+        .yue img {
+            width: 12px;
+            height: 12px;
+        }
+
+
+        .content .content-c ul {
+            margin: 15px 0;
+        }
+
+        .content .content-c p {
+            font-size: 14px;
+        }
+
+        .content .content-c li.select {
+            border: 1px solid #f7c032;
+        }
+
+        .content .content-c li .tri {
+            display: none;
+            width: 0;
+            height: 0;
+            border-width: 0 0 20px 20px;
+            border-style: solid;
+            border-color: transparent transparent transparent #f7c032;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .content .content-c li.select .tri {
+            display: block;
+        }
+
+        .content .content-c li.select .tri img {
+            width: 10px;
+            height: 10px;
+            /* vertical-align: middle; */
+            /* align-self: center; */
+            left: -20px;
+            top: 0;
+            position: absolute;
+
+        }
+
+        .txfs,
+        .txje {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .txfs .btn {
+            width: 48%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 40px;
+            line-height: 40px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            align-items: center;
+        }
+
+        .txfs .btn small {
+            font-size: 10px;
+            border: 1px solid red;
+            border-radius: 2px;
+            margin-left: 5px;
+            height: 15px;
+            line-height: 15px;
+            color: red;
+            -webkit-transform-origin-x: 0;
+            -webkit-transform: scale(0.90);
+        }
+
+        .txfs .btn img {
+            width: 25px;
+            height: 25px;
+            vertical-align: middle;
+            align-self: center;
+        }
+
+        .txje .btn {
+            width: 30%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 40px;
+            line-height: 40px;
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            position: relative;
+        }
+        /* 注意事项 */
+        .zysx {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .zysx p {
+            font-size: 14px;
+        }
+
+        .zysx li span {
+            color: red;
+        }
+
+        .modal-bg.show {
+            display: block;
+        }
+
+        .modal-bg {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+        }
+
+        .modal-content .modal-hidden.show {
+            display: block;
+        }
+
+        .modal-content .modal-hidden {
+            display: none;
+        }
+
+        .modal-content .modal {
+            background: #fff;
+            width: 100%;
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: column;
+            align-items: center;
+            bottom: 0;
+            padding: 10px 0;
+            position: absolute;
+            z-index: 9999;
+
+        }
+
+        .modal-content .modal img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .modal-content .modal p {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .modal-content .modal button {
+            border: 1px solid #f7c032;
+            border-radius: 20px;
+            /* height: 30px;
+            line-height: 30px; */
+            height: 40px;
+            line-height: 40px;
+            width: 50%;
+            margin: 20px 0;
+            /* font-size: 14px; */
+            font-size: 16px;
+            color: #f7c032;
+            background: #fff;
+            outline: none;
+        }
+
+        .modal.modal-tx {
+            padding: 0;
+            position: fixed;
+            bottom: 0;
+        }
+
+        .modal.modal-tx ul {
+            width: 100%;
+        }
+
+        .modal.modal-tx ul li {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modal.modal-tx ul li:nth-child(3) {
+            border: none;
+        }
+
+        .modal.modal-tx input {
+            width: 96%;
+            border: none;
+            height: 50px;
+            line-height: 50px;
+            outline: none;
+            padding: 0 2%;
+            background: #fff;
+        }
+
+        .modal.modal-tx ul li button {
+            margin: 20px 25%;
+        }
+        .modal-bdwx{
+            font-size: 14px;
+            color: #757575;
+        }
+        .modal-bdwx .modal.modal-tx input{
+            width: 100%;
+            padding: 0;
+            margin:0;
+        }
+        .modal-bdwx input{
+            text-align: center;
+            -webkit-appearance:none;
+        }
+        .modal-bdwx input::placeholder{
+            color: #757575;
+        }
+        .modal-bdwx #ewm-img input{
+            color: #757575;
+        }
+        .modal-bdwx .modal-tx li.fs-name>input::-webkit-input-placeholder {
+            text-align: center;
+        }
+
+        .modal-bdwx #ewm-img img {
+            width: 40%;
+            margin: 5px 30%;
+        }
+
+        .modal-bdwx #ewm-img .hidden {
+            display: none;
+        }
+
+        footer {
+            position: fixed;
+            height: 40px;
+            line-height: 40px;
+            width: 100%;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            bottom: 0px;
+            padding: 15px 0;
+            background: #fff;
+        }
+
+        footer button {
+            width: 80%;
+            background: #f7c032;
+            color: #fff;
+            outline: none;
+            height: 40px;
+            border: none;
+            line-height: 40px;
+            border-radius: 25px;
+            text-align: center;
+            outline: none;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="yue">
+            <div class="left">
+                <span>当前余额</span>
+                <span>￥
+                    <b>0</b>
+                </span>
+            </div>
+            <div class="right" tapmode onclick="_url({url:'yaoqing/mall',title:'兑换提现'},'',true)">
+                <img src="../../image/shangcheng.png" alt=""> 商城
+            </div>
+        </div>
+        <div class="content-c">
+            <p>提现方式</p>
+            <ul class="txfs tx">
+                <li class="btn select">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <img src="../../image/share/6.png" alt="">
+                    <span class="tx-name">支付宝</span>
+                    <small>推荐</small>
+                </li>
+                <li class="btn">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <img src="../../image/share/2.png" alt="">
+                    <span class="tx-name">微信</span>
+                </li>
+            </ul>
+            <p>提现金额</p>
+            <ul class="txje tx">
+                <li class="btn select">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <span class="tx-name">30元</span>
+                </li>
+                <!-- <li class="btn select">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <span class="tx-name">30元</span>
+                </li> -->
+                <li class="btn">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <span class="tx-name">80元</span>
+                </li>
+                <li class="btn">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <span class="tx-name">150元</span>
+                </li>
+                <li class="btn">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <span class="tx-name">50元</span>
+                </li>
+                <li class="btn">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <span class="tx-name">100元</span>
+                </li>
+                <li class="btn">
+                    <span class="tri">
+                        <img src="../../image/select.png" alt="">
+                    </span>
+                    <span class="tx-name">500元</span>
+                </li>
+
+            </ul>
+            <div class="zysx">
+                <p>注意事项</p>
+                <li>1.最低提现<span>30元</span>，提现申请将在
+                    <span>72小时内</span>审批到账; 如遇高峰期，可能延迟到账，烦请耐心等待</li>
+                <li>2.请及时关注 ‘我的->兑换提现->兑换记录’ 查看兑换记录状态</li>
+                <li>3.提现到账查询：支付宝->我的->账单，如果有名称为 ‘天天头条提现成功’ 的数据，即提现成功到账！</li>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-bg"></div>
+    <div class="modal-content">
+        <!-- 绑定手机号 -->
+        <div class="modal-hidden modal-sj">
+            <div class="modal">
+                <img src="../../image/d01.png" alt="">
+                <p>本应用提现需绑定手机号</p>
+                <button tapmode onclick="_url({url:'member/xg_sj',title:'设置手机号'},'',true)">立即绑定</button>
+            </div>
+        </div>
+        
+        <!-- 绑定支付宝 -->
+        <div class="modal-hidden modal-zfb">
+            <div class="modal">
+                <img src="../../image/d01.png" alt="">
+                <p>支付宝账号未绑定</p>
+                <button class="bd-zfb">立即绑定</button>
+            </div>
+        </div>
+        <div class="modal-hidden modal-bdzfb">
+            <div class="modal modal-tx">
+                <ul>
+                    <li class="fs-name">
+                        <input type="text" placeholder="支付宝名字">
+                    </li>
+                    <li class="fs-num">
+                        <input type="text" placeholder="支付宝账号">
+                    </li>
+                    <li>
+                        <button onclick="tjZfb();">确定</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 绑定微信收款码 -->
+        <div class="modal-hidden modal-wx">
+            <div class="modal">
+                <img src="../../image/d01.png" alt="">
+                <p>微信收款码未绑定</p>
+                <button class="bdwx">立即绑定</button>
+            </div>
+        </div>
+        <div class="modal-hidden modal-bdwx">
+            <div class="modal modal-tx">
+                <ul>
+                    <li class="fs-name">
+                        <input type="text" placeholder="请填写微信名称">
+                    </li>
+                    <li class="fs-num" tapmode onclick="sc_ewm()" id="ewm-img">
+                        <input type="button" value="上传微信收款码">
+                        <img src="" alt="" class="hidden">
+                        <!-- <input type="text" placeholder="we账号"> -->
+                    </li>
+                    <li>
+                        <button onclick="tjWx();">确定</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 零钱 -->
+        <div class="modal-hidden modal-yue">
+            <div class="modal ">
+                <img src="../../image/d01.png" alt="">
+                <p>零钱不足</p>
+                <button onclick="_url({url:'yaoqing/renwu',title:'任务系统'},'',true)">点击去赚钱</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <button class="tx-btn">立即提现</button>
+    </footer>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/ffxiang.js"></script>
+
+<!-- <script src="../script/api.js"></script>
+<script src="../script/jquery.js"></script> -->
+<script>
+    var _user = $api.getStorage('user');
+    console.log(JSON.stringify(_user));
+    var ewm_img;
+
+    apiready = function(){
+
+        //余额
+        $('.left b').text((_user.yaoqing.money / 100).toFixed(2));
+        // $('.left b').text((_user.money / 100).toFixed(2));
+        
+        //提现成功后更新余额
+        api.addEventListener({
+            name: 'txcg'
+        }, function(ret, err) {
+            _ajax('api/member/info', function(ret, err) {
+				api.refreshHeaderLoadDone();
+				console.log(JSON.stringify(ret));
+				if (ret) {
+                    $api.setStorage('user', ret.ret);
+                    var _u = ret.ret;
+                    // console.log(JSON.stringify(_u))
+                    $('.left b').text((_u.yaoqing.money / 100).toFixed(2));
+					
+				} 
+			})
+        });
+    }
+        
+
+    
+
+    //点击样式
+    $('.tx').on('click', 'li', function () {
+        $(this).addClass('select').siblings().removeClass('select');
+    })
+
+    //提现
+    $('.tx-btn').on('click', function () {
+        console.log(JSON.stringify(_user));
+        if(!_user.mobile){
+            $('.modal-bg').addClass('show');
+            $('.modal-sj').addClass('show'); //若未绑定手机号提示绑定
+        }else{
+            var txfs = $('.txfs').find('.select .tx-name').text(); //提现方式
+            var txje = $('.txje').find('.select .tx-name').text(); //期望提现金额
+            var tx_je = txje.split('元')[0];
+
+            var yue = (_user.yaoqing.money / 100).toFixed(2);
+            // var yue = (_user.money / 100).toFixed(2);
+            tx_je = parseFloat(tx_je);
+            yue = parseFloat(yue);
+            
+            judge_ti_xian(txfs, tx_je, yue);
+        }
+
+    })
+
+
+    //判断提现方式是否已绑定
+    function judge_ti_xian(txfs, tx_je, yue) {
+        // _ajax('pi/user/yonghuxinxi?id='+1, function(ret,err){
+        $api.post(fx_url+'Api/user/yonghuxinxi?', {
+            values: {
+                id: _user.id
+                // id: 1
+            }
+        }, function (ret) {
+            console.log(JSON.stringify(ret))
+            console.log(ret[0].alizh)
+
+            var alizh = ret[0].alizh;
+            var aliname = ret[0].aliname;
+            var wxurl = ret[0].wxurl;
+            var wxname = ret[0].wxname;
+            console.log(alizh)
+            console.log(aliname)
+            console.log(wxurl)
+            console.log(wxname)
+
+            if (txfs == '支付宝') {
+                console.log()
+                if (!alizh || !aliname) {
+                    //提示手机账号未绑定
+                    $('.modal-bg').addClass('show');
+                    $('.modal-zfb').addClass('show');
+                } else {
+                    judge_jin_e(txfs, tx_je, yue, 1, alizh, aliname);
+                }
+            } else {
+                if (!wxurl || !wxname) {
+                    //提示微信收款码未绑定
+                    $('.modal-bg').addClass('show');
+                    $('.modal-wx').addClass('show');
+                } else {
+                    judge_jin_e(txfs, tx_je, yue, 2, wxurl, wxname);
+                }
+            }
+        })
+    }
+
+    //绑定支付宝
+    $('.bd-zfb').on('click', function () {
+        $('.modal-zfb').removeClass('show');
+        $('.modal-bdzfb').addClass('show');
+    })
+    //绑定微信
+    $('.bdwx').on('click', function () {
+        $('.modal-wx').removeClass('show');
+        $('.modal-bdwx').addClass('show');
+    })
+
+    //提交支付宝账号
+    function tjZfb() {
+        var val_name = $('.modal-bdzfb input').eq(0).val(); //支付宝名字
+        var val_zh = $('.modal-bdzfb input').eq(1).val(); //支付宝账号
+        if (!val_name || !val_zh) {
+            api.toast({
+                msg: '信息未填写完整，提交失败'
+            })
+
+        } else {
+            $api.post(fx_url+'Api/user/bangdingz?', {
+                values: {
+                    uid: _user.id,
+                    // uid: 1,
+                    name: val_name,
+                    zhanghao: val_zh,
+                }
+            }, function (ret) {
+                if (ret.Code == 200) {
+                    api.toast({
+                        msg: '提交成功'
+                    })
+                } else {
+                    api.toast({
+                        msg: '提交失败，请稍后再试'
+                    })
+                }
+            })
+        }
+        $('.modal-bdzfb').removeClass('show');
+        $('.modal-bg').removeClass('show');
+
+    }
+    //提交微信收款码
+    function tjWx() {
+        var val_name = $('.modal-bdwx input').eq(0).val(); //微信名称
+        if (!val_name || !ewm_img) {
+            api.toast({
+                msg: '信息未填写完整，提交失败'
+            })
+        }else{
+            imgAjax(val_name, ewm_img);
+        }
+        $('.modal-bdwx').removeClass('show');
+        $('.modal-bg').removeClass('show');
+    }
+
+
+
+    //判断提现金额及跳转提现进度
+    function judge_jin_e(txfs, tx_je, yue, type, zhanghao, name) {
+        // yue = 4;
+        if (tx_je > yue) {
+            $('.modal-bg').addClass('show');
+            $('.modal-yue').addClass('show');
+
+        } else {
+            console.log(txfs)
+            console.log(tx_je)
+            console.log(yue)
+            console.log(type)
+            console.log(zhanghao)
+            console.log(name)
+            // // console.log(txfs)
+            $api.post(fx_url+'Api/user/tixian?', {
+                values: {
+                    uid: _user.id,
+                    // uid: 1,
+                    price: tx_je,
+                    type: type,
+                    zhanghao: zhanghao,
+                    name: name
+                }
+            }, function (ret) {
+                console.log(JSON.stringify(ret))
+                if (ret.Code == 0) {
+                    _url({
+                        url: 'member/ti_xian_jin_du',
+                        title: '我要提现',
+                        txfs: txfs,
+                        tx_je: tx_je
+                    }, '', true);
+                } else {
+                    api.toast({
+                        msg: '提现失败，请稍后重试'
+                    })
+                }
+            })
+
+        }
+    }
+
+    // 上传图片
+    function sc_ewm() {
+        api.actionSheet({
+            title: '上传微信收款码',
+            cancelTitle: '取消',
+            buttons: ['拍照', '相册']
+        }, function (ret, err) {
+            console.log(JSON.stringify(ret))
+            var index = ret.buttonIndex;
+            if (index != 3) {
+                var sourceType = 'album';
+                if (index == 1) {
+                    sourceType = 'camera';
+                }
+                api.getPicture({
+                    sourceType: sourceType,
+                    encodingType: 'jpg',
+                    mediaValue: 'pic',
+                    destinationType: 'url',
+                    allowEdit: true,
+                    quality: 50,
+                    targetWidth: 800,
+                    targetHeight: 800,
+                }, function (ret, err) {
+                    console.log(ret)
+                    if (ret) {
+                        console.log(ret.data)
+                        if (ret.data) {
+                            // alert($api.jsonToStr(ret.data))
+                            ewm_img = ret.data;
+                            $('#ewm-img input').addClass('hidden');
+                            $('#ewm-img img').removeClass('hidden');
+                            $('#ewm-img img').attr({
+                                'src': ret.data
+                            });
+                            
+                        }
+                    }
+                });
+            }
+        });
+    }
+    // 封装上次图片方法
+    function imgAjax(val_name, ewm_img) {
+        // if (!image) {
+        //     _msg('图片地址出错')
+        //     return;
+        // }
+        _loading()
+        api.ajax({
+            url: fx_url + 'api/User/bangdingwx?',
+            method: 'post',
+            data: {
+                values: {
+                    token: _token,
+                    uid: _user.id,
+                    name: val_name
+                },
+                files: {
+                    image: ewm_img
+                }
+            },
+        }, function (ret, err) {
+            _loadingClose();
+            if (ret) {
+                //api.alert({ msg: JSON.stringify(ret) });
+                if (ret.Code == 200) {
+                    // $api.attr($api.dom('#ewm-img img'), 'src', image);
+                    // _userInfo();
+                    api.toast({
+                        msg: '提交成功'
+                    })
+                }else{
+                    api.toast({
+                        msg: '提交失败'
+                    })
+                }
+            } else {
+                api.alert({
+                    msg: JSON.stringify(err)
+                });
+                console.log(JSON.stringify(err))
+            }
+        });
+    }
+    //点击模态框隐藏
+    $('.modal-bg').on('click', function () {
+        $(this).removeClass('show');
+        $('.modal-hidden').removeClass('show');
+    })
+</script>
+
+</html>

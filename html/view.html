@@ -1,0 +1,781 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>放飞科技</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/ffxiang.css" />
+	<link rel="stylesheet" type="text/css" href="../css/view.css" />
+	<style>
+		.fx-view-body img {
+			width: 100%;
+			height: auto;
+		}
+	</style>
+</head>
+
+<body>
+	<script id="fx-list-top" type="text/x-dot-template">
+		<div class="aui-content-padded">
+				<h2>{{= it.title }}</h2>
+				<!-- 文章详情 -->
+				{{? it.uid && it.userUsername && it.userImg && it.ios != 1}}
+				<ul class="aui-list aui-media-list">
+					<li class="aui-list-item">
+						<div class="aui-media-list-item-inner">
+							<div class="aui-list-item-media" style="width: 2.6rem;">
+								<img id="ffxiangImgCache" ffxiang-src="{{=it.userImg}}" onerror="this.src='../image/touxiang.png'" class="aui-img-round aui-list-img-sm" Tapmode onclick="_url({id:{{=it.uid}},qian:0,fan:1},'u_win');">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-14" Tapmode onclick="_url({id:{{=it.uid}},qian:0,fan:1},'u_win');">
+										{{=it.userUsername}}
+									</div>
+								</div>
+								<div class="date aui-list-item-text">
+									{{=it.update_time}}
+								</div>
+							</div>
+						</div>
+						{{? it.userGuanzhu}}
+						<div  class="aui-btn aui-btn-info guanzhu guanzhuhovew" tapmode  onclick="guanzhu(this,{{=it.uid}})" data-id='2'>
+							已关注
+						</div>
+						{{??}}
+						<div class="aui-btn aui-btn-info guanzhu" tapmode  onclick="guanzhu(this,{{=it.uid}})" data-id='1'>
+							关注
+						</div>
+						{{?}}
+					</li>
+				</ul>
+				{{?}}
+
+				<div class="fx-view-body" style="padding: 5px;">
+					{{= it.content }}
+				</div>
+				<div class="fx-view-tags">{{= it.tags }}</div>
+				<div class="fx-view-aniu">
+					<!-- 赞与踩 -->
+					{{? _user}}
+					<span class="aui-pull-left fx-view-anniu2"> <span class="aui-btn {{? it.userZan}} fx-view-zan{{?}}" {{? it.userZan}}data-id="1"{{?}} Tapmode onclick="zan(this,1,{{=it.zan}})" id="zan"> <img src="../image/zan{{? it.userZan}}s{{?}}.png" /> <em>{{=it.zan}}</em> </span> </span>
+					<span class="aui-pull-right fx-view-anniu2"> <span class="aui-btn {{? it.userCai}} fx-view-zan{{?}}" {{? it.userCai}}data-id="2"{{?}} Tapmode onclick="zan(this,2,{{=it.cai}})" id="cai"> <img style="margin-top: 0.4rem;" src="../image/cai{{? it.userCai}}s{{?}}.png" /> <em>{{=it.cai}}</em> </span> </span>
+					{{??}}
+					<span class="aui-pull-left fx-view-anniu2"> <span class="aui-btn"  Tapmode onclick="zan(this,1,{{=it.zan}})" id="zan"> <img src="../image/zan.png" /> <em>{{=it.zan}}</em> </span> </span>
+					<span class="aui-pull-right fx-view-anniu2"> <span class="aui-btn"  Tapmode onclick="zan(this,2,{{=it.cai}})" id="cai"> <img style="margin-top: 0.4rem;" src="../image/cai.png" /> <em>{{=it.cai}}</em> </span> </span>
+					{{?}}
+				</div>
+			</script>
+	<section class="aui-content fx-view-content" id="fx-view-top"></section>
+
+	<!-- 推荐列表 -->
+	<script id="fx-tuijian" type="text/x-dot-template">
+		<!-- 新闻列表 -->
+		{{ for(var i=0,len=it.length; i < len; i++) { }}
+		{{? it[i].weitoutiao==2 || it[i].weitoutiao==1}}
+		<div class="aui-card-list aui-border-b" id="id{{= it[i].id }}" data-images="{{= it[i].imagesPro }}">
+			<div class="aui-card-list-header aui-card-list-user">
+				<div class="aui-card-list-user-avatar">
+					<img id="ffxiangImgCache" ffxiang-src="{{= it[i].user.img }}"
+						onerror="this.src='../image/touxiang.png'" tapmode
+						onclick="_url({uid:{{= it[i].uid }},qian:0,fan:1},'u_win')">
+				</div>
+				<div class="aui-card-list-user-name">
+					<div tapmode onclick="_url({uid:{{= it[i].uid }},qian:0,fan:1},'u_win')">
+						{{= it[i].user.username }}
+					</div>
+					{{? typeid != 999999999 }}
+					{{? it[i].uid}}
+					{{? it[i].guanzhu}}
+					<span class="fx-weitoutiao-guanzhu fx-weitoutiao-guanzhuHivdeo" data-id="2" Tapmode
+						onclick="guanzhu(this,{{= it[i].uid}});">已关注</span>
+					{{??}}
+					<span class="fx-weitoutiao-guanzhu" data-id="1" Tapmode
+						onclick="guanzhu(this,{{= it[i].uid}});">关注</span>
+					{{?}}
+					{{?}}
+					{{?}}
+				</div>
+				<div class="aui-card-list-user-info">
+					{{= it[i].create_time }}
+				</div>
+			</div>
+			<ul class="aui-list aui-media-list fx-weitoutiao-images">
+				<li class="aui-list-item">
+					{{? it[i].mychannel == 3}}
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title fx-weitoutiao-content" tapmode
+							onclick="_url({id:{{= it[i].id }},videoUrl:'{{= it[i].video }}',title:'{{= it[i].title }}'},'videoview_win')">
+							{{= it[i].title }}
+						</div>
+						<div class="aui-row aui-row-padded">
+							<div class="aui-col-xs-12" tapmode
+								onclick="_url({id:{{= it[i].id }},videoUrl:'{{= it[i].video }}',title:'{{= it[i].title }}'},'videoview_win')">
+								<img id="ffxiangImgCache" ffxiang-src="{{= it[i].image }}"
+									onerror="this.src='../image/loadingImage.png'" class="fx-video-img">
+								<i class="fx-video-bofang"></i>
+								<!-- <em class="fx-video-em aui-margin-b-5">01:35</em> -->
+							</div>
+						</div>
+					</div>
+					{{??}}
+					<div class="aui-list-item-inners">
+						{{? it[i].description }}
+						<div class="aui-list-item-title fx-weitoutiao-content" tapmode
+							onclick="_url({id:{{= it[i].id }},qian:1,fan:1},'wttview_win')">
+							{{= it[i].description }}
+						</div>
+						{{?}}
+						{{? it.data[i].imagesPro}}
+						<div class="aui-row">
+							{{ for(var j=0,imgLen=it.data[i].imagesPro.length; j<imgLen; j++){ }}
+							<div class="{{? imgLen>=3}}aui-col-xs-4{{??}}aui-col-xs-6{{?}}" tapmode
+								onclick="img({{=it.data[i].id}} , {{=j}})">
+								<img style="height:130px;border:1px solid #fff;" id="ffxiangImgCache"
+									ffxiang-src="{{=it.data[i].imagesPro[j]}}"
+									onerror="this.src='../image/loadingImage.png'">
+							</div>
+							{{ } }}
+						</div>
+						{{?}}
+					</div>
+					{{?}}
+				</li>
+			</ul>
+			<div class="aui-card-list-footer aui-margin-t-10">
+				<div class="{{? it[i].zanUser}} pingZanColor{{?}}" {{? it[i].zanUser}} data-id='1' {{?}} Tapmode
+					onclick="pingZan_xia(this,{{= it[i].id}} ,{{= it[i].zan}})">
+					<i class="aui-iconfont aui-icon-laud aui-margin-r-5"></i> {{= it[i].zan }}
+				</div>
+				<div tapmode onclick="_url({aid:{{= it[i].id }},pingNum:{{= it[i].pingNum }}},'view_ping_win')">
+					<i class="aui-iconfont aui-icon-comment aui-margin-r-5"></i> {{= it[i].pingNum }}
+				</div>
+				{{? it[i].mychannel == 3}}
+				<div tapmode onclick="_url({id:{{= it[i].id }},qian:0,fan:1},'videoview_win')">
+					<i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it[i].click }}
+				</div>
+				{{??}}
+				<div tapmode onclick="_url({id:{{= it[i].id }},qian:1,fan:1},'wttview_win')">
+					<i class="aui-iconfont aui-icon-display aui-margin-r-5"></i> {{= it[i].click }}
+				</div>
+				{{?}}
+			</div>
+		</div>
+		{{??}}
+		{{? it[i].mychannel == 1}}
+		{{? it[i].image}}
+		<li class="aui-list-item" tapmode onclick="_url({id:{{= it[i].id }},qian:1,fan:0},'view_win')">
+			<div class="aui-media-list-item-inner">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-text">
+						<div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it[i].title }}</div>
+					</div>
+					<div class="aui-info aui-padded-t-5 aui-padded-b-0" style="padding-top: 5px">
+						<div class="aui-info-item aui-font-size-12 fx-index-infp-span">
+							<span class="">{{= it[i].source}}</span>
+							<span class="aui-margin-l-10">{{= it[i].pingNum}}评价</span>
+							<!-- <span class="aui-margin-l-10">{{= it[i].create_time}}</span> -->
+							<span class="aui-margin-l-10 zhiding"
+								style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+						</div>
+					</div>
+				</div>
+				<div class="aui-list-item-media">
+					<img id="ffxiangImgCache" ffxiang-src="{{= it[i].image }}"
+						onerror="this.src='../image/loadingImage.png'">
+				</div>
+			</div>
+		</li>
+		{{??}}
+		<li class="aui-list-item" tapmode onclick="_url({id:{{= it[i].id }},qian:1,fan:0},'view_win')">
+			<div class="aui-media-list-item-inner">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title aui-ellipsis-2 fx-title">{{= it[i].title }}</div>
+					<div class="aui-list-item-text">
+						<p class="aui-ellipsis-2 aui-font-size-14">{{= it[i].description }}</p>
+					</div>
+				</div>
+			</div>
+			<div class="aui-info  fx-item-inner">
+				<div class="aui-info-item aui-font-size-12">
+					<span class="">{{= it[i].source}}</span>
+					<span class="aui-margin-l-10">{{= it[i].pingNum}}评价</span>
+					<!-- <span class="aui-margin-l-10">{{= it[i].create_time}}</span> -->
+					<span class="aui-margin-l-10 zhiding"
+						style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+				</div>
+			</div>
+		</li>
+		{{?}}
+		{{?? it[i].mychannel == 2}}
+		<!--  图片集-->
+		<li class="aui-list-item" tapmode onclick="_url({id:{{= it[i].id }},qian:1,fan:0},'photo_browser')">
+			<div class="aui-list-item-inner fx-item-inner">
+				<div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it[i].title }}</div>
+				<!-- <div class="aui-row aui-row-padded aui-margin-t-5 fx-article-images">
+								{{= it[i].images }}
+							</div> -->
+			</div>
+			<div class="aui-info  aui-padded-t-5 aui-padded-r-15  fx-item-inner">
+				<div class="aui-info-item aui-font-size-12">
+					<span class="">{{= it[i].source}}</span>
+					<span class="aui-margin-l-10">{{= it[i].pingNum}}评价</span>
+					<!-- <span class="aui-margin-l-10">{{= it[i].create_time}}</span> -->
+					<span class="aui-margin-l-10 zhiding"
+						style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+				</div>
+			</div>
+		</li>
+		{{?? it[i].mychannel == 3}}
+		<!--视频-->
+		<li class="aui-list-item" tapmode
+			onclick="_url({id:{{= it[i].id }},videoUrl:'{{= it[i].video }}',title:'{{= it[i].title }}',qian:0,fan:0},'videoview_win')">
+			<div class="aui-list-item-inner fx-item-inner">
+				<div class="aui-list-item-title fx-title aui-ellipsis-2">{{= it[i].title }}</div>
+			</div>
+			<div class="aui-card-list-content fx-video-content aui-padded-b-10">
+				<img id="ffxiangImgCache" ffxiang-src="{{= it[i].image }}" onerror="this.src='../image/load-video.png'"
+					class="fx-video-img">
+				<i class="fx-video-bofang"></i>
+				<em class="fx-video-em aui-margin-b-5">{{? it[i].videodate}}{{= it[i].videodate }}{{?}}</em>
+			</div>
+			<div class="aui-info  aui-padded-t-0 aui-padded-r-15  fx-item-inner">
+				<div class="aui-info-item aui-font-size-12">
+					{{? it[i].source}}<span class="">{{= it[i].source}}</span>{{?}}
+					<span {{? it[i].source}}class="aui-margin-l-10" {{?}}>{{= it[i].pingNum}}评价</span>
+					<!-- <span class="aui-margin-l-10">{{= it[i].create_time}}</span> -->
+					<span class="aui-margin-l-10 zhiding"
+						style="border: 1px solid red !important; border-radius: 3px !important; color: red !important;font-size: 10px !important;width: 26px !important;padding:0 2px !important;">推荐</span>
+				</div>
+			</div>
+		</li>
+
+		{{?}}
+		{{?}}
+		{{ } }}
+
+	</script>
+	<!-- <div class="aui-content" style="margin-bottom: 45px; background: #fff;">
+				<ul class="aui-list aui-media-list fx-article-list fx-weitoutiao-list" id="fx-tjview" style="border-top: 0px">
+				</ul>
+			</div> -->
+
+	<!-- 评论列表 -->
+	<div class="pingList" id="here">
+		<script id="fx-list" type="text/x-dot-template">
+			{{ for(var i=0,len=it.data.length; i < len; i++) { }}
+				<li class="aui-list-item aui-padded-b-10">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media">
+							<img id="ffxiangImgCache" ffxiang-src="{{=it.data[i].img}}" onerror="this.src='../image/touxiang.png'" Tapmode onclick="_url({uid:{{= it.data[i].uid}},qian:0,fan:1},'u_win');" />
+						</div>
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text">
+								<div class="aui-list-item-title" Tapmode onclick="_url({uid:{{= it.data[i].uid}},qian:0,fan:1},'u_win');">
+									{{= it.data[i].username}}
+								</div>
+								<div class="aui-list-item-right {{? it.data[i].zanUser}} pingZanColor{{?}}" {{? it.data[i].zanUser}} data-id='1'{{?}} Tapmode onclick="pingZan(this,{{= it.data[i].id}} ,{{= it.data[i].zan}})">
+									<i class="aui-iconfont aui-icon-laud"></i>{{= it.data[i].zan}}
+								</div>
+							</div>
+							<div class="aui-list-item-text fx-contentuser" style="color:#333;" Tapmode onclick="pingAdd('{{= it.data[i].username}}',{{= it.data[i].id}})">
+								{{= it.data[i].content}}
+							</div>
+							<div class="aui-info aui-font-size-12 aui-padded-t-5 aui-padded-b-5">
+								<div class="aui-info-item">
+									{{= it.data[i].time}}
+									{{? it.data[i].huifu}}
+									<div class="aui-info-item fx-view-huifu" Tapmode onclick="_url({pingId:{{= it.data[i].id}},aid:{{= it.data[i].aid}}},'view_ping_win')">
+										{{= it.data[i].huifu}}回复
+									</div>
+									{{??}}
+									 
+									<span Tapmode onclick="pingAdd('{{= it.data[i].username}}',{{= it.data[i].id}})" style="padding-left: 2px;"> · 回复</span>
+									{{?}} 
+								</div>
+								<div class="aui-info-item" Tapmode onclick="pingAdd('{{= it.data[i].username}}',{{= it.data[i].id}})">
+									<i class="aui-iconfont aui-icon-comment"  style="color:#4c5276"></i>
+								</div>
+							</div>
+							 
+							<div class="fx-huifuList" id="fx-huifuList{{= it.data[i].id}}" {{? !it.data[i].huifu}}style="display: none"{{?}}>
+								<ul id="fx-huifuLists{{= it.data[i].id}}" Tapmode onclick="_url({aid:{{= it.data[i].aid}},pingId:{{= it.data[i].id}}},'view_ping_win')">
+									{{? it.data[i].pingDataList}}
+									{{= it.data[i].pingDataList}}
+									{{?}}
+								</ul>
+							</div>
+							 
+						</div>
+					</div>
+				</li>
+				{{ } }}
+			</script>
+
+
+		<ul class="aui-list aui-media-list aui-content-padded" id="fx-view"></ul>
+	</div>
+	<div class="loading-bg"></div>
+	<script type="text/javascript" src="../script/zepto.js"></script>
+	<script type="text/javascript" src="../script/dot.js"></script>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/ffxiang.js"></script>
+	<script type="text/javascript" src="../script/gz.js"></script>
+	<script src="../script/newsshare.js"></script>
+	<script type="text/javascript">
+		var id, inputField, images, fx_data, pingNum, article;
+		var tid;
+
+		apiready = function () {
+			// 回到屏幕
+			api.addEventListener({
+				name: 'viewappear'
+			}, function (ret, err) {
+				_user = $api.getStorage('user')
+			});
+			// api.addEventListener({
+			//     name:'swipeleft'
+			// }, function(ret, err){        
+			// 	gundong()
+			// });
+			//			api.addEventListener({
+			//			    name:'swipeup'
+			//			}, function(ret, err){        
+			//			  // console.log(JSON.stringify(ret)+JSON.stringify(err))
+			//			});
+			api.addEventListener({
+				name: 'yejian'
+			}, function (ret, err) {
+				if (ret) {
+					_yejians();
+				}
+			});
+			loadingNU();
+			id = api.pageParam['id'];
+			// view();
+			_shangla(function (ret, err) {
+				view();
+
+			})
+			// 每天阅读次数奖励
+			if (api.pageParam['videoUrl']) {
+				openCutDown('money_shipin', id);
+			} else {
+				openCutDown('money_news', id);
+			}
+			pauseT = setInterval(function () {
+				api.execScript({
+					frameName: 'cutDown_frm',
+					script: 'pause()'
+				})
+			}, 4000); // 每四秒后暂停
+
+			// 监听滚动
+			api.addEventListener({
+				name: 'scrolltobottom',
+				extra: {
+					threshold: threshold //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function (ret, err) {
+				if (heigutgao == 1) { // heigutgao=1开启执行 0停止执行   防止连续滚动，等加载数据之后在进行滚动。
+					pagenum += 1
+					_lists('api/article/pingList', pagenum, '', {
+						aid: id
+					});
+				}
+
+			});
+			// 输入框模块
+			inputField = api.require('inputField');
+			inputField.setInputFieldListener(function (ret, err) {
+				if (ret) {
+					//_msg(JSON.stringify(ret))
+					if (ret.eventType == 'move') {
+						if (ret.chatViewH == 0 || ret.chatViewH == -1) {
+							inputField.hide(function (ret, err) {
+								if (ret) {
+									//alert(JSON.stringify(ret));
+								} else {
+									//alert(JSON.stringify(err));
+								}
+							});
+							inputField.resignFirstResponder();
+						}
+					}
+				} else {
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			});
+
+			tuijian();
+		}
+
+		//获取推荐文章
+		function tuijian() {
+			var tid = $api.getStorage('tid');
+			// console.log(tid)
+			console.log(id);
+			$api.post(fx_url + 'api/article/tuijian?', {
+				values: {
+					id: id,
+					typeid: tid
+				}
+			}, function (ret) {
+				// var img_url = '';
+				console.log(JSON.stringify(ret))
+				var evalData = doT.template($api.html($api.byId('fx-tuijian')));
+				$api.append($api.byId('fx-tjview'), evalData(ret));
+				// console.log(JSON.stringify(evalData(ret)));
+				_imageCache();
+				api.parseTapmode();
+			})
+		}
+
+		// 加载提示
+		function loadingNU() {
+			if (api.pageParam['videoUrl']) {
+				return;
+			}
+			_UILoading()
+		}
+		// 关闭提示
+		function UILoadingClose() {
+
+			_UILoadingClose()
+		}
+		var playModulebianliang = 1; // 记录打开视频模块，防止二次打开模块出错
+		function view() {
+			_ajax("api/article/view/id/" + id, function (ret, err) {
+				console.log(JSON.stringify(ret));
+				if (ret) {
+					ret.ios = $api.getStorage('app');
+					if (ret.video) {
+						//						api.execScript({
+						//							script : 'video("'+ret.image+'","'+ret.video+'")'
+						//						});
+					}
+					if (ret.url) //跳转网址
+					{
+
+						var browser = api.require('webBrowser');
+						browser.openView({
+							url: ret.url,
+							rect: {
+								x: 0,
+								y: 60,
+								w: 'auto',
+								h: 'auto'
+							}
+						}, function (ret, err) {
+
+						});
+
+
+					}
+
+
+					var c = ret.content.split('<div class="y-box article-actions">')[0];
+					var c2 = c.split('<p>大家还喜欢：</p>')[0];
+					c2 = c2.split('<ul class="label-list list-paddingleft-2">')[0];
+					ret.content = c2;
+					//	alert(ret.content)
+					var evalData = doT.template($api.html($api.byId('fx-list-top')));
+					$api.html($api.byId('fx-view-top'), evalData(ret));
+
+					console.log(evalData(ret))
+					article = ret
+					fx_data = dealShareContent(ret);
+					api.execScript({
+						script: 'title("' + ret.userUsername + '",' + ret.uid + ')'
+					});
+					var _views = '_views(' + ret.shoucang + "," + ret.pingNum + ');';
+					pingNum = ret.pingNum;
+					api.execScript({
+						script: _views
+					});
+					if (ret.images_list) {
+						images = ret.images_list;
+					}
+
+					if (ret.pingNum) {
+						$('.qiangshafa').remove();
+						pingNumSign = 1;
+						_lists('api/article/pingList', 1, 1, {
+							aid: id
+						});
+					} else {
+
+						api.refreshHeaderLoadDone();
+						_imageCache();
+						$('.qiangshafa').remove();
+
+						$('#here').prepend('<div class="qiangshafa" Tapmode onclick="pingAdd()">暂无评论，点击抢沙发</div>');
+						api.parseTapmode();
+
+					}
+					_imageCache();
+					UILoadingClose()
+
+
+				} else {
+					_msg('出错啦，等会再试吧');
+					console.log(JSON.stringify(err));
+				}
+			})
+		}
+
+		// 分享按钮
+		function fenxiang() {
+			console.log(JSON.stringify(fx_data))
+			newsShare(fx_data, article);
+		}
+		var pingAddPen = 1,
+			pingIds = 0;
+		//用来判断打开输入框   1 使用open打开  2 使用显示
+		function pingAdd(username, pingId) {
+			if (!pingId) {
+				pingId = 0
+			}
+			pingIds = pingId;
+			if (!_user) {
+				_login();
+				return;
+			}
+			if (username) {
+				username = '回复   ' + username + '：'
+			} else {
+				username = '优质评论将会被优先展示';
+			}
+			if (pingAddPen == 1) {
+				pingAddPen = 2;
+				inputField.open({
+					bgColor: '#fff',
+					lineColor: '#D8D8D8',
+					fileBgColor: '#f5f5f5',
+					borderColor: '#F4F5F6',
+					//					sendImg : 'widget://res/img/sendImg.png',
+					autoFocus: true,
+					placeholder: username,
+					placeholderStyles: {
+						color: '#bbb', //字符串类型；占位文字颜色，支持rgb、rgba、#；默认：#696969
+						size: 14, //数字类型；占位文字大小；默认：13
+						marginL: 5 //数字类型；占位文字距离左边的大小；默认：5
+					},
+					maxLines: 3,
+					sendBtn: {
+						bg: '#03a9f4', //字符串类型；发送按钮常态背景色
+						bgHighlight: '#0287BF', //字符串类型；发送按钮点击时的高亮背景色
+						title: '发送', //字符串类型；发送按钮的标题
+						titleSize: '14', //数字类型；发送按钮的标题字体大小
+						titleColor: '#fff', //字符串类型；发送按钮标题文字颜色
+						corner: 5 //数字类型；发送按钮圆角大小
+					},
+				}, function (ret, err) {
+					if (ret) {
+						if (ret.msg == '') {
+							_msg('请输入评价');
+						} else {
+							pingAddTent(ret.msg);
+							inputField.hide(function (ret, err) {
+								if (ret) {
+									//alert(JSON.stringify(ret));
+								} else {
+									//alert(JSON.stringify(err));
+								}
+							});
+							inputField.resignFirstResponder();
+						}
+					} else {
+						_msg('出错啦，等会再试吧');
+						console.log(JSON.stringify(err));
+					}
+				});
+			} else {
+				inputField.setPlaceholder({
+					placeholder: username
+				});
+				inputField.becomeFirstResponder(function (ret, err) {
+					if (ret.status) {
+						setTimeout(function () {
+							inputField.show();
+						}, 500)
+					} else {
+						_msg('出错啦，等会再试吧');
+						console.log(JSON.stringify(err));
+					}
+				});
+			}
+		}
+
+
+
+		// 插入评论
+		function pingAddTent(text) {
+			if (text) {
+				var html = ''
+				if (pingIds) {
+					html += '<li class="aui-ellipsis-2">';
+					html += '<a>' + _user.username + ' ：</a>' + text + '</li>';
+					$('#fx-huifuList' + pingIds).show();
+					$('#fx-huifuLists' + pingIds).prepend(html);
+				} else {
+					html += '<li class="aui-list-item aui-padded-b-10">';
+					html += '<div class="aui-media-list-item-inner">';
+					html += '<div class="aui-list-item-media">';
+					html += '<img onerror="this.src=\'../image/touxiang.png\'" src="' + _user.img +
+						'" Tapmode onclick="_url({id:' + _user.id + ',qian:0,fan:1},\'u_win\');" />';
+					html += '</div>';
+					html += '<div class="aui-list-item-inner">';
+					html += '<div class="aui-list-item-text">';
+					html += '<div class="aui-list-item-title">';
+					html += _user.username;
+					html += '</div>';
+					html += '<div class="aui-list-item-right">';
+					html += '<i class="aui-iconfont aui-icon-laud"></i>0'
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="aui-list-item-text" style="color:#333;">';
+					html += text;
+					html += '</div>';
+					html += '<div class="aui-info aui-font-size-12 aui-padded-t-0 aui-padded-b-0">';
+					html += '<div class="aui-info-item">';
+					html += '几秒前';
+					html += '</div>';
+					html += '<div class="aui-info-item">';
+					html += '<i class="aui-iconfont aui-icon-comment"  style="color:#4c5276"></i>';
+					html += '</div>';
+					html += '</div>';
+					html += '</div>';
+					html += '</div>';
+					html += '</li>';
+
+					$('.pingList #fx-view').prepend(html);
+					document.getElementById('here').scrollIntoView();
+
+				}
+				$('.qiangshafa').remove();
+				api.execScript({
+					script: 'pingNum()'
+				});
+				console.log('aid:' + id + 'pingId:' + pingIds)
+
+				_ajax('api/member/ping', function (ret, err) {
+					console.log(JSON.stringify(ret) + JSON.stringify(err))
+				}, {
+					aid: id,
+					content: text,
+					pingId: pingIds
+				})
+			}
+
+		}
+
+		function gundong() {
+			_url({
+				aid: id,
+				pingNum: pingNum,
+				qian: 1,
+				fan: 1
+			}, 'view_ping_win')
+			return;
+			// 下面代码需要JQ文件引入
+			$("html,body").stop(true);
+			var scrollTop = 0
+			var shifkeshi = document.getElementById("here").offsetTop;
+			if (shifkeshi >= $(window).scrollTop() && shifkeshi < ($(window).scrollTop() + $(window).height())) {} else {
+				scrollTop = $("#here").offset().top
+			}
+			$("html,body").animate({
+				scrollTop: scrollTop
+			}, 300);
+		}
+		// 赞 和  踩
+		function zan(obj, type, num) {
+			if (!_user) {
+				_login();
+				return;
+			}
+			if ($('#zan').data('id') == 1) {
+				_msg('您已经赞过啦！')
+				return;
+			} else if ($('#cai').data('id') == 2) {
+				_msg('您已经踩过啦！')
+				return;
+			}
+			if (type == 1) {
+				$(obj).data('id', '1');
+				$('#zan img').attr('src', '../image/zans.png')
+				$('#zan em').text(num + 1);
+			} else if (type == 2) {
+				$(obj).data('id', '2');
+				$('#cai img').attr('src', '../image/cais.png')
+				$('#cai em').text(num + 1);
+			}
+			$(obj).addClass('fx-view-zan')
+			_ajax('api/member/zancai/', function (ret, err) {
+				if (ret) {
+					if (ret.err) {
+						_msg(ret.err)
+					}
+				}
+			}, {
+				aid: id,
+				type: type
+			})
+		}
+
+		// 评论赞按钮
+		function pingZan(obj, aid, num) {
+			if (!_user) {
+				_login();
+				return;
+			}
+			var type = $(obj).data('id');
+			if (!type) {
+				$(obj).addClass('pingZanColor');
+				$(obj).data('id', '1');
+				$(obj).html('<i class="aui-iconfont aui-icon-laud"></i>' + (num + 1))
+				_ajax('api/member/pingZan/', function (ret, err) {
+					if (ret) {
+						if (ret.err) {
+							_msg(ret.err)
+						}
+					}
+				}, {
+					aid: aid
+				})
+			} else {
+				_msg('您已经赞过')
+			}
+		}
+
+		// 打开图片
+		function img(index) {
+			_url({
+				images: images,
+				index: index
+			}, 'view_photo');
+		}
+
+		// 监听滚动
+		window.onscroll = function () {
+			api.execScript({
+				frameName: 'cutDown_frm',
+				script: 'restart()'
+			})
+			clearInterval(pauseT);
+			pauseT = setInterval(function () {
+				api.execScript({
+					frameName: 'cutDown_frm',
+					script: 'pause()'
+				})
+			}, 4000);
+		}
+	</script>
+</body>
+
+</html>

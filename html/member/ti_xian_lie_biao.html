@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>提现列表</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="../../css/ffxiang.css" /> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul,
+        ol,
+        li {
+            list-style: none;
+        }
+
+        .tx-c {
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: column;
+            padding: 15px 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tx-c .s-bet {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+        }
+        .tx-c .foot .time {
+            font-size: 10px;
+            color: gray;
+        }
+        .tx-c .je {
+            font-size: 20px;
+            color: #f7c032;
+        }
+        .tx-c .sh {
+            font-size: 12px;
+            color: grey;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <script id="fx-list" type="text/x-dot-template">
+        {{ for(var i=0,len=it.length; i < len; i++) { }}
+        <li class="tx-c" tapmode onclick="tixian({{=it[i].id}})" data-data='{{= JSON.stringify(it[i]) }}' id="id{{= it[i].id }}">
+        <!-- <li class="tx-c" tapmode  tapmode onclick="_url({url:'member/ti_xian_xiang_qing',title:'提现详情',data:{{=it[i].id}}},'',true)"> -->
+            <div class="top s-bet">
+                <div class="title">提现</div>
+                <div class="je">-{{=it[i].price}}</div>
+            </div>
+            <div class="foot s-bet">
+                <span class="time">{{=it[i].addtime }}</span>
+                {{? it[i].state==0}}
+                <span class="sh">审核中</span>
+                {{?? it[i].state==1 }}
+                <span class="sh">提现成功</span>
+                {{??}}
+                <span class="sh">提现失败</span>
+                {{?}}
+            </div>
+        </li>
+        {{ } }}
+    </script>
+    <ul class="txlb" id="fx-view"></ul>
+</body>
+<script src="../../script/jquery.js"></script>
+<script src="../../script/api.js"></script>
+<script src="../../script/dot.js"></script>
+<script src="../../script/ffxiang.js"></script>
+<script>
+    var _user = $api.getStorage('user');
+    console.log(JSON.stringify(_user))
+    apiready = function(){
+        _shangla(function(ret,err){
+				_lists('api/user/tixianxinxi/id/'+_user.id, 1, 1);			
+            })
+            
+            // 监听滚动
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : threshold
+					 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if (heigutgao == 1) {// heigutgao=1开启执行 0停止执行   防止连续滚动，等加载数据之后在进行滚动。
+					pagenum += 1
+					_lists('api/user/tixianxinxi/id/'+_user.id, pagenum);
+				}
+			});
+        // $api.post(fx_url+'api/user/tixianxinxi?', {
+        //     values: {
+        //         id: _user.id
+        //     }
+        // }, function(ret){
+        //     // console.log()
+        //     var evalData = doT.template($api.html($api.byId('fx-list')));
+		// 	$api.append($api.byId('fx-view'), evalData(ret));
+        // })
+    }
+
+    //提现
+	function tixian(id) {
+		var a = $('#id' + id);
+		data = a.data('data');
+        api.openWin({
+            name: 'ti_xian_xiang_qings_win',
+            url: '../win.html',
+            pageParam:{
+                //  frm_name:'ti_xian_xiangs_qing',
+                url:'member/ti_xian_xiang_qing',
+                title:'提现详情',
+                data: data
+            },
+            reload: true
+        });
+	}
+        
+</script>
+</html>

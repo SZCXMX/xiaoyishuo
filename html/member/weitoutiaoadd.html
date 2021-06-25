@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<style>
+			body {
+				background: #F4F5F6 !important;
+			}
+			.aui-content-padded {
+				margin: 0px;
+				padding: 0.75 rem;
+			}
+			.aui-list, .aui-list-item, .aui-list .aui-list-item {
+				background: none;
+				border: 0px;
+			}
+			.aui-content-padded textarea{
+				height: 3.8rem;
+				line-height: 1rem;
+				font-size: 0.75rem;
+				padding: 0.75rem;
+			}
+			.aui-content-padded input{
+				font-size: 0.75rem;
+				padding: 0.75rem; 
+		
+			}
+			#images img {
+				height: 85px;
+				width: 100%;
+			}
+			.aui-list li.aui-list-item:active {
+				background: none
+			}
+			.aui-list li.aui-list-item .aui-col-xs-3:active {
+				background: #ddd
+			}
+			.aui-list, .aui-content-padded {
+				background: #fff;
+			}
+			.aui-icon-location{
+				padding-right: 0.6rem;
+			}
+
+			footer {
+				position: fixed;
+				bottom: 0px;
+				width: 100%;
+				text-align: center;
+				font-size: 12px;
+				background: #fff;
+				z-index: 999999;
+				line-height: 25px;
+				padding: 8px 0;
+			}
+			.aui-row .aui-col-xs-3 {
+				padding: 0;
+				margin-right: 10px;
+				margin-bottom: 5px;
+			}
+			#images .aui-col-xs-3 {
+				position: relative;
+				
+			}
+			#images .aui-col-xs-3 p {
+				background: rgba(0,0,0,0.8);
+				color: #fff;
+				position: absolute;
+				width: 100%;
+				bottom: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<script id="fx-list" type="text/x-dot-template">
+		{{? api.pageParam['type']=="video"}}
+		<div class="aui-content-padded video">
+			<input type="text" id="title" placeholder="请输入标题"  />
+		</div>
+		{{??}}
+		<div class="aui-content-padded">
+			<textarea placeholder="分享微头条"></textarea>
+		</div>
+		{{?}}
+		<section class="aui-grid aui-margin-b-15">
+			<div class="aui-row">
+				<div id="images">
+				</div>
+				<div class="aui-col-xs-3" tapmode onclick="getSourceType()">
+					<img src="../../image/weitoutiaoAdd.png" />
+				</div>
+			</div>
+		</section>
+		</script>
+		<div id="fx-view"></div>
+		<footer>
+			<div class="aui-list-item-inner">
+				<label style="margin:0 auto; font-size: 0.7rem;">
+					<input class="aui-checkbox" type="checkbox" id="checkbox" checked /> 我同意
+					<a style=" font-size: 0.7rem;" href="javascript:;" tapmode onclick="_url({url:'about',id:'2',title:'用户协议和隐私条款'})">"用户协议和隐私条款"</a>
+				</label>
+			</div>
+		</footer>
+	</body>
+	<script type="text/javascript" src="../../script/jquery.js"></script>
+	<script type="text/javascript" src="../../script/dot.js"></script>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/ffxiang.js"></script>
+	<script type="text/javascript" src="../../script/up.js"></script>
+	<script type="text/javascript">
+		var videoPlayer;
+		var videoOnOpen=0;  // 播放状态，0未播放 1正在播放
+		var videoImgUrl = '';  // 视频封面图片
+		var videoUrl = '';  // 视频地址
+		var videoUpType = 0; // 视频上传情况 0需上传 1 不需上传
+		var imgStop = 0;  // 图片上传情况
+		var imagesI = 0;  // 渲染图片 id尾数
+		apiready = function() {
+			videoPlayer = api.require('videoPlayer'); 
+			var evalData = doT.template($api.html($api.byId('fx-list')));
+			$api.html($api.byId('fx-view'), evalData());
+			if(api.pageParam['type'] != 'text'){
+				getSourceType();
+			}
+		}
+
+		// 点击发布
+		function fabu(){
+			var checkbox = $('#checkbox').is(':checked');
+			if (checkbox == false) {
+				_msg('请先同意服务条款')
+				return false;
+			}
+			// 发布视频
+			if(api.pageParam['type'] == 'video'){
+				putVideo();
+			}else{
+				putImg();
+			}
+		}
+
+		// 提交图文
+		function putImg(){
+			var description = $('textarea').val();
+			if(!description){
+				_msg('说点什么吧');
+				return;
+			}
+			imgStop = 0;
+			var images = [];
+			var needUpLen = $('#images .aui-col-xs-3 img[data-src=0]').length;
+			var arr = dealImg();
+			var i_time = setInterval(function(){
+				if(imgStop == needUpLen){  // 请求次数与上传次数一致
+					clearInterval(i_time);
+					if(arr.length == needUpLen){
+						images = JSON.stringify(arr);
+						var mychannel = arr.length == 0 ? 1 : 2;
+						putImgToPHP(mychannel, description, images)
+					}else{
+						_loadingClose();
+						_msg('部分图片上传失败，请重新发布')
+					}
+				}
+			}, 100)
+		}
+
+		// 提交到后台 图文
+		function putImgToPHP(mychannel, description, images){
+			_ajax('api/member/articleAdd', function(ret, err){
+				_loadingClose();
+				if(ret && ret.ret){
+					_msg('上传成功，待审核');
+					timerWin();
+				}else{
+					_msg(ret.err);
+				}
+			}, {mychannel:mychannel,description:description,images:images})
+		}
+
+		// 提交 视频
+		function putVideo(){
+			var title = $('.video input').val();
+			if(!title){
+				_msg('请输入标题');
+				return;
+			}
+			if(!videoUrl){
+				_msg('请选择视频');
+				return;
+			}
+			_loading();
+			videoAjax(function(vurl){
+				upImg(videoImgUrl, function(ret){
+					if(ret && ret.ret){
+						putVideoToPHP(title, vurl, ret.ret);
+					}else{
+						_loadingClose();
+						videoUpType = 0;
+						videoImgUrl = '';
+						videoUrl = '';
+						_msg('视频上传失败');
+					}
+				})
+			})
+		}
+
+		// 提交到后台 视频
+		function putVideoToPHP(title, vUrl, vImg){
+			_ajax('api/member/articleAdd', function(ret, err){
+				_loadingClose();
+				if(ret && ret.ret){
+					_msg('上传成功，待审核');
+					timerWin();
+				}else{
+					_msg(ret.err);
+				}
+			}, {mychannel:3,title:title,videourl:vUrl, image:vImg})
+		}
+	</script>
+</html>

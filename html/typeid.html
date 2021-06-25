@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/aui.css">
+    <link rel="stylesheet" href="../css/api.css">
+    <style>
+        .flex-bt {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ul {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .list {
+            width: calc((100vw - 60px) / 3);
+            margin: 10px;
+            background: #eee;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 14px;
+            height: 40px;
+        }
+
+        .list .aui-iconfont {
+            border: 1px solid #333;
+            border-radius: 50%;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            ;
+            text-align: center;
+            background: #fff;
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .new-padding-10 {
+            padding: 10px;
+        }
+
+        .submit {
+            color: #e51c23;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="flex-bt new-padding-10">
+            <h3>我的频道</h3>
+            <button class="submit" onclick="submit()">完成</button>
+        </div>
+        <script id="add-list" type="text/x-dot-template">
+            {{ for(var i=0,len=it.data.length;i<len;i++){ }}
+            <li class="list" data-index={{= i}}>
+                <span>{{= it.data[i].title}}</span>
+                {{? it.data[i].id != 999999999 && it.data[i].id != 111111111 && it.data[i].id != 888888888}}
+                <i class="aui-iconfont aui-icon-minus" tapmode onclick="select(this, {{= i}}, 0)"></i>
+                {{?}}
+            </li>
+            {{ } }}
+        </script>
+        <script id="no-list" type="text/x-dot-template">
+            {{ for(var i=0,len=it.data.length;i<len;i++){ }}
+            <li class="list"  data-index={{= i}}>
+                <span>{{= it.data[i].title}}</span>
+                <i class="aui-iconfont aui-icon-plus" tampde onclick="select(this, {{= i}}, 1)"></i>
+            </li>
+            {{ } }}
+        </script>
+        <div class="gridly">
+            <ul class="ul  brick" id="add-wrap">
+                <li class="list">
+                    <span>互联网1</span>
+                    <i class="aui-iconfont aui-icon-minus"></i>
+                </li>
+                <li class="list">
+                    <span>互联网2</span>
+                    <i class="aui-iconfont aui-icon-minus"></i>
+                </li>
+                <li class="list">
+                    <span>互联网3</span>
+                    <i class="aui-iconfont aui-icon-minus"></i>
+                </li>
+                <li class="list">
+                    <span>互联网4</span>
+                    <i class="aui-iconfont aui-icon-minus"></i>
+                </li>
+            </ul>
+            <h3 class="new-padding-10">点击添加频道</h3>
+            <ul class="ul " id="no-wrap">
+                <li class="list brick">
+                    <span>互联网5</span>
+                    <i class="aui-iconfont aui-icon-plus"></i>
+                </li>
+                <li class="list brick">
+                    <span>互联网6</span>
+                    <i class="aui-iconfont aui-icon-plus"></i>
+                </li>
+                <li class="list brick">
+                    <span>互联网7</span>
+                    <i class="aui-iconfont aui-icon-plus"></i>
+                </li>
+                <li class="list brick">
+                    <span>互联网8</span>
+                    <i class="aui-iconfont aui-icon-plus"></i>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script src="../script/jquery.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/dot.js"></script>
+<script src="../script/ffxiang.js"></script>
+<script src="../script/typeid.js"></script>
+<script>
+    var ret;
+    apiready = function () {
+        getMyTypeid(function (result) {
+            ret = result;
+            view();
+        })
+    }
+
+    // 渲染
+    function view() {
+        var evalData = doT.template($api.html($api.byId('add-list')));
+        $api.html($api.byId('add-wrap'), evalData(ret));
+        var evalData1 = doT.template($api.html($api.byId('no-list')));
+        $api.html($api.byId('no-wrap'), evalData1(ret));
+    }
+
+    // 确定修改
+    function submit() {
+        _loading();
+        var result = {
+            data: [],
+            typeid: [],
+        }
+
+        // var myObj = {};
+
+        // 选中的
+        var $addList = $('#add-wrap .list');
+        for (var i = 0, len = $addList.length; i < len; i++) {
+            var aIndex = $addList.eq(i).attr('data-index');
+
+            result.data.push(ret.data[aIndex]);
+            result.typeid.push(ret.data[aIndex].id);
+
+            // myObj[ret.data[aIndex].id] = 1;
+        }
+
+        // 未选中的
+        var $noList = $('#no-wrap .list');
+        for (var i = 0, len = $noList.length; i < len; i++) {
+            var aIndex = $noList.eq(i).attr('data-index');
+
+            result.data.push(ret.data[aIndex]);
+            result.typeid.push(ret.data[aIndex].id);
+
+            // myObj[ret.data[aIndex].id] = 0;
+        }
+        console.log(JSON.stringify(result))
+        saveTypeid(mode, result);
+        // $api.setStorage('typeid', result);
+        // $api.setStorage('myTypeId', myObj);
+        setTimeout(function () {
+            _send('updateNav', {
+                mode: mode
+            });
+            setTimeout(function () {
+                _loadingClose();
+                _msg('设置成功');
+                api.closeWin();
+            }, 500)
+        }, 500)
+
+    }
+
+
+    // 选中 0 移除 1选中
+    function select(obj, i, type) {
+        ret.data[i].select = type;
+
+        $(obj).parent().remove();
+        if (type == 0) {
+            var html = '<li class="list" data-index=' + i + '>';
+            html += '<span>' + ret.data[i].title + '</span>';
+            html += '<i class="aui-iconfont aui-icon-plus"  tapmode onclick="select(this, ' + i + ', 1)"></i>';
+            html += '</li>'
+            $('#no-wrap').append(html);
+        } else {
+            var html = '<li class="list" data-index=' + i + '>';
+            html += '<span>' + ret.data[i].title + '</span>';
+            html += '<i class="aui-iconfont aui-icon-minus"  tapmode onclick="select(this, ' + i + ', 0)"></i>';
+            html += '</li>'
+            $('#add-wrap').append(html);
+        }
+    }
+
+    $('#add-wrap .list').on('touchmove', function (e) {
+        var _touch = e.originalEvent.targetTouches[0];
+        var _x = _touch.pageX;
+        var _y = _touch.pageY;
+        $(this).css({
+            'position': 'absolute',
+            'top': _y,
+            'left': _x,
+            'z-index': 1
+        })
+        e.preventDefault();
+    })
+    $('#add-wrap .list').on('touchend', function (e) {
+        var _touch = e.originalEvent.changedTouches[0];
+        var _x = _touch.pageX;
+        var _y = _touch.pageY;
+
+        var $fa = $('#add-wrap');
+        var faH = $fa.height();
+        var faOH = $fa.offset().top;
+
+        if (_y > (faOH + faH)) {
+            // 拖至下方
+        } else {
+            // 仍在上方
+            if (_y > faOH) {
+                var t = Math.ceil((_y - faOH) / 40);
+                var mw = window.innerWidth / 3;
+                var l = Math.ceil(_x / mw);
+                var num = t * 3 + l - 1;
+                $fa.find('.list').eq(num).after($(this));
+            } else {
+                $fa.prepend($(this));
+            }
+
+        }
+        setTimeout(function(){
+            $(this).css({
+                'position': 'relative',
+                'top': 'auto',
+                'left': 'auto',
+                'z-index': 0
+            })
+        }, 500)
+        e.preventDefault();
+    })
+</script>
+
+</html>

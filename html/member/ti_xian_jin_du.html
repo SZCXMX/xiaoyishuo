@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>提现进度</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            width: 100%;
+        }
+
+        .content .top {
+            border-bottom: 2px solid #eee;
+        }
+
+        .content .top .jindu {
+            display: flex;
+            display: -webkit-flex;
+            padding: 30px 50px;
+            padding-bottom: 50px;
+        }
+
+        .content .top .jindu img {
+            width: 30px;
+            height: 105px;
+            /* margin: 0 50px; */
+            margin-right: 15px;
+        }
+
+        .content .top .jindu .shuoming {
+            position: relative;
+            width: 70%;
+        }
+
+        .content .top .jindu .shuoming .txsq {
+            color: #f7c032;
+        }
+
+        .content .top .jindu .shuoming .yjsj {
+            position: absolute;
+            bottom: -21px;
+            display: flex;
+            /* width: 70%; */
+            flex-direction: column;
+        }
+
+        .content .top .jindu .shuoming .yjsj span:nth-child(1) {
+            color: #3b3b3b;
+        }
+
+        .content .top .jindu .shuoming .tx-tip {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .content .top .jindu .shuoming .tx-tip span.time {
+            color: #646464;
+        }
+
+        .content .top .jindu .shuoming .tx-tip span.new-tip {
+            background: linear-gradient(left,#ff4734, #ff6639);
+            background: -webkit-linear-gradient(left,#ff4734, #ff6639);
+            color: #fff;
+            padding: 2px 5px;
+            border-radius: 10px 10px 10px 0;
+            font-size: 10px;
+            margin-left: 10px;
+        }
+
+        .content .top ul.jine {
+            padding: 20px 0;
+            border-top: 1px solid #e5e9e8;
+            margin: 0 10px;
+            color: #636363;
+        }
+
+        .content .top ul.jine li {
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+        }
+
+        .content .top ul.jine li .je {
+            color: red;
+        }
+
+        .content .top ul.jine li .fs {
+            color: #333;
+        }
+
+        .content .top ul.jine li .right {
+            float: right;
+        }
+
+        .content .bot {
+            color: #9b9b9b;
+            padding: 30px 10px;
+        }
+
+        .content .bot p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .content .bot ul {
+            font-size: 14px;
+            line-height: 25px;
+        }
+
+        .content button.know {
+            background: #ffbc27;
+            color: #fff;
+            width: 70%;
+            height: 30px;
+            line-height: 30px;
+            /* text-align: center; */
+            margin: 0 15%;
+            border-radius: 20px;
+            position: absolute;
+            bottom: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="top">
+            <div class="jindu">
+                <img src="../../image/jindu00.png" alt="">
+                <div class="shuoming">
+                    <p class="txsq">提现申请已提交</p>
+                    <p class="yjsj">
+                        <span>预计到账时间</span>
+                        <span class="tx-tip">
+                            <span class="time">今日 20:17</span>
+                            <span class="new-tip">新用户3小时到账</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <ul class="jine">
+                <li>
+                    <span class="title">提现金额</span>
+                    <span class="je right">￥1</span>
+                </li>
+                <li>
+                    <span class="title">提现方式</span>
+                    <span class="fs right">微信</span>
+                </li>
+            </ul>
+        </div>
+        <div class="bot">
+            <p>到账查询</p>
+            <ul>
+                <li>1.支付宝：我的-账单</li>
+                <li>2.微信：我-钱包-零钱-零钱明细</li>
+            </ul>
+        </div>
+        <button class="know">知道了</button>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery.js"></script>
+<script>
+    $('.know').on('click', function(){
+        api.closeToWin({
+            name: 'member_win'
+        });
+    })
+    var fs, tx_je;
+    apiready = function(){
+         fs = api.pageParam.txfs;
+         tx_je = api.pageParam.tx_je;
+         console.log(fs);
+         $('.fs').text(fs);
+         $('.je').text('￥'+tx_je);
+         var d = new Date();
+         $('.time').text('明日'+d.getHours()+':'+d.getMinutes());
+
+         api.sendEvent({
+             name: 'txcg'
+         })
+    }
+
+    
+</script>
+</html>

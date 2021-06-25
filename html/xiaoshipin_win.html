@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no" />
+	<title>放飞科技</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/fx_weitoutiao.css" />
+	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+	<style>
+		#fx-header {
+			min-height: 0;
+			background: #fff;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav fx-view-header " id="fx-header"></header>
+	<footer class="aui-bar aui-bar-tab" id="fx-footer">
+		<div class="aui-bar-tab-item" tapmode onclick="_hone()">
+			<img class="aui-img-object" src="../image/w1.png" />
+			<div class="aui-bar-tab-label">
+				主页
+			</div>
+		</div>
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('video_win')">
+			<img class="aui-img-object" src="../image/w2.png" />
+			<div class="aui-bar-tab-label">
+				视频
+			</div>
+		</div>
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('weitoutiao_win')">
+			<img class="aui-img-object" src="../image/w3.png" />
+			<div class="aui-bar-tab-label">
+				微头条
+			</div>
+		</div>
+		<div class="aui-bar-tab-item aui-active" >
+			<img class="aui-img-object" src="../image/w4s.png" />
+			<div class="aui-bar-tab-label">
+				小视频
+			</div>
+		</div>
+		<div class="aui-bar-tab-item" tapmode onclick="_index_win('member_win')">
+			<img class="aui-img-object" src="../image/w5.png" />
+			<div class="aui-bar-tab-label">
+				会员
+			</div>
+		</div>
+	</footer>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript">
+	var playModule;
+	apiready = function () {
+		// alert('xiaoshipin_win')
+		playModule = api.require('playModule');
+		playModule.init({
+			isMultiWindow: false
+		})
+		api.addEventListener({
+			name: 'viewappear'
+		}, function (ret, err) {
+			_heibai(1)
+		});
+		_heibai(1)
+		// 解析属性	消除点击300S 延时问题 tapmode
+		api.parseTapmode();
+		_openMiddleFrame();
+		api.addEventListener({
+			name: 'yejian'
+		}, function (ret, err) {
+			if (ret) {
+				_yejians();
+			}
+		});
+		// 判断返回键
+		api.addEventListener({
+			name: 'keyback'
+		}, function (ret, err) {
+			
+			// _hone();
+			api.execScript({
+				frameName: 'xiaoshipin',
+				// script: 'winclose();'
+				script: 'winfrem()'
+			});
+
+		});
+		// 监听夜间
+		api.addEventListener({
+			name: 'yejian'
+		}, function (ret, err) {
+			if (ret) {
+				_yejians();
+			}
+		});
+
+	}
+
+	function _openMiddleFrame() {
+        // 解析属性	消除点击300S 延时问题 tapmode
+        api.parseTapmode();
+        var headerh;
+        var footerh;
+        var header = $api.byId('fx-header');
+        $api.fixStatusBar(header);
+        var headerPos = $api.offset(header);
+        headerh = headerPos.h
+        var body_h = api.winHeight;
+        $api.fixTabBar($api.byId('fx-footer'))
+        footerh = $api.offset($api.byId('fx-footer')).h;
+        api.openFrame({
+            name: 'xiaoshipin',
+            url: 'widget://html/xiaoshipin.html',
+            bounces: false,
+            reload: true,
+            rect: {
+                x: 0,
+                y: headerh,
+                w: 'auto',
+                h: 'auto',
+                // h: body_h - headerh - footerh
+				marginBottom: footerh
+            }
+        })
+    }
+</script>
+
+</html>
